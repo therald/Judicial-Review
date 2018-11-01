@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+\usepackage{pgfgantt}
+\usepackage{biblatex}
+\title{Judicial Review}
+\author{ Taylor Herald : herald.r@wustl.edu, 451027\\
+            Christabel Wayllace : cwayllace@wustl.edu, 460591\\
+            Adam Kern : adam.kern@wustl.edu, 441588
+}
+\date{October 2018}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+\bibliography{Proposal-Bibliography}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The Supreme Court of the United States is one of the most powerful institutions in America; its role in arbitrating disagreements at the highest level allows it to influence policy and daily American life in incredibly concrete ways.  Famous cases such as Brown v Board of Education and Roe v Wade decide which children can go to which schools, and a woman's right to an abortion.  Gideon v Wainwright gave Americans their right to legal representation, and Citizens United v Federal Election Committee gave corporations the right to give unlimited amounts of money to political elections.  These are just a few of the hundreds of cases the Supreme Court has decided on over the years, shaping America with every ruling.
+
+Despite this, the Supreme Court remains an unknown part of the American political system.  According to a 2015 Pew Research Center survey, only 34\% of respondents knew who the Chief Justice of the Supreme Court was \cite{pew-scotus-awareness}.  Even more optimistic research shows that, in 2005, only 60.5\% of respondents knew that Supreme Court members serve a life term, and only 56.8\% knew that Supreme Court justices serve a life term \cite{gibson-survey}.  In short, the American people are woefully uneducated and misinformed about the role and function of the Supreme Court.
+
+With our visualization, we hope to provide a medium through which everyday people --- that may or may not keep up with or understand the Supreme Court --- can gain insight into how the Supreme Court has evolved over the years as well as how it has influenced (and has been influenced by) Americans. The source code of the visualization can be found \href{https://github.com/therald/Judicial-Review.git}{here}.
+
+\section{Project Objectives}
+The project should support  our main objective: provide an insight on the evolution of the Supreme Court and its influence on the American society. In order to do that, we propose the following sub objectives:
+
+\begin{itemize}
+  \item Show if (how) the political ideology (liberal vs. conservative) affected the court’s decisions  throughout time. Specifically, we want to show if (how) justices’ ideology changed over years as well as the ideological direction changes in the court’s decisions.
+  \item Show the court’s focus and the change/evolution of the society  through time by visualizing information about unconstitutional rulings with respect to an issue area.
+\item  Show how (if) the court’s and the American society’s points of view changed over time by analyzing the precedence alteration of a case with respect to an issue area.
+\end{itemize}
+\section{Data}
+The main source of information comes from the Supreme Court Database~\url{http://scdb.wustl.edu/} which provides both modern and legacy data in two versions: (1) Case Centered Data and (2) Justice Centered Data. 
+\section{Data Processing}
+Data processing for us will most likely come in the form of web scraping. This is due to the fact that although the data is given to us in a .csv format, values for a majority of the parameters are mapped to strings and these mappings are just displayed in the documentation. So, these mappings will be scraped into their own .csv files for the parameters that we choose to dive into. That aside, the data is formatted well in such a way that we should not need to do much more than that.
+\section{Visualization Design}
+
+\section{Must-Have Features}
+\section{Optional Features}
+\section{Project Schedule}
+\begin{ganttchart}[vgrid, hgrid]{1}{12}
+\gantttitle{Title}{12} \\
+\ganttgroup{Group 1}{1}{10} \\
+\ganttbar{Task 1}{1}{3} \\
+\ganttbar{Task 2}{4}{10} \\
+\ganttmilestone{Milestone 1}{11}
+\end{ganttchart}
+
+\printbibliography
+
+\end{document}
