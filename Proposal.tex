@@ -26,11 +26,11 @@
 \maketitle
 
 \section{Introduction}
-The Supreme Court of the United States is one of the most powerful institutions in America; its role in arbitrating disagreements at the highest level allows it to influence policy and daily American life in incredibly concrete ways.  Famous cases such as Brown v. Board of Education and Roe v. Wade decide which children can go to which schools \cite{oyez-brown}, and a woman's right to an abortion \cite{oyez-roe}.  Gideon v Wainwright gave Americans their right to legal representation \cite{oyez-gideon}, and Citizens United v. Federal Election Committee gave corporations the right to give unlimited amounts of money to political elections \cite{oyez-fec}.  These are just a few of the hundreds of cases the Supreme Court has decided on over the years, shaping America with every ruling.
+The Supreme Court of the United States is one of the most powerful institutions in America; its role in arbitrating disagreements at the highest level allows it to influence policy and daily American life in incredibly concrete ways.  Famous cases such as Brown v. Board of Education and Roe v. Wade decide which children can go to which schools \cite{oyez-brown}, and a woman's right to an abortion \cite{oyez-roe}.  Gideon v Wainwright gave Americans their right to legal representation \cite{oyez-gideon}, and Citizens United v. Federal Election Committee gave corporations the right to give unlimited amounts of money to political elections \cite{oyez-fec}.  These are just a few of the hundreds of cases the Supreme Court has decided on over the years, shaping America with every ruling.\\
 
-Despite this, the Supreme Court remains an unknown part of the American political system.  According to a 2015 Pew Research Center survey, only 34\% of respondents knew who the Chief Justice of the Supreme Court was \cite{pew-scotus-awareness}.  Even optimistic research shows that, in 2005, only 60.5\% of respondents knew that Supreme Court members serve a life term, and only 56.8\% knew that Supreme Court justices serve a life term \cite{gibson-survey}.  In short, the American people are woefully uneducated and misinformed about the role and function of the Supreme Court.
+Despite this, the Supreme Court remains an unknown part of the American political system.  According to a 2015 Pew Research Center survey, only 34\% of respondents knew who the Chief Justice of the Supreme Court was \cite{pew-scotus-awareness}.  Even optimistic research shows that, in 2005, only 60.5\% of respondents knew that Supreme Court members serve a life term, and only 56.8\% knew that Supreme Court justices serve a life term \cite{gibson-survey}.  In short, the American people are woefully uneducated and misinformed about the role and function of the Supreme Court.\\
 
-With our visualization, we hope to provide a medium through which everyday people --- that may or may not keep up with or understand the Supreme Court --- can gain insight into how the Supreme Court has evolved over the years as well as how it has influenced (and has been influenced by) the American people. The source code of the visualization can be found \href{https://github.com/therald/Judicial-Review.git}{here}.
+With our visualization, we hope to provide a medium through which everyday people --- that may or may not keep up with or understand the Supreme Court --- can gain insight into how the Supreme Court has evolved over the years as well as how it has influenced (and has been influenced by) the American people. The source code of the visualization can be found \href{https://github.com/therald/Judicial-Review.git}{here}.\\
 
 \section{Project Objectives}
 The project should support our main objective: provide insight into the evolution of the Supreme Court and its influence on American society. In order to do that, we propose the following sub-objectives:
@@ -41,12 +41,12 @@ The project should support our main objective: provide insight into the evolutio
 \end{itemize}
 
 \section{Data}
-The main source of information comes from the Supreme Court Database~\url{http://scdb.wustl.edu/} which provides both modern and legacy data in two versions: (1) Case Centered Data and (2) Justice Centered Data.
+The main source of information comes from the Supreme Court Database~\url{http://scdb.wustl.edu/} which provides both modern and legacy data in two versions: (1) Case Centered Data and (2) Justice Centered Data.\\
 
 Additionally, we are also pondering the use of the dataset used in~\cite{fowler:2007} and~\cite{fowler:2008}.
 
 \section{Data Processing}
-Data processing for us will most likely come in the form of web scraping. This is due to the fact that although the data is given to us in a .csv format, values for a majority of the parameters are mapped to strings and these mappings are just displayed in the documentation. So, these mappings will be scraped into their own .csv files for the parameters that we choose to dive into. That aside, the data is formatted well in such a way that we should not need to do much more than that.
+Data processing for us will most likely come in the form of web scraping. This is due to the fact that although the data is given to us in a .csv format, values for a majority of the parameters are mapped to strings and these mappings are just displayed in the documentation. So, these mappings will be scraped into their own .csv files for the parameters that we choose to dive into. That aside, the data is formatted well in such a way that we should not need to do much more than that.\\
 
 Additionally, we may have to generate new datasets by joining data from the Supreme Court Database with other datasets found online, or compiled by hand, that help to add information to our visualizations.
 
@@ -59,11 +59,11 @@ Before coming together to formalize our designs, each group member created a num
     \label{fig:roughprecedent}
 \end{figure}
 \FloatBarrier
-The above visualization shows analysis of how precedent is altered over time.  Specifically, the funnel represents the start and end of a precedent-setting case that was eventually overturned by the Supreme Court.  The width of the funnel would change for each year to show how many times the original case was cited in that year.  The bar at the end of the funnel shows the Supreme Court case that overturned the original precedent.
+The above visualization shows analysis of how precedent is altered over time.  Specifically, the funnel represents the start and end of a precedent-setting case that was eventually overturned by the Supreme Court.  The width of the funnel would change for each year to show how many times the original case was cited in that year.  The bar at the end of the funnel shows the Supreme Court case that overturned the original precedent.\\
 
-The color of the funnel (and the bar) represent the ideological leaning of the original (or Supreme Court overruling) case.  We expect these to often be opposite colors, as rulings that overturn precedent often lean in the opposite ideological direction as the original ruling.
+The color of the funnel (and the bar) represent the ideological leaning of the original (or Supreme Court overruling) case.  We expect these to often be opposite colors, as rulings that overturn precedent often lean in the opposite ideological direction as the original ruling.\\
 
-The top filled line chart represents the average life of a precedent set during a given year.  Upon further consideration, this was scrapped from the design, as we believe it can be potentially confusing without providing much insight into the Court.
+The top filled line chart represents the average life of a precedent set during a given year.  Upon further consideration, this was scrapped from the design, as we believe it can be potentially confusing without providing much insight into the Court.\\
 
 The bottom filled line chart represents what percentage of cases that the Court views in a given year overturned a precedent.  This graph allows users to see a proxy of ``judicial activism," in which the Court uses its power to affect change to the existing policies set out by earlier courts.  This visualization would have a brush-and-zoom effect that could be used to control the upper chart.
 
@@ -73,7 +73,7 @@ The bottom filled line chart represents what percentage of cases that the Court 
     \label{fig:roughrulings}
 \end{figure}
 \FloatBarrier
-This sketch is a little more straightforward -- it simply shows the number of cases in a given year that the Court ruled unconstitutional, using a stacked line graph, with different colors for unconstitutional vs other types of rulings.  This allows users to get a sense of how the Court uses its power of judicial review.
+This sketch is a little more straightforward -- it simply shows the number of cases in a given year that the Court ruled unconstitutional, using a stacked line graph, with different colors for unconstitutional vs other types of rulings.  This allows users to get a sense of how the Court uses its power of judicial review.\\
 
 In addition, landmark cases could be added as individual points, allowing users to explore how rulings that do not affect constitutional interpretation still have major affects on American policy.
 
