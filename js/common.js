@@ -2,32 +2,40 @@ document.addEventListener("DOMContentLoaded", function(){
 	begin();
 });
 
+/**
+ * Handles preliminary data loading and creation of the other classes
+ */
 function begin() {
-	var anArray = ["test1", "test2", "test3", "test4"];
+	var instance = null;
 
-	d3.select("body").selectAll("p")
-		.data(anArray)
-		.enter()
-		.append("p")
-		.text("Hello!")
-		.attrs({
-			"class": "paragraph_tag"
-		});
+	/**
+	 * Load any necessary data, then create instances of every class
+	 */
+	function init() {
+		var precedent = new Precedent("#precedent");
+		var ideology = new Ideology("#ideology");
+		var constitutional = new Constitutional("#constitutional");
+	}
 
-	var svg = d3.select("body")
-		.append("svg")
-      	.attrs({
-      		"width": 500,
-      		"height": 500,
-            "bgcolor": "white"
-        });
+	/**
+	 * Checks for invalid instance creation
+	 * @constructor
+	 */
+	function Main() {
+		if (instance !== null) {
+			throw new Error("Cannot instantiate more than one instance of the controlling class");
+		}
+	}
 
-	svg.append("rect")
-		.attrs({
-			"id": "test_rect",
-	  		"x": 50,
-	  		"y": 150,
-	  		"width": 400,
-	  		"height": 200
-		});
+	Main.getInstance = function() {
+		var self = this;
+		if (self.instance == null) {
+			self.instance = new Main();
+
+			init();
+		}
+		return instance;
+	}
+
+	Main.getInstance();
 }
