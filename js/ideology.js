@@ -27,6 +27,8 @@ class Ideology {
     }
 
     draw() {
-
+        d3.csv("./data/case_data.csv", function (error, cases) {
+            console.log(cases);
+        });
     }
 }
