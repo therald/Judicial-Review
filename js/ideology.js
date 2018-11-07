@@ -1,5 +1,5 @@
 class Ideology {
-    constructor(div) {
+    constructor(div, data, constitutional, precedent) {
         var viz = this;
 
         // Variable to see if the vizualization is "active", whatever that means
@@ -23,12 +23,11 @@ class Ideology {
         viz.width = viz.totalWidth - viz.margin.left - viz.margin.right;
         viz.height = viz.totalHeight - viz.margin.top - viz.margin.bottom;
 
+        viz.data = data;
         viz.draw();
     }
 
     draw() {
-        d3.csv("./data/case_data.csv", function (error, cases) {
-            console.log(cases);
-        });
+        
     }
 }

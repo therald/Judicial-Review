@@ -12,9 +12,11 @@ function begin() {
 	 * Load any necessary data, then create instances of every class
 	 */
 	function init() {
-		var precedent = new Precedent("#precedent");
-		var ideology = new Ideology("#ideology");
-		var constitutional = new Constitutional("#constitutional");
+		d3.csv("./data/case_data.csv", function (error, cases) {
+			var precedent = new Precedent("#precedent", cases);
+			var constitutional = new Constitutional("#constitutional", cases);
+			var ideology = new Ideology("#ideology", cases, constitutional, precedent);
+		});
 	}
 
 	/**
