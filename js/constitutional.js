@@ -28,6 +28,6 @@ class Constitutional {
     }
 
     draw() {
-
+        console.log(this.data);
     }
 }
