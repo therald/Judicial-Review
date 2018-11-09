@@ -19,15 +19,27 @@ class Ideology {
             .attr("preserveAspectRatio", "xMinYMin");
         
         // d3 margin convention
-        viz.margin = { top: 10, bottom: 10, left: 10, right: 0 };
-        viz.width = viz.totalWidth - viz.margin.left - viz.margin.right;
-        viz.height = viz.totalHeight - viz.margin.top - viz.margin.bottom;
+        viz.width = document.getElementById(div).offsetWidth;
+        viz.height = document.getElementById(div).offsetHeight;
 
         viz.data = data;
         viz.draw();
     }
 
     draw() {
-        
+        var viz = this;
+
+        var decisionShortDates = viz.data.map(m => m.dateDecision);
+        var decisionYears = decisionShortDates.map(d => d.split("/")[2]);
+        var decisionDistinctYears = new Set(decisionYears);
+        console.log(decisionDistinctYears);
+
+        var xScale = d3.scaleLinear()
+            .domain(d3.min(decisionDistinctYears), d3.max(decisionDistinctYears))
+            .range(0, viz.width);
+
+        var fillColorClasses = ["fill_red", "fill_gray", "fill_blue"];
+
+
     }
 }
