@@ -48,8 +48,6 @@ class Ideology {
 
             var series = stack(ideology_data);
 
-            console.log(series);
-
             var mins = series[0].map(d => d[0]);
             var maxs = series[2].map(d => d[1]);
 
@@ -61,7 +59,7 @@ class Ideology {
             var fillColorClasses = ["fill_blue", "fill_gray", "fill_red"];
 
             var area = d3.area()
-                .x(function(d) { console.info('in area function: ', d); return xScale(Number(d.data.Year)); })
+                .x(function(d) { return xScale(Number(d.data.Year)); })
                 .y0(function(d) { return yScale(d[0]); })
                 .y1(function(d) { return yScale(d[1]); })
                 .curve(d3.curveBasis);

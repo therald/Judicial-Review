@@ -11,5 +11,5 @@ for i, overruling in all_data[all_data['overruling'].str.strip() != '0'].iterrow
     for index in overruling['overruling'].split():
         inter = {}
         for j, overruled in all_data[all_data['caseid'] == int(index)].iterrows():
-            intervals.append({'overruled': j, 'overruling': i})
-df.from_dict(intervals).to_csv('../data/precedent_indices.csv', index=False)
+            intervals.append({'overruled': j, 'overruling': i, 'startdate': overruled['dateDecision'], 'enddate': overruling['dateDecision'], 'importance': overruled['indeg']})
+df.from_dict(intervals).to_csv('../data/precedent_pairs.csv', index=False)
