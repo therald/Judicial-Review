@@ -1,1 +1,205 @@
-html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{height:100vh;line-height:1}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}nav ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}a{margin:0;padding:0;font-size:100%;vertical-align:baseline;background:transparent}ins{background-color:#ff9;color:#000;text-decoration:none}mark{background-color:#ff9;color:#000;font-style:italic;font-weight:bold}del{text-decoration:line-through}abbr[title],dfn[title]{border-bottom:1px dotted;cursor:help}table{border-collapse:collapse;border-spacing:0}hr{display:block;height:1px;border:0;border-top:1px solid #cccccc;margin:1em 0;padding:0}input,select{vertical-align:middle}@media only screen and (min-width: 20rem){html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}*{-box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box}body{font-size:16px;height:100vh}body .container{height:100%;margin-left:1%;margin-right:1%;width:98%}body .container #header{height:8%;margin-top:1rem;margin-left:0.25rem}body .container #header h1{font-size:2.5rem;margin-bottom:0.5rem}body .container #header h3{font-size:1.5rem}body .container #ideology{background:#EEE;border-radius:15px;height:44%;margin-top:1%;margin-bottom:1%}body .container #ideology .vis_title{font-size:1.5rem;margin:auto;padding-bottom:0.5rem;padding-top:0.5rem;width:fit-content}body .container #bottom{height:44%}body .container #bottom #constitutional{background:#EEE;border-radius:15px;float:left;height:100%;margin-right:0.5%;width:49.5%}body .container #bottom #precedent{background:#EEE;border-radius:15px;float:right;height:100%;margin-left:0.5%;width:49.5%}.clearfix:after{content:"";display:table;clear:both}}
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+/* line 9, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+/* line 30, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+body {
+  height: 100vh;
+  line-height: 1;
+}
+
+/* line 35, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 40, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+nav ul {
+  list-style: none;
+}
+
+/* line 44, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 48, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 54, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+/* change colours to suit your needs */
+/* line 63, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+ins {
+  background-color: #ff9;
+  color: #000;
+  text-decoration: none;
+}
+
+/* change colours to suit your needs */
+/* line 70, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+mark {
+  background-color: #ff9;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* line 77, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+del {
+  text-decoration: line-through;
+}
+
+/* line 81, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+abbr[title], dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+
+/* line 86, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* change border colour to suit your needs */
+/* line 92, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #cccccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/* line 101, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_reset.scss */
+input, select {
+  vertical-align: middle;
+}
+
+@media only screen and (min-width: 20rem) {
+  /* Prevent adjustments of font size after orientation changes in IE on Windows Phone and in iOS. */
+  /* line 2, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  /* apply a natural box layout model to all elements */
+  /* line 8, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  * {
+    -box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  }
+  /* line 14, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body {
+    font-size: 16px;
+    height: 100vh;
+  }
+  /* line 18, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container {
+    height: 100%;
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 98%;
+  }
+  /* line 24, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #header {
+    height: 8%;
+    margin-top: 1rem;
+    margin-left: 0.25rem;
+  }
+  /* line 29, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  /* line 34, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #header h3 {
+    font-size: 1.5rem;
+  }
+  /* line 39, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #ideology {
+    background: #EEE;
+    border-radius: 15px;
+    height: 44%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+  }
+  /* line 46, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #ideology .vis_title {
+    font-size: 1.5rem;
+    margin: auto;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    width: fit-content;
+  }
+  /* line 55, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #bottom {
+    height: 44%;
+  }
+  /* line 58, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #bottom #constitutional {
+    background: #EEE;
+    border-radius: 15px;
+    float: left;
+    height: 100%;
+    margin-right: 0.5%;
+    width: 49.5%;
+  }
+  /* line 67, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  body .container #bottom #precedent {
+    background: #EEE;
+    border-radius: 15px;
+    float: right;
+    height: 100%;
+    margin-left: 0.5%;
+    width: 49.5%;
+  }
+  /* line 80, /Users/cwayllace/Documents/visualization/GitHub/Judicial-Review/scss/_style_small.scss */
+  .clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+/*# sourceMappingURL=../css/styles.map */
