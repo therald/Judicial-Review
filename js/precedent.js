@@ -30,6 +30,8 @@ class Precedent {
             .attr("transform", "translate(0," + (viz.margin.top + viz.height) + ")");
 
         viz.data = data;
+        viz.cScale = d3.scaleOrdinal(d3.schemeCategory10);
+        // .domain(d3.range(1, 15)).range(d3.range(1, 15).map(d => d3.interpolateViridis((d-1)/13)));
 
         viz.xScale = d3.scaleTime().range([viz.margin.left, viz.margin.left+viz.width]);
         // viz.xScale.domain(d3.extent(data, d => new Date(d.dateDecision)));
@@ -49,8 +51,9 @@ class Precedent {
             }
         }, function(datum) {
             viz.intervals = datum;
+            // console.log(new Set(viz.intervals.map(d => viz.data[d.overruled].issueArea)));
             viz.draw();
-        })
+        });
     }
 
     draw() {
@@ -76,6 +79,11 @@ class Precedent {
             .each(function(d, i, g) {
                 // console.log(d, i, g[i]);
                 var group = d3.select(g[i]);
+                group.selectAll('line').data(d)
+                    .enter()
+                    .append('line')
+                    .classed('interline', true);
+
                 group.selectAll('circle.startpoint').data(d)
                     .enter()
                     .append('circle')
@@ -84,35 +92,30 @@ class Precedent {
                     .enter()
                     .append('circle')
                     .classed('endpoint', true);
-                
-                group.selectAll('line').data(d)
-                    .enter()
-                    .append('line')
-                    .classed('interline', true);
             });
         
         intervals.merge(enter)
             .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
             .each(function(d, i, g) {
                 var group = d3.select(g[i]);
-                group.selectAll('circle.startpoint')
-                    .attr('cx', d => viz.xScale(d.startdate))
-                    .attr('cy', '0')
-                    .attr('r', 2)
-                    .attr('fill', 'black');
-                group.selectAll('circle.endpoint')
-                    .attr('cx', d => viz.xScale(d.enddate))
-                    .attr('cy', '0')
-                    .attr('r', 2)
-                    .attr('fill', 'black');
-                
                 group.selectAll('line.interline')
                     .attr('x1', d => viz.xScale(d.startdate))
                     .attr('x2', d => viz.xScale(d.enddate))
                     .attr('y1', '0')
                     .attr('y2', '0')
-                    .attr('stroke-width', 1)
-                    .attr('stroke', 'red');
+                    .attr('stroke-width', 1.5)
+                    .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
+
+                group.selectAll('circle.startpoint')
+                    .attr('cx', d => viz.xScale(d.startdate))
+                    .attr('cy', '0')
+                    .attr('r', 2)
+                    .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"));
+                group.selectAll('circle.endpoint')
+                    .attr('cx', d => viz.xScale(d.enddate))
+                    .attr('cy', '0')
+                    .attr('r', 2)
+                    .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
             });
     }
 
