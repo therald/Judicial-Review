@@ -2,7 +2,7 @@ class Precedent {
     constructor(div, data) {
         var viz = this;
 
-        console.log(data);
+        // console.log(data);
 
         // Variable to see if the vizualization is "active", whatever that means
         // in the context of the viz
@@ -31,8 +31,8 @@ class Precedent {
 
         viz.data = data;
 
-        // var parseDate = d3.timeParse("%Y");
         viz.xScale = d3.scaleTime().range([viz.margin.left, viz.margin.left+viz.width]);
+        // viz.xScale.domain(d3.extent(data, d => new Date(d.dateDecision)));
         viz.xAxis = d3.axisBottom(viz.xScale);
         viz.xaxisgroup.call(viz.xAxis);
 
@@ -63,10 +63,8 @@ class Precedent {
             lines.push([...line]);
             inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
         }
-        var formatter = d3.timeFormat('%Y');
-        viz.xScale.domain([d3.min(viz.intervals, d => d.startdate), d3.max(viz.intervals, d => d.enddate)])
-            .nice()
-            .tickFormat(formatter);
+        viz.xScale.domain([d3.min(viz.intervals, d => d.startdate), d3.max(viz.intervals, d => d.enddate)]).nice();
+        // console.log(viz.xScale.domain());
         viz.yScale.domain([0, lines.length]);
         
         // A very annoying and complicated drawing
@@ -87,7 +85,7 @@ class Precedent {
                     .append('circle')
                     .classed('endpoint', true);
                 
-                group.selectAll('line.interline').data(d)
+                group.selectAll('line').data(d)
                     .enter()
                     .append('line')
                     .classed('interline', true);
