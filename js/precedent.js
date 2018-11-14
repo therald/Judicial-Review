@@ -30,12 +30,15 @@ class Precedent {
             .attr("transform", "translate(0," + (viz.margin.top + viz.height) + ")");
 
         viz.data = data;
-        viz.cScale = d3.scaleOrdinal(d3.schemeCategory10);
-        // .domain(d3.range(1, 15)).range(d3.range(1, 15).map(d => d3.interpolateViridis((d-1)/13)));
+        viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
 
         viz.xScale = d3.scaleTime().range([viz.margin.left, viz.margin.left+viz.width]);
-        // viz.xScale.domain(d3.extent(data, d => new Date(d.dateDecision)));
-        viz.xAxis = d3.axisBottom(viz.xScale);
+        viz.xScale.domain(d3.extent(data, d => new Date(d.dateDecision))).nice();
+
+        var dates = data.map(d => new Date(d.dateDecision));
+        dates.sort((a, b) => a.getFullYear() - b.getFullYear());
+        var dateRange = dates[dates.length - 1] - dates[0];
+        viz.xAxis = d3.axisBottom(viz.xScale).ticks(Math.floor(dateRange / (1000*60*60*24*365) / 5));
         viz.xaxisgroup.call(viz.xAxis);
 
         viz.yScale = d3.scaleLinear().range([viz.margin.top + viz.height, viz.margin.top]);
@@ -56,6 +59,10 @@ class Precedent {
         });
     }
 
+    /**
+     * Take in two parameters of start and end date
+     * Only include intervals that have at least one endpoint in the start-end date range
+     */
     draw() {
         var viz = this;
 
@@ -66,8 +73,6 @@ class Precedent {
             lines.push([...line]);
             inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
         }
-        viz.xScale.domain([d3.min(viz.intervals, d => d.startdate), d3.max(viz.intervals, d => d.enddate)]).nice();
-        // console.log(viz.xScale.domain());
         viz.yScale.domain([0, lines.length]);
         
         // A very annoying and complicated drawing
@@ -77,7 +82,6 @@ class Precedent {
             .append('g')
             .classed('interval', true)
             .each(function(d, i, g) {
-                // console.log(d, i, g[i]);
                 var group = d3.select(g[i]);
                 group.selectAll('line').data(d)
                     .enter()
