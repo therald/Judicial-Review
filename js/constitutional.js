@@ -62,7 +62,7 @@ class Constitutional {
         //attributes to be used d.issueArea, d.declarationUncon, caseId, dateDecision
         //percentage of cases ruled unconstitutional
         viz.totalCases = viz.data.length;
-        d3.csv("data/issue_area.csv", function(a){ 
+        d3.csv("./data/issue_area.csv", function(a){ 
             var join; 
             join = viz.join(a,viz.data, "id", "issueArea", function(m,iss){
                 return{
