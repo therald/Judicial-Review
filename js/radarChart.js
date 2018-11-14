@@ -37,7 +37,7 @@ class  RadarChart {
 		viz.allAxis = data.map(function(d){
 			if(d.key !== "null") return d.key
         })
-        console.log(viz.allAxis)
+        // console.log(viz.allAxis)
 
 		
 		viz.draw(data);
@@ -68,8 +68,8 @@ class  RadarChart {
 		for(var j = 0; j < viz.cfg.levels; j++){
 		 // var levelFactor = viz.cfg.factor*radius*(1+Math.log((j+1))/viz.cfg.levels);
 		  var levelFactor = viz.cfg.factor*radius*(j+1)/viz.cfg.levels;
-		 console.log((j+1)/viz.cfg.levels);
-		 console.log(1+Math.log((j+1)/viz.cfg.levels)/Math.log(10))
+		//  console.log((j+1)/viz.cfg.levels);
+		//  console.log(1+Math.log((j+1)/viz.cfg.levels)/Math.log(10))
 		  g.selectAll(".levels")
 			   .data(allAxis)
 			   .enter()
@@ -133,8 +133,14 @@ class  RadarChart {
 	    unconst.append("line")
 		    .attr("x1", (cfg.w/2))
 		    .attr("y1", (cfg.h/2))
-		    .attr("x2", function(d, i){console.log(d.value.unconstCases/d.value.countCases); return cfg.w/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.sin(i*cfg.radians/total)));})
-		    .attr("y2", function(d, i){console.log(Math.log(d.value.unconstCases/d.value.countCases));return cfg.h/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.cos(i*cfg.radians/total)));})
+		    .attr("x2", function(d, i){
+				// console.log(d.value.unconstCases/d.value.countCases);
+				return cfg.w/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.sin(i*cfg.radians/total)));
+			})
+		    .attr("y2", function(d, i){
+				// console.log(Math.log(d.value.unconstCases/d.value.countCases));
+				return cfg.h/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.cos(i*cfg.radians/total)));
+			})
 		    .attr("class", "line")
 		    .style("stroke", "red")
 		    .style("stroke-opacity", "0.5")
@@ -174,9 +180,11 @@ class  RadarChart {
 		//draw data
 		var dataValues = []; 
 		var temp = g;
-		console.log(dataValues);
+		// console.log(dataValues);
 		g.selectAll(".nodes")
-			.data(d, function(j, i){ console.log(j.value.countCases/viz.totalCases*100); dataValues.push([
+			.data(d, function(j, i){
+				// console.log(j.value.countCases/viz.totalCases*100);
+				dataValues.push([
 		        cfg.w/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
 		        cfg.h/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
 		        ]);})
@@ -207,7 +215,7 @@ class  RadarChart {
 		 //        cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
 		 //        ]);
 		 //     });
-      		console.log(dataValues);
+      		// console.log(dataValues);
 		   // dataValues.push(dataValues[0]);
 		  /*  g.selectAll(".area")
 	             .data([dataValues])

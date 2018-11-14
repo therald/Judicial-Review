@@ -32,9 +32,9 @@ class Constitutional {
     draw(data){
         var viz = this;
         var max = d3.max(data.map(function(d){return d.value.countCases; }))/viz.totalCases*100;
-        console.log(Math.min(Math.ceil(max/10)*10+10,100))    
+        // console.log(Math.min(Math.ceil(max/10)*10+10,100))    
         var side = Math.min(viz.width-viz.margin.left-viz.margin.right, viz.height-viz.margin.top-viz.margin.bottom)
-        console.log(side)
+        // console.log(side)
         var config = {
             w: side*0.75,
             h: side*0.75,
@@ -58,7 +58,7 @@ class Constitutional {
 
     preprocessData() {
         var viz = this;
-        console.log(viz.data);
+        // console.log(viz.data);
         //attributes to be used d.issueArea, d.declarationUncon, caseId, dateDecision
         //percentage of cases ruled unconstitutional
         viz.totalCases = viz.data.length;
