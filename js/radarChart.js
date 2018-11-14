@@ -177,8 +177,8 @@ class  RadarChart {
 		console.log(dataValues);
 		g.selectAll(".nodes")
 			.data(d, function(j, i){ console.log(j.value.countCases/viz.totalCases*100); dataValues.push([
-		        cfg.w/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-		        cfg.h/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
+		        cfg.w/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
+		        cfg.h/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
 		        ]);})
 
 		g.selectAll(".area")
