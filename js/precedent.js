@@ -43,7 +43,7 @@ class Precedent {
 
         viz.yScale = d3.scaleLinear().range([viz.margin.top + viz.height, viz.margin.top]);
 
-        d3.csv('../data/precedent_pairs.csv', function(d) {
+        d3.csv('./data/precedent_pairs.csv', function(d) {
             return {
                 overruled: +d.overruled,
                 overruling: +d.overruling,
