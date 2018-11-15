@@ -41,7 +41,8 @@ class Precedent {
         viz.xAxis = d3.axisBottom(viz.xScale).ticks(Math.floor(dateRange / (1000*60*60*24*365) / 5));
         viz.xaxisgroup.call(viz.xAxis);
 
-        viz.yScale = d3.scaleLinear().range([viz.margin.top + viz.height, viz.margin.top]);
+        // Adding in a bump of -5 to raise lines above the axis
+        viz.yScale = d3.scaleLinear().range([viz.margin.top + viz.height - 5, viz.margin.top]);
 
         d3.csv('./data/precedent_pairs.csv', function(d) {
             return {
@@ -66,13 +67,14 @@ class Precedent {
     draw() {
         var viz = this;
 
-        var lines = [];
-        var inters = new Set(viz.intervals.sort((a, b) => a.enddate - b.enddate));
-        while (inters.size != 0) {
-            var line = viz.getIntervalLine(inters);
-            lines.push([...line]);
-            inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
-        }
+        // var lines = [];
+        // var inters = new Set(viz.intervals.sort((a, b) => a.enddate - b.enddate));
+        // while (inters.size != 0) {
+        //     var line = viz.getIntervalLine(inters);
+        //     lines.push([...line]);
+        //     inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
+        // }
+        var lines = nivz.intervals.sort((a, b) => a.startdate - b.startdate));
         viz.yScale.domain([0, lines.length]);
         
         // A very annoying and complicated drawing
