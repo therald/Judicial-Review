@@ -74,7 +74,7 @@ class Precedent {
         //     lines.push([...line]);
         //     inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
         // }
-        var lines = nivz.intervals.sort((a, b) => a.startdate - b.startdate));
+        var lines = viz.intervals.sort((a, b) => b.enddate - a.enddate).map(d => [d]);
         viz.yScale.domain([0, lines.length]);
         
         // A very annoying and complicated drawing
