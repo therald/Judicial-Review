@@ -55,49 +55,49 @@ body {
     		}
     	}
 
-    	#ideology {
-    		background: $lightGray;
-    		border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-    		height: 43%;
-    		margin-top: 1%;
-    		margin-bottom: 1%;
+        #left {
+            float: left;
+            height: 86.5%;
+            margin-top: 1%;
+            width: 49.5%;
 
-            .fill_blue {
-                fill: $lightBlue;
+            #ideology {
+                background: $lightGray;
+                border-radius: 15px;
+                display: flex;
+                flex-direction: column;
+                height: 50%;
+                margin-bottom: 1%;
+
+                .fill_blue {
+                    fill: $lightBlue;
+                }
+
+                .fill_gray {
+                    fill: $lightGray;
+                }
+
+                .fill_red {
+                    fill: $lightRed;
+                }
             }
 
-            .fill_gray {
-                fill: $lightGray;
+            #constitutional {
+                background: $lightGray;
+                border-radius: 15px;
+                height: 50%;
             }
+        }
+    	
 
-            .fill_red {
-                fill: $lightRed;
-            }
-    	}
-
-    	#bottom {
-    		height: 43%;
-
-    		#constitutional {
-    			background: $lightGray;
-    			border-radius: 15px;
-    			float: left;
-    			height: 100%;
-    			margin-right: 0.5%;
-    			width: 49.5%;
-    		}
-
-    		#precedent {
-    			background: $lightGray;
-    			border-radius: 15px;
-    			float: right;
-    			height: 100%;
-    			margin-left: 0.5%;
-    			width: 49.5%;
-    		}
-    	}
+		#precedent {
+			background: $lightGray;
+			border-radius: 15px;
+            float: right;
+			height: 87%;
+            margin-top: 1%;
+			width: 49.5%;
+		}
     }
 
 }
