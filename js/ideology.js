@@ -43,7 +43,7 @@ class Ideology {
             var xAxis = d3.axisBottom(xTicks).ticks(years.length/2);
 
             var stack = d3.stack()
-                .keys(["Conservative", "Unspecified", "Liberal"])
+                .keys(["Liberal", "Unspecified", "Conservative"])
                 .offset(d3.stackOffsetWiggle);
 
             var series = stack(ideology_data);
@@ -56,7 +56,7 @@ class Ideology {
                 .range([viz.height - 75, 0]);
 
 
-            var fillColorClasses = ["fill_blue", "fill_gray", "fill_red"];
+            var fillColorClasses = ["fill_blue", "fill_purple", "fill_red"];
 
             var area = d3.area()
                 .x(function(d) { return xScale(Number(d.data.Year)); })
