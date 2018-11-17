@@ -80,6 +80,11 @@ body {
                 .fill_red {
                     fill: $lightRed;
                 }
+
+                #data_line {
+                    stroke: black;
+                    stroke-width: 5;
+                }
             }
 
             #constitutional {
