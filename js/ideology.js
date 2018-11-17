@@ -104,25 +104,27 @@ class Ideology {
                     class: "brush"
                 })
                 .on("mouseover", function() {
-                    adjustHoverLinePosition(this, xTicks, series, yScale);
+                    document.getElementById("data_line").classList.add("visible");
+                    viz.adjustHoverLinePosition(this, xTicks, series, yScale);
                 })
                 .on("mousemove", function(d,i) {
-                    adjustHoverLinePosition(this, xTicks, series, yScale);
+                    viz.adjustHoverLinePosition(this, xTicks, series, yScale);
                 })
                 .on("mouseout", function(d) {
-                    if ((viz.mousePosX < 25 || viz.mousePosX > viz.totalWidth + 25) && (viz.mousePosY < 0 || viz.mousePosY > viz.totalHeight - 75)) {
                         document.getElementById("data_line").classList.remove("visible");
-                    }
+                        document.getElementById("conservative_count").innerHTML = '';
+                        document.getElementById("liberal_count").innerHTML = '';
+                        document.getElementById("unspecified_count").innerHTML = '';
                 })
                 .call(
                     d3.brushX()
                     .extent([[25, 0], [viz.width - 25, viz.height - 60]])
                     .on("brush", function() {
-                        adjustHoverLinePosition(this, xTicks, series, yScale);
+                        viz.adjustHoverLinePosition(this, xTicks, series, yScale);
                     })
                     .on("end", function() {
-                        //viz.constitutional.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
-                        //viz.precedent.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
+                        viz.constitutional.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
+                        viz.precedent.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
                     })
                 );
 
@@ -167,6 +169,11 @@ class Ideology {
             .attr('d', line);
 
         // Update ruling count texts
+        var countData = (series[0][year - series[0][0].data.Year]).data;
+
+        document.getElementById("conservative_count").innerHTML = countData.Conservative;
+        document.getElementById("liberal_count").innerHTML = countData.Liberal;
+        document.getElementById("unspecified_count").innerHTML = countData.Unspecified;
     }
 
     computeXSnapping(xScale, xVal) {
