@@ -7,6 +7,9 @@ class Ideology {
         viz.active = false;
         viz.div = d3.select(div);
 
+        viz.constitutional = constitutional;
+        viz.precedent = precedent;
+
         // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
         viz.totalHeight = viz.div.node().getBoundingClientRect().height;
@@ -76,67 +79,52 @@ class Ideology {
                     var classList = "ideology_path ";
                     classList += fillColorClasses[index++]
                     return classList;
+                });
+
+            var date = xTicks.invert(25);
+            var year = date.getFullYear().toString();
+
+            var lineData = [
+                { 'x': 25, 'y': (series[0][year - series[0][0].data.Year])["0"]},
+                { 'x': 25, 'y': (series[2][year - series[0][0].data.Year])["1"]}
+            ]
+
+            var line = d3.line()
+                .x(function(d) { return d['x']; })
+                .y(function(d) { return yScale(d['y']); });
+            
+            viz.svg.append("path")
+                .attr("id", "data_line")
+                .datum(lineData)
+                .attr('d', line);
+
+            viz.svg.append("g")
+                .attrs({
+                    id: "brush_area",
+                    class: "brush"
                 })
                 .on("mouseover", function() {
-                    var dataLine = d3.select("#data_line");
-                    //console.log(dataLine);
-
-                    var date = xTicks.invert(d3.mouse(this)[0]);
-                    var year = date.getFullYear().toString();
-
-                    var lineData = [
-                        { 'x': d3.mouse(this)[0], 'y': (series[0][year - series[0][0].data.Year])["0"]},
-                        { 'x': d3.mouse(this)[0], 'y': (series[2][year - series[0][0].data.Year])["1"]}
-                    ]
-
-                    var line = d3.line()
-                        .x(function(d) { return d['x']; })
-                        .y(function(d) { return yScale(d['y']); });
-
-                    if (dataLine._groups[0][0] == null) {
-                        viz.svg.append("path")
-                        .attr("id", "data_line")
-                        .datum(lineData)
-                        .attr('d', line);
-                    }
-                    else {
-                        d3.select("#data_line").datum(lineData);
-                    }
+                    adjustHoverLinePosition(this, xTicks, series, yScale);
                 })
                 .on("mousemove", function(d,i) {
-                    var dataLine = d3.select("#data_line");
-
-                    viz.mousePosX = d3.mouse(this)[0];
-                    viz.mousePosY = d3.mouse(this)[0];
-
-                    var date = xTicks.invert(d3.mouse(this)[0]);
-                    var year = date.getFullYear().toString();
-
-                    var lineData = [
-                        { 'x': d3.mouse(this)[0], 'y': (series[0][year - series[0][0].data.Year])["0"]},
-                        { 'x': d3.mouse(this)[0], 'y': (series[2][year - series[0][0].data.Year])["1"]}
-                    ]
-
-                    var line = d3.line()
-                        .x(function(d) { return d['x']; })
-                        .y(function(d) { return yScale(d['y']); });
-
-                    if (dataLine._groups[0][0] == null) {
-                        viz.svg.append("path")
-                            .attr("id", "data_line")
-                            .datum(lineData)
-                            .attr('d', line);
-                    }
-                    else {
-                        dataLine.datum(lineData)
-                            .attr('d', line);
-                    }
+                    adjustHoverLinePosition(this, xTicks, series, yScale);
                 })
                 .on("mouseout", function(d) {
                     if ((viz.mousePosX < 25 || viz.mousePosX > viz.totalWidth + 25) && (viz.mousePosY < 0 || viz.mousePosY > viz.totalHeight - 75)) {
-                        d3.select("#data_line").remove();
+                        document.getElementById("data_line").classList.remove("visible");
                     }
-                });
+                })
+                .call(
+                    d3.brushX()
+                    .extent([[25, 0], [viz.width - 25, viz.height - 60]])
+                    .on("brush", function() {
+                        adjustHoverLinePosition(this, xTicks, series, yScale);
+                    })
+                    .on("end", function() {
+                        //viz.constitutional.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
+                        //viz.precedent.update(xScale.invert(d3.event.selection[0]).getFullYear(), xScale.invert(d3.event.selection[1]).getFullYear());
+                    })
+                );
 
             viz.svg.append("g")
                 .attr("class", "axis axis--x")
@@ -154,5 +142,38 @@ class Ideology {
                 .style("text-anchor", "middle")
                 .text("Year");
         });
+    }
+
+    adjustHoverLinePosition(mouseEvent, xScale, series, yScale) {
+        var viz = this;
+        var dataLine = d3.select("#data_line");
+
+        viz.mousePosX = d3.mouse(mouseEvent)[0];
+        viz.mousePosY = d3.mouse(mouseEvent)[0];
+
+        var date = xScale.invert(d3.mouse(mouseEvent)[0]);
+        var year = date.getFullYear().toString();
+
+        var lineData = [
+            { 'x': d3.mouse(mouseEvent)[0], 'y': (series[0][year - series[0][0].data.Year])["0"]},
+            { 'x': d3.mouse(mouseEvent)[0], 'y': (series[2][year - series[0][0].data.Year])["1"]}
+        ]
+
+        var line = d3.line()
+            .x(function(d) { return viz.computeXSnapping(xScale, d['x']); })
+            .y(function(d) { return yScale(d['y']); });
+
+        dataLine.datum(lineData)
+            .attr('d', line);
+
+        // Update ruling count texts
+    }
+
+    computeXSnapping(xScale, xVal) {
+        var date = xScale.invert(xVal);
+        var year = date.getFullYear();
+        var parseDate = d3.timeParse("%Y");
+
+        return xScale(parseDate(year));
     }
 }
