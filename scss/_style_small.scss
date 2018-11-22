@@ -92,9 +92,11 @@ body {
 
 		#precedent {
 			background: $lightGray;
-			border-radius: 15px;
-            float: right;
-			height: 87%;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+			height: 87.3%;
+            margin-left: 0.5%;
             margin-top: 1%;
 			width: 49.5%;
 		}
