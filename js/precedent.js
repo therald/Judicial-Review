@@ -1,48 +1,18 @@
 class Precedent {
     constructor(div, data) {
         var viz = this;
-
-        // console.log(data);
-
-        // Variable to see if the vizualization is "active", whatever that means
-        // in the context of the viz
         viz.active = false;
         viz.div = d3.select(div);
-
-        // Get the total width and height from the div
-        viz.totalWidth = viz.div.node().getBoundingClientRect().width;
-        viz.totalHeight = viz.div.node().getBoundingClientRect().height;
-
-        // Set up the svg to preserve the aspect ratio
-        viz.svg = viz.div.append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
-            .attr("preserveAspectRatio", "xMinYMin");
-        
-        // d3 margin convention
-        viz.margin = { top: 10, bot: 20, left: 10, right: 10 };
-        viz.width = viz.totalWidth - viz.margin.left - viz.margin.right;
-        viz.height = viz.totalHeight - viz.margin.top - viz.margin.bot;
-
-        viz.xaxisgroup = viz.svg.append("g")
-            .attr("class", "x-axis axis")
-            .attr("transform", "translate(0," + (viz.margin.top + viz.height) + ")");
-
         viz.data = data;
-        viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
 
-        viz.xScale = d3.scaleTime().range([viz.margin.left, viz.margin.left+viz.width]);
-        viz.xScale.domain(d3.extent(data, d => new Date(d.dateDecision))).nice();
+        viz.setVizWidthAndHeight(div);
 
-        var dates = data.map(d => new Date(d.dateDecision));
-        dates.sort((a, b) => a.getFullYear() - b.getFullYear());
-        var dateRange = dates[dates.length - 1] - dates[0];
-        viz.xAxis = d3.axisBottom(viz.xScale).ticks(Math.floor(dateRange / (1000*60*60*24*365) / 5));
-        viz.xaxisgroup.call(viz.xAxis);
+        viz.createSVG();
+        viz.creatXScale(20);
+        viz.createYScale();
 
-        // Adding in a bump of -5 to raise lines above the axis
-        viz.yScale = d3.scaleLinear().range([viz.margin.top + viz.height - 5, viz.margin.top]);
+        viz.createColorScale();
+        viz.createXAxis();
 
         d3.csv('./data/precedent_pairs.csv', function(d) {
             return {
@@ -58,6 +28,56 @@ class Precedent {
             // console.log(new Set(viz.intervals.map(d => viz.data[d.overruled].issueArea)));
             viz.draw();
         });
+    }
+
+    createYScale() {
+        var viz = this;
+        viz.yScale = d3.scaleLinear().range([viz.height - 35, 0]);
+    }
+
+    creatXScale(margin) {
+        var viz = this;
+        viz.xScale = d3.scaleTime().range([margin, viz.width - margin]);
+        viz.xScale.domain(d3.extent(viz.data, d => new Date(d.dateDecision))).nice();
+    }
+
+    createColorScale() {
+        var viz = this;
+        viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
+    }
+
+    createXAxis() {
+        var viz = this;
+        viz.xaxisgroup = viz.svg.append("g")
+            .attr("class", "x-axis axis")
+            .attr("transform", "translate(0," + (viz.height - 30) + ")");
+        var dates = viz.data.map(d => new Date(d.dateDecision));
+        dates.sort((a, b) => a.getFullYear() - b.getFullYear());
+        var dateRange = dates[dates.length - 1] - dates[0];
+        viz.xAxis = d3.axisBottom(viz.xScale).ticks(Math.floor(dateRange / (1000*60*60*24*365) / 5));
+        viz.xaxisgroup.call(viz.xAxis);
+
+        viz.xaxislabel = viz.svg.append("text")
+            .attr("transform", "translate(0," + (viz.height - 20) + ")")
+            .text("Year")
+            .attr("x-axis label");
+    }
+
+    createSVG() {
+        var viz = this;
+        viz.svg = viz.div.append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
+            .attr("preserveAspectRatio", "xMinYMin");
+    }
+
+    setVizWidthAndHeight(div) {
+        var viz = this;
+        viz.totalWidth = viz.div.node().getBoundingClientRect().width;
+        viz.totalHeight = viz.div.node().getBoundingClientRect().height;
+        viz.width = document.getElementById(div.substring(1)).offsetWidth;
+        viz.height = document.getElementById(div.substring(1)).offsetHeight;
     }
 
     /**
@@ -77,28 +97,11 @@ class Precedent {
         var lines = viz.intervals.sort((a, b) => b.enddate - a.enddate).map(d => [d]);
         viz.yScale.domain([0, lines.length]);
         
-        // A very annoying and complicated drawing
-        // Make a group for each line
         var intervals = viz.svg.selectAll('g.interval').data(lines);
         var enter = intervals.enter()
             .append('g')
             .classed('interval', true)
-            .each(function(d, i, g) {
-                var group = d3.select(g[i]);
-                group.selectAll('line').data(d)
-                    .enter()
-                    .append('line')
-                    .classed('interline', true);
-
-                group.selectAll('circle.startpoint').data(d)
-                    .enter()
-                    .append('circle')
-                    .classed('startpoint', true);
-                group.selectAll('circle.endpoint').data(d)
-                    .enter()
-                    .append('circle')
-                    .classed('endpoint', true);
-            });
+            .each(this.appendIntervalComponents);
         
         intervals.merge(enter)
             .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
@@ -123,6 +126,22 @@ class Precedent {
                     .attr('r', 2)
                     .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
             });
+    }
+
+    appendIntervalComponents(d, i, g) {
+        var group = d3.select(g[i]);
+        group.selectAll('line').data(d)
+            .enter()
+            .append('line')
+            .classed('interline', true);
+        group.selectAll('circle.startpoint').data(d)
+            .enter()
+            .append('circle')
+            .classed('startpoint', true);
+        group.selectAll('circle.endpoint').data(d)
+            .enter()
+            .append('circle')
+            .classed('endpoint', true);
     }
 
     getIntervalLine(inters) {

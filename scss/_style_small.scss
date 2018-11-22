@@ -88,18 +88,21 @@ body {
                 height: 50%;
             }
         }
-    	
 
-		#precedent {
-			background: $lightGray;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-			height: 87.3%;
-            margin-left: 0.5%;
+        #right {
+            float: right;
+            height: 86.5%;
             margin-top: 1%;
-			width: 49.5%;
-		}
+            width: 49.5%;
+
+            #precedent {
+                background: $lightGray;
+                border-radius: 15px;
+                display: flex;
+                flex-direction: column;
+                height: 101%;
+            }
+        }
     }
 
 }
