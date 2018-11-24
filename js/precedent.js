@@ -9,7 +9,7 @@ class Precedent {
 
         viz.createSVG();
         viz.creatXScale(20);
-        viz.createYScale();
+        viz.createYScale(50);
 
         viz.createColorScale();
         viz.createXAxis();
@@ -30,9 +30,9 @@ class Precedent {
         });
     }
 
-    createYScale() {
+    createYScale(bottomMargin) {
         var viz = this;
-        viz.yScale = d3.scaleLinear().range([viz.height - 35, 0]);
+        viz.yScale = d3.scaleLinear().range([viz.height - bottomMargin, 0]);
     }
 
     creatXScale(margin) {
@@ -50,7 +50,7 @@ class Precedent {
         var viz = this;
         viz.xaxisgroup = viz.svg.append("g")
             .attr("class", "x-axis axis")
-            .attr("transform", "translate(0," + (viz.height - 30) + ")");
+            .attr("transform", "translate(0," + (viz.yScale.range()[0] + 10) + ")");
         var dates = viz.data.map(d => new Date(d.dateDecision));
         dates.sort((a, b) => a.getFullYear() - b.getFullYear());
         var dateRange = dates[dates.length - 1] - dates[0];
@@ -58,7 +58,7 @@ class Precedent {
         viz.xaxisgroup.call(viz.xAxis);
 
         viz.xaxislabel = viz.svg.append("text")
-            .attr("transform", "translate(0," + (viz.height - 20) + ")")
+            .attr("transform", "translate(" + (viz.width/2) + "," + (viz.height) + ")")
             .text("Year")
             .attr("x-axis label");
     }
