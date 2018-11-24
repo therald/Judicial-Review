@@ -84,27 +84,9 @@ body {
                 #ideology_legend_and_values {
                     font-size: 1.25rem;
                     font-weight: bold;
+                    height: 2rem;
                     margin: auto;
-                    margin-bottom: 1rem;
                     width: 90%;
-
-                    #conservative_rulings {
-                        color: $lightRed;
-                        float: left;
-                        width: 35%;
-                    }
-
-                    #liberal_rulings {
-                        color: $lightBlue;
-                        float: left;
-                        width: 30%;
-                    }
-
-                    #unspecified_rulings {
-                        color: $lightPurple;
-                        float: right;
-                        width: 35%;
-                    }
                 }
 
                 .fill_blue {
@@ -126,6 +108,11 @@ body {
                 #data_line {
                     stroke: black;
                     stroke-width: 5;
+                    opacity: 0;
+                }
+
+                .data_label {
+                    font-weight: bold;
                     opacity: 0;
                 }
             }
