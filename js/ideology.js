@@ -161,10 +161,11 @@ class Ideology {
                 .extent([[50, 0], [viz.width - 50, viz.height - 60]])
                 .on("brush", function() {
                     viz.adjustHoverLinePositionAndCounts(viz, this);
+                    viz.precedent.draw(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
                 })
                 .on("end", function() {
                     //viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
-                    //viz.precedent.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
+                    // viz.precedent.draw(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
                 })
             );
     }

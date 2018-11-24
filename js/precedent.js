@@ -25,8 +25,10 @@ class Precedent {
             }
         }, function(datum) {
             viz.intervals = datum;
-            // console.log(new Set(viz.intervals.map(d => viz.data[d.overruled].issueArea)));
-            viz.draw();
+
+            var dates = viz.data.map(d => new Date(d.dateDecision));
+            dates.sort((a, b) => a.getFullYear() - b.getFullYear());
+            viz.draw(dates[0].getFullYear(), dates[dates.length - 1].getFullYear());
         });
     }
 
@@ -84,9 +86,38 @@ class Precedent {
      * Take in two parameters of start and end date
      * Only include intervals that have at least one endpoint in the start-end date range
      */
-    draw() {
+    draw(startYear, endYear) {
         var viz = this;
 
+        var rows = viz.generateRows(startYear, endYear);
+        viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice();
+        viz.yScale.domain([0, rows.length]);
+        
+        var intervals = viz.svg.selectAll('g.interval').data(rows, viz.createRowKey);
+        intervals.exit().remove();
+        var enter = intervals.enter()
+            .append('g')
+            .classed('interval', true)
+            .each(this.appendIntervalComponents);
+        intervals.merge(enter)
+            .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
+            .each(function(d, i, g) {
+                var group = d3.select(g[i]);
+                viz.drawInterlines(group);
+                viz.drawStartpoints(group);
+                viz.drawEndpoints(group);
+            });
+
+        viz.xaxisgroup.call(viz.xAxis);
+    }
+
+    createRowKey(row) {
+        var itemKeys = row.map(d => d.overruled + ' ' + d.overruling);
+        return itemKeys.join(' ');
+    }
+
+    generateRows(startYear, endYear) {
+        var viz = this;
         // var lines = [];
         // var inters = new Set(viz.intervals.sort((a, b) => a.enddate - b.enddate));
         // while (inters.size != 0) {
@@ -94,38 +125,51 @@ class Precedent {
         //     lines.push([...line]);
         //     inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
         // }
-        var lines = viz.intervals.sort((a, b) => b.enddate - a.enddate).map(d => [d]);
-        viz.yScale.domain([0, lines.length]);
-        
-        var intervals = viz.svg.selectAll('g.interval').data(lines);
-        var enter = intervals.enter()
-            .append('g')
-            .classed('interval', true)
-            .each(this.appendIntervalComponents);
-        
-        intervals.merge(enter)
-            .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
-            .each(function(d, i, g) {
-                var group = d3.select(g[i]);
-                group.selectAll('line.interline')
-                    .attr('x1', d => viz.xScale(d.startdate))
-                    .attr('x2', d => viz.xScale(d.enddate))
-                    .attr('y1', '0')
-                    .attr('y2', '0')
-                    .attr('stroke-width', 1.5)
-                    .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
+        var rows = viz.intervals.filter(d => viz.filterByStartAndEndYear(d, startYear, endYear)).sort(viz.sortByEnddate).map(d => [d]);
+        return rows;
+    }
 
-                group.selectAll('circle.startpoint')
-                    .attr('cx', d => viz.xScale(d.startdate))
-                    .attr('cy', '0')
-                    .attr('r', 2)
-                    .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"));
-                group.selectAll('circle.endpoint')
-                    .attr('cx', d => viz.xScale(d.enddate))
-                    .attr('cy', '0')
-                    .attr('r', 2)
-                    .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
-            });
+    sortByEnddate(a, b) {
+        return b.enddate - a.enddate;
+    }
+
+    filterByStartAndEndYear(interval, startYear, endYear) {
+        if (interval.startdate.getFullYear() >= startYear && interval.startdate.getFullYear() <= endYear) {
+            return true;
+        }
+        if (interval.enddate.getFullYear() >= startYear && interval.enddate.getFullYear() <= endYear) {
+            return true;
+        }
+        return false;
+    }
+
+    drawEndpoints(group) {
+        var viz = this;
+        group.selectAll('circle.endpoint')
+            .attr('cx', d => viz.xScale(d.enddate))
+            .attr('cy', '0')
+            .attr('r', 2)
+            .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
+    }
+
+    drawStartpoints(group) {
+        var viz = this;
+        group.selectAll('circle.startpoint')
+            .attr('cx', d => viz.xScale(d.startdate))
+            .attr('cy', '0')
+            .attr('r', 2)
+            .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"));
+    }
+
+    drawInterlines(group) {
+        var viz = this;
+        group.selectAll('line.interline')
+            .attr('x1', d => viz.xScale(d.startdate))
+            .attr('x2', d => viz.xScale(d.enddate))
+            .attr('y1', '0')
+            .attr('y2', '0')
+            .attr('stroke-width', 1.5)
+            .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
     }
 
     appendIntervalComponents(d, i, g) {
