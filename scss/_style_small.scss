@@ -136,6 +136,10 @@ body {
                 display: flex;
                 flex-direction: column;
                 height: 101%;
+
+                .d3-tip {
+                    background: white;
+                }
             }
         }
     }

@@ -14,6 +14,8 @@ class Precedent {
         viz.createColorScale();
         viz.createXAxis();
 
+        viz.createTooltip();
+
         d3.csv('./data/precedent_pairs.csv', function(d) {
             return {
                 overruled: +d.overruled,
@@ -30,6 +32,12 @@ class Precedent {
             dates.sort((a, b) => a.getFullYear() - b.getFullYear());
             viz.draw(dates[0].getFullYear(), dates[dates.length - 1].getFullYear());
         });
+    }
+
+    createTooltip() {
+        var viz = this;
+        viz.tip = d3.tip().attr("class", "d3-tip").attr("width", viz.width);
+        viz.svg.call(viz.tip);
     }
 
     createYScale(bottomMargin) {
@@ -98,7 +106,7 @@ class Precedent {
         var enter = intervals.enter()
             .append('g')
             .classed('interval', true)
-            .each(this.appendIntervalComponents);
+            .each(viz.appendIntervalComponents);
         intervals.merge(enter)
             .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
             .each(function(d, i, g) {
@@ -107,8 +115,25 @@ class Precedent {
                 viz.drawStartpoints(group);
                 viz.drawEndpoints(group);
             });
+        
+        viz.svg.selectAll('.interline')
+            .on('mouseover', function(d, i, g) {
+                viz.showTooltip(d, g[i]);
+            })
+            .on('mouseout', viz.tip.hide)
 
         viz.xaxisgroup.call(viz.xAxis);
+    }
+
+    showTooltip(intervalData, group) {
+        var viz = this;
+        var overruled = viz.data[Number(intervalData.overruled)];
+        var overruling = viz.data[Number(intervalData.overruling)];
+
+        var html = `<h6>${overruling.caseName} overruling ${overruled.caseName}`
+        viz.tip.html(html);
+        viz.tip.offset([-5, 0]);
+        viz.tip.direction('n').show(intervalData, group);
     }
 
     createRowKey(row) {
@@ -168,7 +193,7 @@ class Precedent {
             .attr('x2', d => viz.xScale(d.enddate))
             .attr('y1', '0')
             .attr('y2', '0')
-            .attr('stroke-width', 1.5)
+            .attr('stroke-width', 2)
             .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
     }
 
