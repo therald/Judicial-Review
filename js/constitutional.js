@@ -28,7 +28,7 @@ class Constitutional {
         // d3 margin convention
         viz.width = document.getElementById(div.substring(1)).offsetWidth;
         viz.height = document.getElementById(div.substring(1)).offsetHeight;
-        console.log(document.getElementById(div.substring(1)))
+        // console.log(document.getElementById(div.substring(1)))
         //****
         // viz.g = d3.select(div)
         //     .append("svg")
@@ -87,12 +87,12 @@ class Constitutional {
 
         }
         
-        console.log(update)
+        // console.log(update)
         if (update == 0){
             viz.bar = new Bar(viz.name, "#bar");
             viz.bar.update(0);
             viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
-            viz.radar.update(data); console.log(viz.value)
+            viz.radar.update(data); //console.log(viz.value)
             // viz.value = viz.radar.getArea();
             
             // viz.bar.update(viz.value);
@@ -176,7 +176,7 @@ class Constitutional {
                 })
                 .entries(join);
             viz.draw(dataByIssueArea, update);
-            console.log(dataByIssueArea)
+            // console.log(dataByIssueArea)
         }); //d3.csv
         
 

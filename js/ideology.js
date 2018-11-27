@@ -210,7 +210,7 @@ class Ideology {
         var date = viz.xTicks.invert(50);
         var year = date.getFullYear().toString();
 
-        console.log(viz);
+        // console.log(viz);
 
         var lineData = [
             { 'x': 50, 'y': -1000000},
@@ -285,7 +285,7 @@ class Ideology {
         var firstYear = viz.series[0][0].data.Year;
         var yearDifference = year - firstYear;
 
-        console.log(viz.series);
+        // console.log(viz.series);
         var low1 = (viz.series[2][yearDifference])["0"];
         var high1 = (viz.series[2][yearDifference])["1"];
         var midpoint1 = (low1 + high1)/2;

@@ -4,6 +4,8 @@ class Precedent {
      *  Fix margins when zoomed in
      *  Finish tooltip (look at Christabel's styling)
      *  Add a legend
+     *  Add vertical gridlines
+     *  Add filters for starting, ending, and issue area
      */
 
     constructor(div, data) {
@@ -43,7 +45,7 @@ class Precedent {
 
     createTooltip() {
         var viz = this;
-        viz.tip = d3.tip().attr("class", "d3-tip").attr("width", viz.width);
+        viz.tip = d3.tip().attr("class", "d3-tip");
         viz.svg.call(viz.tip);
     }
 
@@ -148,12 +150,16 @@ class Precedent {
         var overruled = viz.data[Number(intervalData.overruled)];
         var overruling = viz.data[Number(intervalData.overruling)];
 
-        var html = `<h6>${overruling.caseName}</h6></br>
+        var html = `<p>
+                        <b>${overruling.caseName}</b>
+                    </p>
                     <p>Overruling</p>
-                    <h6>${overruled.caseName}</h6></br>`
-        html += `<p>Testing</p>`
+                    <p>
+                        <b>${overruled.caseName}</b>
+                    </p>`;
         viz.tip.html(html);
         viz.tip.offset([-5, 0]);
+        // viz.tip.style("min-width", viz.width).style("max-width", viz.width);
         viz.tip.direction('n').show(intervalData, group);
     }
 
