@@ -1,4 +1,10 @@
 class Precedent {
+    /*
+     * TODO
+     *  Fix margins when zoomed in
+     *  Finish tooltip (look at Christabel's styling)
+     */
+
     constructor(div, data) {
         var viz = this;
         viz.active = false;
