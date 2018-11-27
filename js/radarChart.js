@@ -1,14 +1,18 @@
 //based on https://bl.ocks.org/alandunning/4c36eb1abdb248de34c64f5672afd857
 class  RadarChart {
-	constructor(id, data, options, totalCases) {
+	constructor(parent, id, options, totalCases, bar) {
         var viz = this;
+
+
         viz.id = id;
+        viz.parent = parent;
         viz.totalCases = totalCases;
+        viz.bar = bar;
 
-
-        viz.data = data;
+        // viz.data = data;
+        // viz.filteredData = data;
         viz.cfg = { //values by default
-		     radius: 0,
+		     radius: 2,
 		     w: 600,
      		 h: 600,
 		     factor: 1,
@@ -16,7 +20,7 @@ class  RadarChart {
 		     levels: 3, 
 		     maxValue: 0,
 		     radians: 2 * Math.PI,
-		     opacityArea: 0,
+		     opacityArea: 0.4,
 		     ToRight: 5,
 		     TranslateX: 0,
 		     TranslateY: 0,
@@ -25,7 +29,8 @@ class  RadarChart {
 		     color: d3.scaleOrdinal().range(["blue", "#CA0D59"])
 	    };
 
-	    if('undefined' !== typeof options){
+	   
+		 if('undefined' !== typeof options){
 			for(var i in options){ 
 				if('undefined' !== typeof options[i]){
 				    viz.cfg[i] = options[i];
@@ -33,23 +38,47 @@ class  RadarChart {
 			}
 		}
 
-		//read axis names
-		viz.allAxis = data.map(function(d){
-			if(d.key !== "null") return d.key
-        })
-        // console.log(viz.allAxis)
-
-		
-		viz.draw(data);
-	    
+		viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
 
 
 	    
     }
 
+    update(data, options, totalCases, precedent){
+    	var viz = this;
+    	viz.data = data;
+    	viz.precedent =precedent;
+    	if (totalCases) viz.totalCases = totalCases;
+
+    	 if('undefined' !== typeof options){
+			for(var i in options){ 
+				if('undefined' !== typeof options[i]){
+				    viz.cfg[i] = options[i];
+				 }
+			}
+		}
+
+    	//read axis names
+		viz.allAxis = viz.data.map(function(d){
+			if(d.key !== "null") return d.key
+        })
+        // console.log(viz.allAxis)
+
+		
+		viz.value = viz.draw(viz.data);
+		$("#legend").text("");
+		console.log(viz.value);
+    }
+
+    getArea(){
+    	var viz = this;
+    	return viz.value;
+    }
+
     draw(d){
     	var viz = this;
     	var id = viz.id;
+    	viz.area = 100;
     	var allAxis = viz.allAxis;
     	var cfg = viz.cfg;
     	var total = viz.allAxis.length;
@@ -57,19 +86,25 @@ class  RadarChart {
 	    var Format = d3.format('.0%');
 	    d3.select(id).select("svg").remove();
 
+	    viz.div = d3.select(viz.parent);
+
+	    // Get the total width and height from the div
+        viz.totalWidth = viz.div.node().getBoundingClientRect().width;
+        viz.totalHeight = viz.div.node().getBoundingClientRect().height;
+        console.log(document.getElementById(viz.id.substring(1)))
+
 	    var g = d3.select(id)
 		    .append("svg")
-		    .attr("width", viz.cfg.w+viz.cfg.ExtraWidthX)
-		    .attr("height", viz.cfg.h+viz.cfg.ExtraWidthY)
+		    .attr("width", "100%")//viz.cfg.w+viz.cfg.ExtraWidthX)
+		    .attr("height", "100%")//viz.cfg.h+viz.cfg.ExtraWidthY)
+		    .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
+            .attr("preserveAspectRatio", "xMinYMin")
 		    .append("g")
 		    .attr("transform", "translate(" + viz.cfg.TranslateX + "," + viz.cfg.TranslateY + ")");
 
 		//Circular segments
 		for(var j = 0; j < viz.cfg.levels; j++){
-		 // var levelFactor = viz.cfg.factor*radius*(1+Math.log((j+1))/viz.cfg.levels);
 		  var levelFactor = viz.cfg.factor*radius*(j+1)/viz.cfg.levels;
-		//  console.log((j+1)/viz.cfg.levels);
-		//  console.log(1+Math.log((j+1)/viz.cfg.levels)/Math.log(10))
 		  g.selectAll(".levels")
 			   .data(allAxis)
 			   .enter()
@@ -123,59 +158,74 @@ class  RadarChart {
 		    .style("stroke-opacity", "0.75")
 		    .style("stroke-width", "1px");
 
-    	//draw unconstitutional cases
-	    var unconst = g.selectAll(".unconstitutional")
-	        .data(d, function(j, i){return j;})//j.value.unconstCases*100/j.value.countCases})
-	        .enter()
-	        .append("g")
-	        .attr("class", "axis");
-
-	    unconst.append("line")
-		    .attr("x1", (cfg.w/2))
-		    .attr("y1", (cfg.h/2))
-		    .attr("x2", function(d, i){
-				// console.log(d.value.unconstCases/d.value.countCases);
-				return cfg.w/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.sin(i*cfg.radians/total)));
-			})
-		    .attr("y2", function(d, i){
-				// console.log(Math.log(d.value.unconstCases/d.value.countCases));
-				return cfg.h/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.cos(i*cfg.radians/total)));
-			})
-		    .attr("class", "line")
-		    .style("stroke", "red")
-		    .style("stroke-opacity", "0.5")
-		    .style("stroke-width", "3px");
-
-		//text axis
-		// axis.append("text")
-		//     .attr("class", "legend")
-		//     .text(function(d){ return textProcessing(d)}) //return d})
-		//     .style("font-family", "sans-serif")
-		//     .style("font-size", "11px")
-		//     .attr("text-anchor", "middle")
-		//     .attr("dy", "1.5em")
-		//     .attr("transform", function(d, i){return "translate(0, -10)"})
-		//     .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
-		//     .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
+    
+		var bbox = [];
 
 		var text = axis.append("text")
 			
-		    .attr("class", "legend")
+		    
 		    .style("font-family", "sans-serif")
 		    .style("font-size", "11px")
 		    .attr("text-anchor", "middle")
 		    .attr("transform", function(d, i){return "translate(0, -25)"})
-		    .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
-		    .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
+		    .attr("x", function(d, i){ return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
+		    .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);})
+		    .attr("class", "btn")
+		    
 
+		var shift = -38;
 		text.append("tspan")
 			//.attr("transform", function(d, i){return "translate(0, -10)"})
 			.attr("dy", "1.5em")
 			.text(function(d){ return textProcessing(d,0)}) //return d})
 		text.append("tspan")
-			.attr("dx", function(d) { return -38; })
+			.attr("dx", function(d) { return shift; })
 			.attr("dy", "1.5em")
 			.text(function(d){ return textProcessing(d,1)}) //return d})
+
+		//draw rectangles as background
+		
+		axis.selectAll("text").each(function(d,i) {
+        bbox.push(this.getBBox()); // get bounding box of text field and store it in texts array
+    	});
+
+		var rect = g.selectAll("rect")
+			.data(bbox).enter().append("rect")
+		    rect.attr("x", function(d){return d.x-3})
+		    .attr("y", function(d){return d.y-3})
+		    .attr("width", function(d){return d.width+6})
+		    .attr("height", function(d){return d.height+6})
+		    //.attr("class", "btn")
+		   // .style("fill", "blue")
+		    .style("opacity", "0")
+		    // .style("stroke", "#666")
+		    // .style("stroke-width", "1.5px")
+		    .attr("transform", "translate(" + (0) + "," + (-25) + ")")
+		    .on("mouseover", function(t,i){ var elem = d3.select(this); 
+		    	if(d3.select(this).style("opacity") == 0){
+		    	elem.classed("btn",true)
+	            elem.transition().duration(200).style("opacity", .4)
+	           // elem.style("fill", viz.cScale(d[i].value.issueAreaID));        
+            }
+		    })
+		    .on("mouseout", function(d){
+		    	var elem = d3.select(this);
+		    	elem.transition().duration(200).style("opacity", 0);  
+		    	elem.classed("btn",false)
+		    })
+		    .on("click", function(t,i){
+		    	var elem = d3.select(this); 
+		    	elem.classed("btnBorder",true); 
+		    	elem.style("stroke", "#666"); 
+		    	elem.style("stroke-width", "1.5px"); 
+		    	viz.area = d[i].value.unconstCases/d[i].value.countCases; 
+		    	console.log(viz.area)
+		    	viz.bar.update(viz.area*100, d[i].value.issueAreaID);
+		    	$("#legend").text("% "+d[i].key);
+		    	//viz.precedent.area(d[i].value.issueAreaID, d[i].key)
+		    })
+
+
 
 		//draw data
 		var dataValues = []; 
@@ -185,10 +235,10 @@ class  RadarChart {
 			.data(d, function(j, i){
 				// console.log(j.value.countCases/viz.totalCases*100);
 				dataValues.push([
-		        cfg.w/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-		        cfg.h/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
+		        cfg.w/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
+		        cfg.h/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
 		        ]);})
-
+		var z;
 		g.selectAll(".area")
 	         .data([dataValues])
 	         .enter()
@@ -205,55 +255,60 @@ class  RadarChart {
 	          })
 	         .style("fill", function(j, i){return cfg.color(0)})
 	         .style("fill-opacity", cfg.opacityArea)
-		//d.forEach(function(y, x){
-		
-      		 
-   //    		g.selectAll(".nodes")
-   //    			.data(y.value, function(j, i){ console.log("test"); 
-		 //        dataValues.push([
-		 //        cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-		 //        cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-		 //        ]);
-		 //     });
-      		// console.log(dataValues);
-		   // dataValues.push(dataValues[0]);
-		  /*  g.selectAll(".area")
-	             .data([dataValues])
-	             .enter()
-	             .append("polygon")
-	             .attr("class", "radar-chart-serie")
-	             .style("stroke-width", "2px")
-	             .style("stroke", cfg.color(series))
-	             .attr("points",function(d) {
-	               var str="";
-	               for(var pti=0;pti<d.length;pti++){
-	                 str=str+d[pti][0]+","+d[pti][1]+" ";
-	               }
-	               return str;
+	         .on('mouseover', function (d){
+	              z = "polygon."+d3.select(this).attr("class");
+	              g.selectAll("polygon")
+	               .transition(200)
+	               .style("fill-opacity", 0.1); 
+	              g.selectAll(z)
+	               .transition(200)
+	               .style("fill-opacity", .7);
 	              })
-	             .style("fill", function(j, i){return cfg.color(0)})
-	             .style("fill-opacity", cfg.opacityArea)
-	             .on('mouseover', function (d){
-	                      z = "polygon."+d3.select(this).attr("class");
-	                      g.selectAll("polygon")
-	                       .transition(200)
-	                       .style("fill-opacity", 0.1); 
-	                      g.selectAll(z)
-	                       .transition(200)
-	                       .style("fill-opacity", .7);
-	                      })
-	             .on('mouseout', function(){
-	                      g.selectAll("polygon")
-	                       .transition(200)
-	                       .style("fill-opacity", cfg.opacityArea);
-	             });*/
-    		//});
+             .on('mouseout', function(){
+                  g.selectAll("polygon")
+                   .transition(200)
+                   .style("fill-opacity", cfg.opacityArea);
+				 });
+	
+    	var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+		   //	 d.forEach(function(y, x){
+		    g.selectAll(".nodes")
+		     .data(d).enter()
+		     .append("svg:circle")
+		    //  .attr("class", "radar-chart-serie"+series)
+		     .attr('r', cfg.radius)
+		     .attr("alt", function(j){return Math.max(j.value.countCases, 0)})
+		     .attr("cx", function(j, i){
+		      	return cfg.w/2*(1-(Math.max(j.value.countCases/viz.totalCases*100, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
+		      })
+		     .attr("cy", function(j, i){ 
+		        return cfg.h/2*(1-(Math.max(j.value.countCases/viz.totalCases*100, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
+		      })
+		     .attr("data-id", function(j,i){return i})
+		     .style("fill", "#fff")
+		     .style("stroke-width", "2px")
+		     .style("stroke", "blue").style("fill-opacity", .9)
+		     .on('mouseover', function (d){
+		            tooltip
+		              .style("left", d3.event.pageX - 40 + "px")
+		              .style("top", d3.event.pageY - 80 + "px")
+		              .style("display", "inline-block")
+		      				.html((d.key) + "<br><span>" + Format(d.value.countCases/viz.totalCases) + "</span>");
+		            })
+		    .on("mouseout", function(d){ tooltip.style("display", "none");});
 
+		     // series++;
+		   // });
+    
 
 
     	function textProcessing(text, i){
-    		text = text.split(" ");
+    		text = text.split(" "); //console.log(text[i].node().getComputedTextLength())
     		return text[i];
     	}
+
+console.log(viz.area)
+    	return viz.area*100;
+
     }
 }
