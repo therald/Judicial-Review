@@ -151,11 +151,11 @@ class Precedent {
         var overruling = viz.data[Number(intervalData.overruling)];
 
         var html = `<p>
-                        <b>${overruling.caseName}</b>
+                        <b>${overruling.caseName} (${overruling.dateDecision})</b>
                     </p>
-                    <p>Overruling</p>
+                    <p>overruling</p>
                     <p>
-                        <b>${overruled.caseName}</b>
+                        <b>${overruled.caseName} (${overruled.dateDecision})</b>
                     </p>`;
         viz.tip.html(html);
         viz.tip.offset([-5, 0]);
