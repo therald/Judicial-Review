@@ -67,7 +67,6 @@ class  RadarChart {
 		
 		viz.value = viz.draw(viz.data);
 		$("#legend").text("");
-		console.log(viz.value);
     }
 
     getArea(){
@@ -91,7 +90,6 @@ class  RadarChart {
 	    // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
         viz.totalHeight = viz.div.node().getBoundingClientRect().height;
-        console.log(document.getElementById(viz.id.substring(1)))
 
 	    var g = d3.select(id)
 		    .append("svg")
@@ -219,10 +217,9 @@ class  RadarChart {
 		    	elem.style("stroke", "#666"); 
 		    	elem.style("stroke-width", "1.5px"); 
 		    	viz.area = d[i].value.unconstCases/d[i].value.countCases; 
-		    	console.log(viz.area)
 		    	viz.bar.update(viz.area*100, d[i].value.issueAreaID);
 		    	$("#legend").text("% "+d[i].key);
-		    	//viz.precedent.area(d[i].value.issueAreaID, d[i].key)
+		    	//viz.precedent.filterByIssueArea(d[i].value.issueAreaID)
 		    })
 
 
@@ -307,7 +304,6 @@ class  RadarChart {
     		return text[i];
     	}
 
-console.log(viz.area)
     	return viz.area*100;
 
     }
