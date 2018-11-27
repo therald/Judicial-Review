@@ -105,11 +105,6 @@ class  RadarChart {
 		//Circular segments
 		for(var j = 0; j < viz.cfg.levels; j++){
 		  var levelFactor = viz.cfg.factor*radius*(j+1)/viz.cfg.levels;
-<<<<<<< HEAD
-		//  console.log((j+1)/viz.cfg.levels);
-		//  console.log(1+Math.log((j+1)/viz.cfg.levels)/Math.log(10))
-=======
->>>>>>> unconstitutional_viz
 		  g.selectAll(".levels")
 			   .data(allAxis)
 			   .enter()
@@ -163,45 +158,8 @@ class  RadarChart {
 		    .style("stroke-opacity", "0.75")
 		    .style("stroke-width", "1px");
 
-<<<<<<< HEAD
-    	//draw unconstitutional cases
-	    var unconst = g.selectAll(".unconstitutional")
-	        .data(d, function(j, i){return j;})//j.value.unconstCases*100/j.value.countCases})
-	        .enter()
-	        .append("g")
-	        .attr("class", "axis");
-
-	    unconst.append("line")
-		    .attr("x1", (cfg.w/2))
-		    .attr("y1", (cfg.h/2))
-		    .attr("x2", function(d, i){
-				// console.log(d.value.unconstCases/d.value.countCases);
-				return cfg.w/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.sin(i*cfg.radians/total)));
-			})
-		    .attr("y2", function(d, i){
-				// console.log(Math.log(d.value.unconstCases/d.value.countCases));
-				return cfg.h/2*(1-((d.value.unconstCases/d.value.countCases)*cfg.factor*Math.cos(i*cfg.radians/total)));
-			})
-		    .attr("class", "line")
-		    .style("stroke", "red")
-		    .style("stroke-opacity", "0.5")
-		    .style("stroke-width", "3px");
-
-		//text axis
-		// axis.append("text")
-		//     .attr("class", "legend")
-		//     .text(function(d){ return textProcessing(d)}) //return d})
-		//     .style("font-family", "sans-serif")
-		//     .style("font-size", "11px")
-		//     .attr("text-anchor", "middle")
-		//     .attr("dy", "1.5em")
-		//     .attr("transform", function(d, i){return "translate(0, -10)"})
-		//     .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
-		//     .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
-=======
     
 		var bbox = [];
->>>>>>> unconstitutional_viz
 
 		var text = axis.append("text")
 			
@@ -277,13 +235,8 @@ class  RadarChart {
 			.data(d, function(j, i){
 				// console.log(j.value.countCases/viz.totalCases*100);
 				dataValues.push([
-<<<<<<< HEAD
-		        cfg.w/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-		        cfg.h/2*(1-(parseFloat(Math.max(3.1*Math.log(j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-=======
 		        cfg.w/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
 		        cfg.h/2*(1-(parseFloat(Math.max((j.value.countCases/viz.totalCases*100), 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
->>>>>>> unconstitutional_viz
 		        ]);})
 		var z;
 		g.selectAll(".area")
@@ -302,33 +255,6 @@ class  RadarChart {
 	          })
 	         .style("fill", function(j, i){return cfg.color(0)})
 	         .style("fill-opacity", cfg.opacityArea)
-<<<<<<< HEAD
-		//d.forEach(function(y, x){
-		
-      		 
-   //    		g.selectAll(".nodes")
-   //    			.data(y.value, function(j, i){ console.log("test"); 
-		 //        dataValues.push([
-		 //        cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-		 //        cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-		 //        ]);
-		 //     });
-      		// console.log(dataValues);
-		   // dataValues.push(dataValues[0]);
-		  /*  g.selectAll(".area")
-	             .data([dataValues])
-	             .enter()
-	             .append("polygon")
-	             .attr("class", "radar-chart-serie")
-	             .style("stroke-width", "2px")
-	             .style("stroke", cfg.color(series))
-	             .attr("points",function(d) {
-	               var str="";
-	               for(var pti=0;pti<d.length;pti++){
-	                 str=str+d[pti][0]+","+d[pti][1]+" ";
-	               }
-	               return str;
-=======
 	         .on('mouseover', function (d){
 	              z = "polygon."+d3.select(this).attr("class");
 	              g.selectAll("polygon")
@@ -337,7 +263,6 @@ class  RadarChart {
 	              g.selectAll(z)
 	               .transition(200)
 	               .style("fill-opacity", .7);
->>>>>>> unconstitutional_viz
 	              })
              .on('mouseout', function(){
                   g.selectAll("polygon")
