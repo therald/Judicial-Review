@@ -100,6 +100,17 @@ class Precedent {
         var rows = viz.generateRows(startYear, endYear);
         viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice();
         viz.yScale.domain([0, rows.length]);
+
+        if (rows.length == 0) {
+            viz.svg.selectAll('.errMessage').remove();
+            viz.svg.append("text")
+                .text("No Data for this Time Period")
+                .classed("errMessage", true)
+                .attr("x", viz.width / 2)
+                .attr("y", viz.height / 2);
+        } else {
+            viz.svg.selectAll('.errMessage').remove();
+        }
         
         var intervals = viz.svg.selectAll('g.interval').data(rows, viz.createRowKey);
         intervals.exit().remove();
@@ -111,9 +122,9 @@ class Precedent {
             .attr("transform", (d, i) => ("translate(0," + viz.yScale(i) + ")"))
             .each(function(d, i, g) {
                 var group = d3.select(g[i]);
-                viz.drawInterlines(group);
-                viz.drawStartpoints(group);
-                viz.drawEndpoints(group);
+                viz.drawInterlines(group, g.length);
+                viz.drawStartpoints(group, g.length);
+                viz.drawEndpoints(group, g.length);
             });
         
         viz.svg.selectAll('.interline')
@@ -130,7 +141,10 @@ class Precedent {
         var overruled = viz.data[Number(intervalData.overruled)];
         var overruling = viz.data[Number(intervalData.overruling)];
 
-        var html = `<h6>${overruling.caseName} overruling ${overruled.caseName}`
+        var html = `<h6>${overruling.caseName}</h6></br>
+                    <p>Overruling</p>
+                    <h6>${overruled.caseName}</h6></br>`
+        html += `<p>Testing</p>`
         viz.tip.html(html);
         viz.tip.offset([-5, 0]);
         viz.tip.direction('n').show(intervalData, group);
@@ -168,33 +182,38 @@ class Precedent {
         return false;
     }
 
-    drawEndpoints(group) {
+    drawEndpoints(group, numLines) {
         var viz = this;
         group.selectAll('circle.endpoint')
             .attr('cx', d => viz.xScale(d.enddate))
             .attr('cy', '0')
-            .attr('r', 2)
+            .attr('r', viz.getIntervalHeight(numLines))
             .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
     }
 
-    drawStartpoints(group) {
+    drawStartpoints(group, numLines) {
         var viz = this;
         group.selectAll('circle.startpoint')
             .attr('cx', d => viz.xScale(d.startdate))
             .attr('cy', '0')
-            .attr('r', 2)
+            .attr('r', viz.getIntervalHeight(numLines))
             .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"));
     }
 
-    drawInterlines(group) {
+    drawInterlines(group, numLines) {
         var viz = this;
         group.selectAll('line.interline')
             .attr('x1', d => viz.xScale(d.startdate))
             .attr('x2', d => viz.xScale(d.enddate))
             .attr('y1', '0')
             .attr('y2', '0')
-            .attr('stroke-width', 2)
+            .attr('stroke-width', viz.getIntervalHeight(numLines) - 1)
             .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
+    }
+
+    getIntervalHeight(numLines) {
+        var viz = this;
+        return Math.min(viz.yScale.range()[0] / numLines / 2 - 1, 6);
     }
 
     appendIntervalComponents(d, i, g) {
