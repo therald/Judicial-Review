@@ -84,6 +84,7 @@ body {
                 #ideology_legend_and_values {
                     font-size: 1.25rem;
                     font-weight: bold;
+<<<<<<< HEAD
                     height: 2rem;
                     margin: auto;
                     width: 90%;
@@ -93,6 +94,35 @@ body {
                     fill: $lightBlue;
                 }
 
+=======
+                    margin: auto;
+                    margin-bottom: 1rem;
+                    width: 90%;
+
+                    #conservative_rulings {
+                        color: $lightRed;
+                        float: left;
+                        width: 35%;
+                    }
+
+                    #liberal_rulings {
+                        color: $lightBlue;
+                        float: left;
+                        width: 30%;
+                    }
+
+                    #unspecified_rulings {
+                        color: $lightPurple;
+                        float: right;
+                        width: 35%;
+                    }
+                }
+
+                .fill_blue {
+                    fill: $lightBlue;
+                }
+
+>>>>>>> unconstitutional_viz
                 .fill_purple {
                     fill: $lightPurple;
                 }
@@ -110,11 +140,14 @@ body {
                     stroke-width: 5;
                     opacity: 0;
                 }
+<<<<<<< HEAD
 
                 .data_label {
                     font-weight: bold;
                     opacity: 0;
                 }
+=======
+>>>>>>> unconstitutional_viz
             }
 
             #constitutional {
@@ -123,6 +156,7 @@ body {
                 height: 50%;
             }
         }
+<<<<<<< HEAD
 
         #right {
             float: right;
@@ -177,6 +211,18 @@ body {
                 }
             }
         }
+=======
+    	
+
+		#precedent {
+			background: $lightGray;
+			border-radius: 15px;
+            float: right;
+			height: 87%;
+            margin-top: 1%;
+			width: 49.5%;
+		}
+>>>>>>> unconstitutional_viz
     }
 
 }

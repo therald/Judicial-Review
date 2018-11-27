@@ -6,65 +6,157 @@ class Constitutional {
         // in the context of the viz
         viz.active = false;
         viz.div = d3.select(div);
+        viz.name = div;
+
+        viz.radar;
+        viz.value;
+        viz.bar;
 
         // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
         viz.totalHeight = viz.div.node().getBoundingClientRect().height;
 
-        // Set up the svg to preserve the aspect ratio
-        viz.svg = viz.div.append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
-            .attr("preserveAspectRatio", "xMinYMin");
+        //set range to all years by default
+        viz.rangeStart = 1946;
+        viz.rangeEnd = 2018;
+
         
         // d3 margin convention
-        viz.margin = { top: 10, bottom: 10, left: 10, right: 10 };
-        viz.width = viz.totalWidth - viz.margin.left - viz.margin.right;
-        viz.height = viz.totalHeight - viz.margin.top - viz.margin.bottom;
-
+        viz.margin = { top: 10, bottom: 0, left: 10, right: 10 };
+        // viz.width = viz.totalWidth - viz.margin.left - viz.margin.right;
+        // viz.height = viz.totalHeight - viz.margin.top - viz.margin.bottom;
+        // d3 margin convention
+        viz.width = document.getElementById(div.substring(1)).offsetWidth;
+        viz.height = document.getElementById(div.substring(1)).offsetHeight;
+        console.log(document.getElementById(div.substring(1)))
+        //****
+        // viz.g = d3.select(div)
+        //     .append("svg")
+        //     .attr("width", "100%")//viz.cfg.w+viz.cfg.ExtraWidthX)
+        //     .attr("height", "100%")//viz.cfg.h+viz.cfg.ExtraWidthY)
+        //     .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
+        //     .attr("preserveAspectRatio", "xMinYMin")
+        //*****
         viz.data = data;
         viz.filteredData = data;
-        viz.preprocessData();
+        viz.update();
         
     }
 
-    draw(data){
+    update(rangeStart, rangeEnd, precedent){
+        var viz = this;
+        viz.precedent = precedent;
+        //viz.data.filter(function(d){ console.log(d.dateDecision)})
+        if(rangeStart != undefined) {
+            viz.rangeStart = rangeStart;
+            viz.rangeEnd = rangeEnd;
+            viz.filterData(rangeStart, rangeEnd);
+            viz.preprocessData(1);
+        }
+        
+        else
+        viz.preprocessData(0);
+    }
+
+    filterData(rangeStart, rangeEnd){
+        var viz = this;
+
+    // Filter data depending on selected time period (brush)
+        var year = d3.timeParse("%m/%d/%Y");
+        viz.filteredData = viz.data.filter(function(d){ 
+        return (year(d.dateDecision).getFullYear() >= rangeStart && year(d.dateDecision).getFullYear() <= rangeEnd);
+    })
+    }
+
+    draw(data, update, precedent){
         var viz = this;
         var max = d3.max(data.map(function(d){return d.value.countCases; }))/viz.totalCases*100;
         // console.log(Math.min(Math.ceil(max/10)*10+10,100))    
+<<<<<<< HEAD
         var side = Math.min(viz.width-viz.margin.left-viz.margin.right, viz.height-viz.margin.top-viz.margin.bottom)
+=======
+       // var side = Math.min(viz.width-viz.margin.left-viz.margin.right, viz.height-viz.margin.top-viz.margin.bottom)
+        var side = Math.min(viz.width*.6-viz.margin.left, viz.height-viz.margin.top*4)
+>>>>>>> unconstitutional_viz
         // console.log(side)
         var config = {
-            w: side*0.75,
-            h: side*0.75,
-            maxValue: 100,//Math.min(Math.ceil(max/10)*10,100),
+            w: side*.9,
+            h: side*.9,
+            maxValue: Math.min(Math.ceil(max)+1,100),
             levels: 5,
-            TranslateX: viz.width/4,
-            TranslateY: viz.height/6,
-            ExtraWidthX: viz.width,
-            ExtraWidthY: viz.height,
+            TranslateX: viz.width/4,//viz.margin.left*8,//viz.width*.2,
+            TranslateY: viz.margin.top*4,//viz.height/7,
+           ExtraWidthX: viz.width*.5,
+           ExtraWidthY: 1*viz.height,//viz.height,
 
         }
-        var g = d3.select("#radar")
-            .append("svg")
-            .append("g")
-            .attr("transform", "translate(20,30)");
-
-        var radar = new RadarChart("#radar", data, config, viz.totalCases);
         
+        console.log(update)
+        if (update == 0){
+            viz.bar = new Bar(viz.name, "#bar");
+            viz.bar.update(0);
+            viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
+            viz.radar.update(data); console.log(viz.value)
+            // viz.value = viz.radar.getArea();
+            
+            // viz.bar.update(viz.value);
+        }else{ 
+            viz.radar.update(data, config, viz.totalCases, viz.precedent);
+            // viz.value = viz.radar.getArea(); 
+            // console.log(viz.value)
+            viz.bar.update(0);
+        }
+        
+       
 
+         
+
+ //              var bar1 = d3.select("#bar").append("svg")
+ //                                    // .attr("width", viz.width*.4)
+ //                                    //  .attr("height", viz.height);
+ //            .attr("width", "30%")//viz.cfg.w+viz.cfg.ExtraWidthX)
+ //            .attr("height", "100%")//viz.cfg.h+viz.cfg.ExtraWidthY)
+ //            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
+ //            .attr("preserveAspectRatio", "xMinYMin")
+ // console.log(viz.name)
+ // //Draw the Rectangle
+ // var rectangle = bar1.append("rect")
+ //                             .attr("x", 0)
+ //                             .attr("y", -400)
+ //                            .attr("width", 50)
+ //                            .attr("height", 500)
+ //                            .style("fill","red");
+
+ //            var bar2 = d3.select("#bar").append("svg")
+ //                                    // .attr("width", viz.width*.4)
+ //                                    //  .attr("height", viz.height);
+ //            .attr("width", "50%")//viz.cfg.w+viz.cfg.ExtraWidthX)
+ //            .attr("height", "40%")//viz.cfg.h+viz.cfg.ExtraWidthY)
+ //            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
+ //            .attr("preserveAspectRatio", "xMinYMin")
+ 
+ // //Draw the Rectangle
+ // var rectangle = bar2.append("rect")
+ //                             .attr("x", 0)
+ //                             .attr("y", 0)
+ //                            .attr("width", 50)
+ //                            .attr("height", 100)
+ //                            .style("fill","blue");
     }
 
-    preprocessData() {
+    preprocessData(update) {
         var viz = this;
         // console.log(viz.data);
         //attributes to be used d.issueArea, d.declarationUncon, caseId, dateDecision
         //percentage of cases ruled unconstitutional
+<<<<<<< HEAD
         viz.totalCases = viz.data.length;
+=======
+        viz.totalCases = viz.filteredData.length;
+>>>>>>> unconstitutional_viz
         d3.csv("./data/issue_area.csv", function(a){ 
             var join; 
-            join = viz.join(a,viz.data, "id", "issueArea", function(m,iss){
+            join = viz.join(a,viz.filteredData, "id", "issueArea", function(m,iss){
                 return{
                     caseId: m.caseId,
                     issueArea: (iss !== undefined) ? iss.IssueAreaName : null,
@@ -80,16 +172,19 @@ class Constitutional {
             //group by issueArea
             var dataByIssueArea = d3.nest()
                 .key(function(d){return d.issueArea})
-                .rollup(function(v){return{
+                .rollup(function(v){  return{ 
                     countCases: v.length,
+                    issueAreaID: v[0].issueAreaID,
                     unconstCases: d3.sum(v, function(d){
-                        if( parseInt(d.declarationUncon) !== 1) return parseInt(d.declarationUncon)
+                        if( parseInt(d.declarationUncon) !== 1) return 1//parseInt(d.declarationUncon)
                             else return 0})
+
                 };
 
                 })
                 .entries(join);
-            viz.draw(dataByIssueArea);
+            viz.draw(dataByIssueArea, update);
+            console.log(dataByIssueArea)
         }); //d3.csv
         
 

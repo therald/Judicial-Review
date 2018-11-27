@@ -30,7 +30,10 @@ class Ideology {
 
         viz.xScale = d3.scaleTime();
         viz.yScale = d3.scaleLinear();
+<<<<<<< HEAD
         viz.minOfMins = 0;
+=======
+>>>>>>> unconstitutional_viz
         viz.xTicks = d3.scaleTime();
         viz.stack = d3.stack()
             .keys(["Liberal", "Unspecified", "Conservative"])
@@ -39,7 +42,10 @@ class Ideology {
         viz.fillColorClasses = ["fill_blue", "fill_purple", "fill_red"];
         viz.years;
         viz.series;
+<<<<<<< HEAD
         viz.streamLabels;
+=======
+>>>>>>> unconstitutional_viz
 
         viz.parseDate = d3.timeParse("%Y");
 
@@ -52,15 +58,22 @@ class Ideology {
 
         d3.csv("./data/ideology_data.csv", function (error, ideology_data) {
             viz.initializeScalesAndStack(viz, ideology_data);
+<<<<<<< HEAD
             viz.drawLegend(viz);
             viz.drawStreams(viz);
             viz.drawXAxis(viz);
             viz.initializeHoverLine(viz);
             viz.drawStreamLabels(viz, [50, viz.height/2]);
+=======
+            viz.drawStreams(viz);
+            viz.drawXAxis(viz);
+            viz.initializeHoverLine(viz);
+>>>>>>> unconstitutional_viz
             viz.addBrush(viz);
         });
     }
 
+<<<<<<< HEAD
     drawLegend(viz) {
         var div = d3.select("#ideology_legend_and_values");
 
@@ -113,6 +126,8 @@ class Ideology {
             .text("Unspecified");
     }
 
+=======
+>>>>>>> unconstitutional_viz
     drawStreams(viz) {
         var area = d3.area()
             .x(function(d) { return viz.xScale(Number(d.data.Year)); })
@@ -140,6 +155,7 @@ class Ideology {
             })
             .on("mouseover", function() {
                 document.getElementById("data_line").classList.add("visible");
+<<<<<<< HEAD
                 document.getElementById("conservative_count").classList.add("visible");
                 document.getElementById("unspecified_count").classList.add("visible");
                 document.getElementById("liberal_count").classList.add("visible");
@@ -166,6 +182,28 @@ class Ideology {
                 .on("end", function() {
                     //viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
                     // viz.precedent.draw(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
+=======
+                viz.adjustHoverLinePositionAndCounts(viz, this, viz.yScale);
+            })
+            .on("mousemove", function(d,i) {
+                viz.adjustHoverLinePositionAndCounts(viz, this, viz.yScale);
+            })
+            .on("mouseout", function(d) {
+                    document.getElementById("data_line").classList.remove("visible");
+                    document.getElementById("conservative_count").innerHTML = '';
+                    document.getElementById("liberal_count").innerHTML = '';
+                    document.getElementById("unspecified_count").innerHTML = '';
+            })
+            .call(
+                d3.brushX()
+                .extent([[25, 0], [viz.width - 25, viz.height - 60]])
+                .on("brush", function() {
+                    viz.adjustHoverLinePositionAndCounts(viz, this, viz.yScale);
+                })
+                .on("end", function() {
+                    viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear(),viz.precedent);
+                    //viz.precedent.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
+>>>>>>> unconstitutional_viz
                 })
             );
     }
@@ -193,39 +231,62 @@ class Ideology {
         viz.years = ideology_data.map(d => d.Year);
 
         viz.xScale.domain(d3.extent(viz.years, function(d) { return d; }))
+<<<<<<< HEAD
             .range([50, viz.width-50]);
 
         viz.xTicks.domain(d3.extent(viz.years, function(d) { return viz.parseDate(d); }))
             .range([50, viz.width-50]);
+=======
+            .range([25, viz.width-25]);
+
+        viz.xTicks.domain(d3.extent(viz.years, function(d) { return viz.parseDate(d); }))
+            .range([25, viz.width-25]);
+>>>>>>> unconstitutional_viz
 
         viz.series = viz.stack(ideology_data);
 
         var mins = viz.series[0].map(d => d[0]);
         var maxs = viz.series[2].map(d => d[1]);
+<<<<<<< HEAD
         viz.minOfMins = Math.min(... mins);
+=======
+>>>>>>> unconstitutional_viz
         viz.yScale.domain([Math.min(... mins), Math.max(... maxs)])
             .range([viz.height - 75, 0]);
     }
 
     initializeHoverLine(viz) {
+<<<<<<< HEAD
         var date = viz.xTicks.invert(50);
+=======
+        var date = viz.xTicks.invert(25);
+>>>>>>> unconstitutional_viz
         var year = date.getFullYear().toString();
 
         console.log(viz);
 
         var lineData = [
+<<<<<<< HEAD
             { 'x': 50, 'y': -1000000},
             { 'x': 50, 'y': (viz.series[2][year - viz.series[0][0].data.Year])["1"]}
+=======
+            { 'x': 25, 'y': (viz.series[0][year - viz.series[0][0].data.Year])["0"]},
+            { 'x': 25, 'y': (viz.series[2][year - viz.series[0][0].data.Year])["1"]}
+>>>>>>> unconstitutional_viz
         ]
 
         var line = d3.line()
             .x(function(d) { return d['x']; })
+<<<<<<< HEAD
             .y(function(d) {
                 if (d['y'] == -1000000) {
                     return viz.height - 60;
                 }
                 return viz.yScale(d['y']);
             });
+=======
+            .y(function(d) { return viz.yScale(d['y']); });
+>>>>>>> unconstitutional_viz
         
         viz.svg.append("path")
             .attr("id", "data_line")
@@ -233,7 +294,11 @@ class Ideology {
             .attr('d', line);
     }
 
+<<<<<<< HEAD
     adjustHoverLinePositionAndCounts(viz, mouseEvent) {
+=======
+    adjustHoverLinePositionAndCounts(viz, mouseEvent, yScale) {
+>>>>>>> unconstitutional_viz
         var dataLine = d3.select("#data_line");
 
         viz.mousePosX = d3.mouse(mouseEvent)[0];
@@ -247,6 +312,7 @@ class Ideology {
         var mousePos = d3.mouse(mouseEvent);
 
         if (mousePos == null) {
+<<<<<<< HEAD
             mousePos = [50, viz.height/2];
         }
 
@@ -263,6 +329,19 @@ class Ideology {
                 }
                 return viz.yScale(d['y']);
             });
+=======
+            mousePos = [25, viz.height/2];
+        }
+
+        var lineData = [
+            { 'x': mousePos[0], 'y': (viz.series[0][yearDifference])["0"]},
+            { 'x': mousePos[0], 'y': (viz.series[2][yearDifference])["1"]}
+        ]
+
+        var line = d3.line()
+            .x(function(d) { return viz.computeXSnapping(viz, d['x']); })
+            .y(function(d) { return viz.yScale(d['y']); });
+>>>>>>> unconstitutional_viz
 
         dataLine.datum(lineData)
             .attr('d', line);
@@ -270,6 +349,7 @@ class Ideology {
         // Update ruling count texts
         var countData = (viz.series[0][yearDifference]).data;
 
+<<<<<<< HEAD
         viz.updateDataLabels(viz, mousePos);
     }
 
@@ -382,6 +462,11 @@ class Ideology {
             .attr('x', viz.computeXSnapping(viz, mouseEvent[0])+5)
             .attr('y', (viz.height - 65))
             .text(year);
+=======
+        document.getElementById("conservative_count").innerHTML = countData.Conservative;
+        document.getElementById("liberal_count").innerHTML = countData.Liberal;
+        document.getElementById("unspecified_count").innerHTML = countData.Unspecified;
+>>>>>>> unconstitutional_viz
     }
 
     computeXSnapping(viz, xVal) {
