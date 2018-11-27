@@ -38,8 +38,10 @@ class  RadarChart {
 			}
 		}
 
-		viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
-
+		//viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
+		viz.cScale = d3.scaleOrdinal()
+	      .domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+	      .range(d3.schemeCategory20);
 
 	    
     }
@@ -67,7 +69,6 @@ class  RadarChart {
 		
 		viz.value = viz.draw(viz.data);
 		$("#legend").text("");
-		// console.log(viz.value);
     }
 
     getArea(){
@@ -91,7 +92,6 @@ class  RadarChart {
 	    // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
         viz.totalHeight = viz.div.node().getBoundingClientRect().height;
-        // console.log(document.getElementById(viz.id.substring(1)))
 
 	    var g = d3.select(id)
 		    .append("svg")
@@ -205,7 +205,7 @@ class  RadarChart {
 		    	if(d3.select(this).style("opacity") == 0){
 		    	elem.classed("btn",true)
 	            elem.transition().duration(200).style("opacity", .4)
-	           // elem.style("fill", viz.cScale(d[i].value.issueAreaID));        
+	            elem.style("fill", viz.cScale(d[i].value.issueAreaID));        
             }
 		    })
 		    .on("mouseout", function(d){
@@ -219,10 +219,9 @@ class  RadarChart {
 		    	elem.style("stroke", "#666"); 
 		    	elem.style("stroke-width", "1.5px"); 
 		    	viz.area = d[i].value.unconstCases/d[i].value.countCases; 
-		    	// console.log(viz.area)
 		    	viz.bar.update(viz.area*100, d[i].value.issueAreaID);
 		    	$("#legend").text("% "+d[i].key);
-		    	//viz.precedent.area(d[i].value.issueAreaID, d[i].key)
+		    	//viz.precedent.filterByIssueArea(d[i].value.issueAreaID)
 		    })
 
 
@@ -307,7 +306,6 @@ class  RadarChart {
     		return text[i];
     	}
 
-// console.log(viz.area)
     	return viz.area*100;
 
     }

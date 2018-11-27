@@ -28,15 +28,7 @@ class Constitutional {
         // d3 margin convention
         viz.width = document.getElementById(div.substring(1)).offsetWidth;
         viz.height = document.getElementById(div.substring(1)).offsetHeight;
-        // console.log(document.getElementById(div.substring(1)))
-        //****
-        // viz.g = d3.select(div)
-        //     .append("svg")
-        //     .attr("width", "100%")//viz.cfg.w+viz.cfg.ExtraWidthX)
-        //     .attr("height", "100%")//viz.cfg.h+viz.cfg.ExtraWidthY)
-        //     .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
-        //     .attr("preserveAspectRatio", "xMinYMin")
-        //*****
+  
         viz.data = data;
         viz.filteredData = data;
         viz.update();
@@ -87,12 +79,11 @@ class Constitutional {
 
         }
         
-        // console.log(update)
         if (update == 0){
             viz.bar = new Bar(viz.name, "#bar");
             viz.bar.update(0);
             viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
-            viz.radar.update(data); //console.log(viz.value)
+            viz.radar.update(data); 
             // viz.value = viz.radar.getArea();
             
             // viz.bar.update(viz.value);
@@ -104,40 +95,6 @@ class Constitutional {
         }
         
        
-
-         
-
- //              var bar1 = d3.select("#bar").append("svg")
- //                                    // .attr("width", viz.width*.4)
- //                                    //  .attr("height", viz.height);
- //            .attr("width", "30%")//viz.cfg.w+viz.cfg.ExtraWidthX)
- //            .attr("height", "100%")//viz.cfg.h+viz.cfg.ExtraWidthY)
- //            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
- //            .attr("preserveAspectRatio", "xMinYMin")
- // console.log(viz.name)
- // //Draw the Rectangle
- // var rectangle = bar1.append("rect")
- //                             .attr("x", 0)
- //                             .attr("y", -400)
- //                            .attr("width", 50)
- //                            .attr("height", 500)
- //                            .style("fill","red");
-
- //            var bar2 = d3.select("#bar").append("svg")
- //                                    // .attr("width", viz.width*.4)
- //                                    //  .attr("height", viz.height);
- //            .attr("width", "50%")//viz.cfg.w+viz.cfg.ExtraWidthX)
- //            .attr("height", "40%")//viz.cfg.h+viz.cfg.ExtraWidthY)
- //            .attr("viewBox", "0 0 " + viz.totalWidth + " " + viz.totalHeight)
- //            .attr("preserveAspectRatio", "xMinYMin")
- 
- // //Draw the Rectangle
- // var rectangle = bar2.append("rect")
- //                             .attr("x", 0)
- //                             .attr("y", 0)
- //                            .attr("width", 50)
- //                            .attr("height", 100)
- //                            .style("fill","blue");
     }
 
     preprocessData(update) {
@@ -176,7 +133,6 @@ class Constitutional {
                 })
                 .entries(join);
             viz.draw(dataByIssueArea, update);
-            // console.log(dataByIssueArea)
         }); //d3.csv
         
 

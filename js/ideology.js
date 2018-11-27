@@ -87,19 +87,6 @@ class Ideology {
             .text("Conservative");
 
         start += (d3.select("#legend_conservative").node().getBBox().width + 75);
-        var liberalGroup = legendSvg.append("g")
-            .attr("id", "legend_liberal")
-            .attr("transform", "translate(" + start + " ,0)");
-        liberalGroup.append("rect")
-            .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_blue" })
-        liberalGroup.append("text")
-            .attr('class', "legend_label")
-            .attr('x', 35)
-            .attr('y', (height-5))
-            .style("text-anchor", "start")
-            .text("Liberal");
-
-        start += (d3.select("#legend_liberal").node().getBBox().width + 75);
         var unspecifiedGroup = legendSvg.append("g")
             .attr("id", "legend_unspecified")
             .attr("transform", "translate(" + start + " ,0)");
@@ -111,6 +98,19 @@ class Ideology {
             .attr('y', (height-5))
             .style("text-anchor", "start")
             .text("Unspecified");
+
+        start += (d3.select("#legend_unspecified").node().getBBox().width + 75);
+        var liberalGroup = legendSvg.append("g")
+            .attr("id", "legend_liberal")
+            .attr("transform", "translate(" + start + " ,0)");
+        liberalGroup.append("rect")
+            .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_blue" })
+        liberalGroup.append("text")
+            .attr('class', "legend_label")
+            .attr('x', 35)
+            .attr('y', (height-5))
+            .style("text-anchor", "start")
+            .text("Liberal");
     }
 
     drawStreams(viz) {
@@ -165,6 +165,12 @@ class Ideology {
                     viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear(), viz.precedent);
                 })
                 .on("end", function() {
+                    if (d3.event.selection == null) {
+                        var start = Number(viz.years[0]);
+                        var end = Number(viz.years[viz.years.length - 1]);
+                        viz.precedent.draw(viz.parseDate(start).getFullYear(), viz.parseDate(end).getFullYear());
+                        viz.constitutional.update(viz.parseDate(start).getFullYear(), viz.parseDate(end).getFullYear(), viz.precedent);
+                    }
                 })
             );
     }
@@ -209,8 +215,6 @@ class Ideology {
     initializeHoverLine(viz) {
         var date = viz.xTicks.invert(50);
         var year = date.getFullYear().toString();
-
-        // console.log(viz);
 
         var lineData = [
             { 'x': 50, 'y': -1000000},
@@ -285,7 +289,6 @@ class Ideology {
         var firstYear = viz.series[0][0].data.Year;
         var yearDifference = year - firstYear;
 
-        // console.log(viz.series);
         var low1 = (viz.series[2][yearDifference])["0"];
         var high1 = (viz.series[2][yearDifference])["1"];
         var midpoint1 = (low1 + high1)/2;
