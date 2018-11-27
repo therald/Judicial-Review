@@ -35,7 +35,10 @@ class  Bar {
 		viz.yAxis = d3.axisLeft()
 	        .scale(viz.yScale);
 
-	    viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
+	    // viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
+	    viz.cScale = d3.scaleOrdinal()
+	      .domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+	      .range(d3.schemeCategory20);
 	    
     }
 

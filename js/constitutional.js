@@ -83,7 +83,7 @@ class Constitutional {
             viz.bar = new Bar(viz.name, "#bar");
             viz.bar.update(0);
             viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
-            viz.radar.update(data); console.log(viz.value)
+            viz.radar.update(data); 
             // viz.value = viz.radar.getArea();
             
             // viz.bar.update(viz.value);

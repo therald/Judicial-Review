@@ -38,8 +38,10 @@ class  RadarChart {
 			}
 		}
 
-		viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
-
+		//viz.cScale = d3.scaleOrdinal(d3.schemeCategory20);
+		viz.cScale = d3.scaleOrdinal()
+	      .domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+	      .range(d3.schemeCategory20);
 
 	    
     }
@@ -203,7 +205,7 @@ class  RadarChart {
 		    	if(d3.select(this).style("opacity") == 0){
 		    	elem.classed("btn",true)
 	            elem.transition().duration(200).style("opacity", .4)
-	           // elem.style("fill", viz.cScale(d[i].value.issueAreaID));        
+	            elem.style("fill", viz.cScale(d[i].value.issueAreaID));        
             }
 		    })
 		    .on("mouseout", function(d){
