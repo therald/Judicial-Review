@@ -3,6 +3,7 @@ class Precedent {
      * TODO
      *  Fix margins when zoomed in
      *  Finish tooltip (look at Christabel's styling)
+     *  Add a legend
      */
 
     constructor(div, data) {
@@ -179,10 +180,10 @@ class Precedent {
     }
 
     filterByStartAndEndYear(interval, startYear, endYear) {
-        if (interval.startdate.getFullYear() >= startYear && interval.startdate.getFullYear() <= endYear) {
+        if (interval.startdate.getFullYear() >= startYear && interval.startdate.getFullYear() < endYear) {
             return true;
         }
-        if (interval.enddate.getFullYear() >= startYear && interval.enddate.getFullYear() <= endYear) {
+        if (interval.enddate.getFullYear() >= startYear && interval.enddate.getFullYear() < endYear) {
             return true;
         }
         return false;
