@@ -14,6 +14,18 @@ html {
 body {
     font-size: 16px;
     height: 100vh;
+
+    .brush {
+        .selection {
+            fill-opacity: .5;
+            height: 30;
+            stroke: none;
+        }
+    }
+
+    .handle {
+        stroke: none;
+    }
     
     .container {
     	height: 100%;
@@ -21,9 +33,28 @@ body {
     	margin-right: 1%;
     	width: 98%;
 
+
+        .vis_title {
+            font-size: 1.5rem;
+            margin: auto;
+            padding-bottom: 0.5rem;
+            padding-top: 0.5rem;
+            width: fit-content;
+            z-index: 2;
+        }
+
+        .vis {
+            flex: 1;
+            margin: 0px 10px 0px 10px;
+        }
+
+        .bottom_padding {
+            height: 20px;
+        }
+
     	#header {
-    		height: 8%;
-    		margin-top: 1rem;
+    		height: 10%;
+    		padding-top: 1rem;
     		margin-left: 0.25rem;
 
     		h1 {
@@ -36,43 +67,85 @@ body {
     		}
     	}
 
-    	#ideology {
-    		background: $lightGray;
-    		border-radius: 15px;
-    		height: 44%;
-    		margin-top: 1%;
-    		margin-bottom: 1%;
+        #left {
+            float: left;
+            height: 86.5%;
+            margin-top: 1%;
+            width: 49.5%;
 
-    		.vis_title {
-    			font-size: 1.5rem;
-    			margin: auto;
-    			padding-bottom: 0.5rem;
-    			padding-top: 0.5rem;
-    			width: fit-content;
-    		}
-    	}
+            #ideology {
+                background: $lightGray;
+                border-radius: 15px;
+                display: flex;
+                flex-direction: column;
+                height: 50%;
+                margin-bottom: 1%;
 
-    	#bottom {
-    		height: 44%;
+                #ideology_legend_and_values {
+                    font-size: 1.25rem;
+                    font-weight: bold;
+                    margin: auto;
+                    margin-bottom: 1rem;
+                    width: 90%;
 
-    		#constitutional {
-    			background: $lightGray;
-    			border-radius: 15px;
-    			float: left;
-    			height: 100%;
-    			margin-right: 0.5%;
-    			width: 49.5%;
-    		}
+                    #conservative_rulings {
+                        color: $lightRed;
+                        float: left;
+                        width: 35%;
+                    }
 
-    		#precedent {
-    			background: $lightGray;
-    			border-radius: 15px;
-    			float: right;
-    			height: 100%;
-    			margin-left: 0.5%;
-    			width: 49.5%;
-    		}
-    	}
+                    #liberal_rulings {
+                        color: $lightBlue;
+                        float: left;
+                        width: 30%;
+                    }
+
+                    #unspecified_rulings {
+                        color: $lightPurple;
+                        float: right;
+                        width: 35%;
+                    }
+                }
+
+                .fill_blue {
+                    fill: $lightBlue;
+                }
+
+                .fill_purple {
+                    fill: $lightPurple;
+                }
+
+                .fill_red {
+                    fill: $lightRed;
+                }
+
+                .visible {
+                    opacity: 1.0 !important;
+                }
+
+                #data_line {
+                    stroke: black;
+                    stroke-width: 5;
+                    opacity: 0;
+                }
+            }
+
+            #constitutional {
+                background: $lightGray;
+                border-radius: 15px;
+                height: 50%;
+            }
+        }
+    	
+
+		#precedent {
+			background: $lightGray;
+			border-radius: 15px;
+            float: right;
+			height: 87%;
+            margin-top: 1%;
+			width: 49.5%;
+		}
     }
 
 }
