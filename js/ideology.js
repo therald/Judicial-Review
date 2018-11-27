@@ -160,7 +160,6 @@ class Ideology {
                 d3.brushX()
                 .extent([[50, 0], [viz.width - 50, viz.height - 60]])
                 .on("brush", function() {
-                    console.log(d3.event.selection);
                     viz.adjustHoverLinePositionAndCounts(viz, this);
                     viz.precedent.draw(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
                     viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear(), viz.precedent);
@@ -216,8 +215,6 @@ class Ideology {
     initializeHoverLine(viz) {
         var date = viz.xTicks.invert(50);
         var year = date.getFullYear().toString();
-
-        console.log(viz);
 
         var lineData = [
             { 'x': 50, 'y': -1000000},
@@ -292,7 +289,6 @@ class Ideology {
         var firstYear = viz.series[0][0].data.Year;
         var yearDifference = year - firstYear;
 
-        console.log(viz.series);
         var low1 = (viz.series[2][yearDifference])["0"];
         var high1 = (viz.series[2][yearDifference])["1"];
         var midpoint1 = (low1 + high1)/2;
