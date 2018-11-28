@@ -133,9 +133,9 @@ class  RadarChart {
 		       .attr("y", function(d){return levelFactor*(1-viz.cfg.factor*Math.cos(0));})
 		       .attr("class", "legend")
 		       .style("font-family", "sans-serif")
-		       .style("font-size", "8px")
-		       .attr("transform", "translate(" + (viz.cfg.w/2-levelFactor + viz.cfg.ToRight) + ", " + (viz.cfg.h/2-levelFactor) + ")")
-		       .attr("fill", "#737373")
+		       .style("font-size", "12px")
+		       .attr("transform", "translate(" + (viz.cfg.w/2-levelFactor + viz.cfg.ToRight) + ", " + (viz.cfg.h/2-levelFactor*0.9) + ")")
+		       .attr("fill", "black")
 		      // .text((j+1)*100/viz.cfg.levels); //without %
 		       .text(Format((j+1)*viz.cfg.maxValue/100/viz.cfg.levels));
 	    }
@@ -165,7 +165,7 @@ class  RadarChart {
 			
 		    
 		    .style("font-family", "sans-serif")
-		    .style("font-size", "11px")
+		    .style("font-size", "14px")
 		    .attr("text-anchor", "middle")
 		    .attr("transform", function(d, i){return "translate(0, -25)"})
 		    .attr("x", function(d, i){ return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
