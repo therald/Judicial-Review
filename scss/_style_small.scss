@@ -227,6 +227,12 @@ body {
                         font-weight: bold;
                         color: rgb(85, 80, 80);
                     }
+
+                    .tick line {
+                        stroke: lightgrey;
+                        stroke-opacity: 0.7;
+                        shape-rendering: crispEdges;
+                    }
                 }
             }
         }

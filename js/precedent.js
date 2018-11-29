@@ -13,6 +13,12 @@ class Precedent {
         viz.active = false;
         viz.div = d3.select(div);
         viz.data = data;
+        viz.sortSelect = document.getElementById('precedent_sortby');
+        viz.sortReverse = false;
+        viz.sortReverseButton = document.getElementById('precedent_reversesort');
+        viz.sortReverseButton.addEventListener("click", function() {
+            viz.sortReverse = !viz.sortReverse;
+        });
 
         viz.setVizWidthAndHeight(div);
 
@@ -70,16 +76,25 @@ class Precedent {
         viz.xaxisgroup = viz.svg.append("g")
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + (viz.yScale.range()[0] + 10) + ")");
-        var dates = viz.data.map(d => new Date(d.dateDecision));
-        dates.sort((a, b) => a.getFullYear() - b.getFullYear());
-        var dateRange = dates[dates.length - 1] - dates[0];
-        viz.xAxis = d3.axisBottom(viz.xScale).ticks(Math.floor(dateRange / (1000*60*60*24*365) / 5));
+        var dateRange = viz.getDateRange();
+        viz.xAxis = d3.axisBottom(viz.xScale).ticks(viz.getNumTicks(dateRange)).tickSize(-viz.height);
         viz.xaxisgroup.call(viz.xAxis);
 
         viz.xaxislabel = viz.svg.append("text")
             .attr("transform", "translate(" + (viz.width/2) + "," + (viz.height) + ")")
             .text("Year")
             .attr("x-axis label");
+    }
+
+    getDateRange() {
+        var viz = this;
+        var dates = viz.data.map(d => new Date(d.dateDecision));
+        dates.sort((a, b) => a.getFullYear() - b.getFullYear());
+        return dates[dates.length - 1] - dates[0];
+    }
+
+    getNumTicks(dateRange) {
+        return Math.floor(dateRange / (1000*60*60*24*365) / 5);
     }
 
     createSVG() {
@@ -105,6 +120,11 @@ class Precedent {
      */
     draw(startYear, endYear) {
         var viz = this;
+        if (startYear == null || endYear == null) {
+            startYear = viz.range[0];
+            endYear = viz.range[1];
+        }
+        viz.range = [startYear, endYear];
 
         var rows = viz.generateRows(startYear, endYear);
         viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice();
@@ -143,6 +163,22 @@ class Precedent {
             .on('mouseout', viz.tip.hide)
 
         viz.xaxisgroup.call(viz.xAxis);
+        viz.sortSelect.addEventListener("change", function() {
+            viz.draw(viz.range[0], viz.range[1]);
+        }, {once: true});
+        viz.sortReverseButton.addEventListener("click", function() {
+            viz.draw(viz.range[0], viz.range[1]);
+        }, {once: true});
+    }
+
+    getSortingAlgo(a, b) {
+        var viz = this;
+
+        switch (viz.sortSelect.options[viz.sortSelect.selectedIndex].value) {
+            case 'startdate': return viz.sortByStartdate(a, b);
+            case 'length': return viz.sortByLength(a, b);
+            default: return viz.sortByEnddate(a, b);
+        }
     }
 
     showTooltip(intervalData, group) {
@@ -163,26 +199,52 @@ class Precedent {
         viz.tip.direction('n').show(intervalData, group);
     }
 
-    createRowKey(row) {
+    createRowKey(row, index) {
         var itemKeys = row.map(d => d.overruled + ' ' + d.overruling);
-        return itemKeys.join(' ');
+        return itemKeys.join(' ') + ' ' + index;
     }
 
     generateRows(startYear, endYear) {
         var viz = this;
-        // var lines = [];
+
+        // var rows = [];
         // var inters = new Set(viz.intervals.sort((a, b) => a.enddate - b.enddate));
         // while (inters.size != 0) {
         //     var line = viz.getIntervalLine(inters);
-        //     lines.push([...line]);
+        //     rows.push([...line]);
         //     inters = new Set([...inters].filter(x => [...line].indexOf(x) < 0));
         // }
-        var rows = viz.intervals.filter(d => viz.filterByStartAndEndYear(d, startYear, endYear)).sort(viz.sortByEnddate).map(d => [d]);
+        var rows = viz.intervals
+            .filter(d => viz.filterByStartAndEndYear(d, startYear, endYear))
+            .sort(function(a, b) {
+                return viz.getSortingAlgo(a, b);
+            })
+            .map(d => [d]);
         return rows;
     }
 
     sortByEnddate(a, b) {
+        var viz = this;
+        if (viz.sortReverse) {
+            return a.enddate - b.enddate;
+        }
         return b.enddate - a.enddate;
+    }
+
+    sortByStartdate(a, b) {
+        var viz = this;
+        if (viz.sortReverse) {
+            return a.startdate - b.startdate;
+        }
+        return b.startdate - a.startdate;
+    }
+
+    sortByLength(a, b) {
+        var viz = this;
+        if (viz.sortReverse) {
+            return a.duration - b.duration;
+        }
+        return b.duration - a.duration;
     }
 
     filterByStartAndEndYear(interval, startYear, endYear) {
