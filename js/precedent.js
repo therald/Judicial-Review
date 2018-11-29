@@ -77,7 +77,7 @@ class Precedent {
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + (viz.yScale.range()[0] + 10) + ")");
         var dateRange = viz.getDateRange();
-        viz.xAxis = d3.axisBottom(viz.xScale).ticks(viz.getNumTicks(dateRange)).tickSize(-viz.height);
+        viz.xAxis = d3.axisBottom(viz.xScale).ticks(viz.getNumTicks(dateRange));
         viz.xaxisgroup.call(viz.xAxis);
 
         viz.xaxislabel = viz.svg.append("text")
@@ -163,12 +163,36 @@ class Precedent {
             .on('mouseout', viz.tip.hide)
 
         viz.xaxisgroup.call(viz.xAxis);
+        var tickxvalues = d3.selectAll('.tick').nodes().map(this.stupidMapper);
+        console.log(tickxvalues);
+        var gridlines = viz.xaxisgroup.selectAll('.gridline').data(tickxvalues);
+        d3.selectAll('.gridline').remove();
+        gridlines.exit().remove();
+        enter = gridlines.enter()
+            .append('line')
+            .classed('gridline', true);
+        gridlines.merge(enter)
+            .attr('x1', d => d)
+            .attr('x2', d => d)
+            .attr('y1', 0)
+            .attr('y2', -viz.height + viz.height/20);
         viz.sortSelect.addEventListener("change", function() {
             viz.draw(viz.range[0], viz.range[1]);
         }, {once: true});
         viz.sortReverseButton.addEventListener("click", function() {
             viz.draw(viz.range[0], viz.range[1]);
         }, {once: true});
+    }
+
+    stupidMapper(d) {
+        var regex = new RegExp(/translate\(([\d\.]+),\d*\)/);
+        var result = regex.exec(d.attributes.transform.value);
+        if (result == null) {
+            return NaN;
+        } else {
+            return Number(result[1]);
+        }
+        // return Number(d.attributes.transform.value.substring("translate(".length, d.attributes.transform.value.length - 3));
     }
 
     getSortingAlgo(a, b) {
