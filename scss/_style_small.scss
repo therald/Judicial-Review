@@ -15,6 +15,10 @@ body {
     font-size: 16px;
     height: 100vh;
 
+    p {
+        line-height: 1.5rem;
+    }
+
     .brush {
         .selection {
             fill-opacity: .5;
@@ -136,18 +140,79 @@ body {
             height: 20px;
         }
 
+        .displayed {
+            display: block !important;
+        }
+
+        .fixed {
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        #hidden-filters {
+            background-color: $lightGray;
+            display: none;
+            margin-left: -1%;
+            margin-right: -1%;
+
+            #filter_header {
+                margin: auto;
+                width: fit-content;
+                padding-bottom: 0.5rem;
+                padding-top: 0.5rem;
+                font-size: 1.5rem;
+            }
+
+            #time_filter {
+                height: 6.5rem;
+
+                .tick {
+                    &:nth-child(2n) {
+                        text {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            #issue_area_filter {
+                height: 5rem;
+            }
+        }
+
+        #filters {
+            background-color: $lightGray;
+            display: block;
+            margin-left: -1%;
+            margin-right: -1%;
+            z-index: 100;
+
+            #filter_header {
+                margin: auto;
+                width: fit-content;
+                padding-bottom: 0.5rem;
+                padding-top: 0.5rem;
+                font-size: 1.5rem;
+            }
+
+            #time_filter {
+                height: 6.5rem;
+            }
+
+            #issue_area_filter {
+                height: 5rem;
+            }
+        }
+
         #header {
-            height: 10%;
+            padding-bottom: 1rem;
             padding-top: 1rem;
             margin-left: 0.25rem;
 
             h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
                 margin-bottom: 0.5rem;
-            }
-
-            h3 {
-                font-size: 1.5rem;
             }
         }
 
