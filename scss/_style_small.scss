@@ -156,7 +156,7 @@ body {
             margin-left: -1%;
             margin-right: -1%;
 
-            #filter_header {
+            .filter_header {
                 margin: auto;
                 width: fit-content;
                 padding-bottom: 0.5rem;
@@ -164,19 +164,11 @@ body {
                 font-size: 1.5rem;
             }
 
-            #time_filter {
+            .time_filter {
                 height: 6.5rem;
-
-                .tick {
-                    &:nth-child(2n) {
-                        text {
-                            display: none;
-                        }
-                    }
-                }
             }
 
-            #issue_area_filter {
+            .issue_area_filter {
                 height: 5rem;
             }
         }
