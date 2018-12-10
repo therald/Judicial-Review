@@ -40,6 +40,11 @@ class Filters {
         viz.parseYear = d3.timeParse("%Y");
 
         viz.xTicks = d3.scaleTime();
+        viz.issueAreaScale = d3.scaleLinear();
+
+        viz.issueAreaGroup;
+        viz.issueAreaSelection = {};
+        viz.issueAreaActivity = {};
 
         viz.years = [];
         viz.startYear;
@@ -48,11 +53,14 @@ class Filters {
         viz.endHandle;
 
         viz.data = data;
+        viz.issueAreaData;
         viz.draw();
     }
 
     draw() {
         var viz = this;
+
+        viz.drawIssueAreaFilter(viz);
 
         viz.years = [... new Set(viz.data.map(d => viz.parseDate(d.dateDecision).getFullYear()))];
         viz.startYear = viz.years[0];
@@ -135,6 +143,8 @@ class Filters {
         viz.startHandle.select("text")
             .attr("x", (snappedXPos - 45))
             .text(viz.startYear.toString());
+
+        viz.updateAvailableIssueAreas(viz);
     }
 
     drawEndHandle(viz) {
@@ -189,18 +199,132 @@ class Filters {
         viz.endHandle.select("text")
             .attr("x", (snappedXPos + 10))
             .text(viz.endYear.toString());
+
+        viz.updateAvailableIssueAreas(viz);
     }
 
-    drawIssueAreaFilter() {
+    drawIssueAreaFilter(viz) {
         d3.csv("./data/issue_area.csv", function (error, issueAreas) {
+            viz.issueAreaData = issueAreas;
+            var ids = issueAreas.map(a => Number(a.id));
 
+            for (var i = 0; i < ids.length; i++) {
+                viz.issueAreaActivity[ids[i]] = true;
+                viz.issueAreaSelection[ids[i]] = true;
+            }
+
+            viz.issueAreaScale.domain([d3.min(ids), d3.max(ids)])
+                .range([60, viz.issueWidth - 60]);
+
+            viz.issueAreaGroup = viz.issue_area_svg.append("g");
+
+            var ias = viz.issueAreaGroup.selectAll("g")
+                .data(issueAreas);
+
+            var enterIssueAreas = ias
+                .enter()
+                .append("g")
+                    .attr("id", function(d) {
+                        return "issue_area_" + d.id;
+                    })
+                    .attr("class", "ia_filter")
+                    .attr("cursor", "pointer")
+                    .on("click", function(d) {
+                        if (this.classList.contains("unselected")) {
+                            this.classList.remove("unselected");
+                            viz.issueAreaSelection[d.id] = true;
+                        }
+                        else {
+                            this.classList.add("unselected");
+                            viz.issueAreaSelection[d.id] = false;
+                        }
+                        viz.selectedAreas.sort(function(a, b){ return a - b; });
+                    });
+
+            enterIssueAreas.append("circle")
+                .attr('cx', function(d,i) {
+                    return viz.issueAreaScale(Number(d.id));
+                })
+                .attr('cy', viz.issueHeight/2)
+                .attr("r", 40)
+                .attr("stroke", "none")
+                .attr("stroke-width", "0px")
+                .attr("fill", "#8BBBAE");
+
+            enterIssueAreas.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", function(d,i) {
+                    return viz.issueAreaScale(Number(d.id));
+                })
+                .attr("y", function(d) {
+                    if (d.IssueAreaName.split(" ").length == 1) {
+                        return viz.issueHeight/2 + 4;
+                    }
+                    return viz.issueHeight/2 - 4;
+                })
+                .text("")
+                .append("tspan")
+                    .attrs({
+
+                    })
+                    .text(function(d,i){
+                        if (d.IssueAreaName == "Miscellaneous") {
+                            return "Misc.";
+                        }
+                        return d.IssueAreaName.split(" ")[0];
+                    })
+                .append("tspan")
+                    .attrs({
+                        display: function(d) {
+                            if (d.IssueAreaName.split(" ").length == 1) {
+                                return "none";
+                            }
+                            return "block";
+                        },
+                        x: function(d) {
+                            return viz.issueAreaScale(Number(d.id));
+                        },
+                        y: function(d) {
+                            return viz.issueHeight/2 + 12;
+                        }
+                    })
+                    .text(function(d,i){
+                        if (d.IssueAreaName.split(" ").length == 1) {
+                            return "";
+                        }
+                        else if (d.IssueAreaName.split(" ")[1] == "Amendment") {
+                            return "Amend.";
+                        }
+                        return d.IssueAreaName.split(" ")[1];
+                    });
         });
+    }
+
+    updateAvailableIssueAreas(viz) {
+        var activeAreas = [];
+
+        for (var i = 0; i < viz.data.length; i++) {
+            if (viz.parseDate(viz.data[i].dateDecision) >= viz.parseYear(viz.startYear) && viz.parseDate(viz.data[i].dateDecision) <= viz.parseYear(viz.endYear)) {
+                if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
+                    activeAreas.push(Number(viz.data[i].issueArea));
+                }
+            }
+        }
+
+        for (var i = 0; i < viz.activeAreas.length; i++) {
+
+        }
+
+        for (var i = 0; i < viz.issueAreaActivity.length; i++) {
+            if (!activeAreas.includes(Number(viz.issueAreaActivity[i]))) {
+                document.getElementById("issue_area_" + viz.issueAreaActivity[i].toString()).classList.add("inactive");
+            }
+        }
     }
 
     computeXSnapping(viz, xVal) {
         var date = viz.xTicks.invert(xVal);
         var year = date.getFullYear();
-        console.log(viz.parseYear(year));
 
         return viz.xTicks(viz.parseYear(year));
     }

@@ -169,7 +169,7 @@ body {
             }
 
             .issue_area_filter {
-                height: 5rem;
+                height: 6.5rem;
             }
         }
 
@@ -193,7 +193,35 @@ body {
             }
 
             #issue_area_filter {
-                height: 5rem;
+                height: 6.5rem;
+
+                .ia_filter:hover {
+                    opacity: 0.5;
+                }
+
+                .inactive {
+                    cursor: auto !important;
+
+                    circle {
+                        fill: $lightGray;
+                    }
+
+                    text {
+                        fill: $darkGray;
+                    }
+                }
+
+                .inactive:hover {
+                    opacity: 1.0 !important;
+                }
+
+                .unselected {
+                    circle {
+                        fill: $lightGray;
+                        stroke: black;
+                        stroke-width: 3px;
+                    }
+                }
             }
         }
 
