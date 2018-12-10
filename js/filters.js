@@ -129,8 +129,8 @@ class Filters {
     }
 
     updateStartHandle(viz, xPos) {
-        var snappedXPos = viz.computeXSnapping(viz, xPos);
-        viz.startYear = viz.xTicks.invert(snappedXPos).getFullYear();
+        var snappedXPos;
+        [viz.startYear, snappedXPos] = viz.computeXSnapping(viz, xPos);
 
         if (viz.startYear > viz.endYear) {
             viz.startYear = viz.endYear;
@@ -185,8 +185,8 @@ class Filters {
     }
 
     updateEndHandle(viz, xPos) {
-        var snappedXPos = viz.computeXSnapping(viz, xPos);
-        viz.endYear = viz.xTicks.invert(snappedXPos).getFullYear();
+        var snappedXPos;
+        [viz.endYear, snappedXPos] = viz.computeXSnapping(viz, xPos);
 
         if (viz.endYear < viz.startYear) {
             viz.endYear = viz.startYear;
@@ -238,7 +238,6 @@ class Filters {
                             this.classList.add("unselected");
                             viz.issueAreaSelection[d.id] = false;
                         }
-                        viz.selectedAreas.sort(function(a, b){ return a - b; });
                     });
 
             enterIssueAreas.append("circle")
@@ -303,21 +302,33 @@ class Filters {
     updateAvailableIssueAreas(viz) {
         var activeAreas = [];
 
-        for (var i = 0; i < viz.data.length; i++) {
-            if (viz.parseDate(viz.data[i].dateDecision) >= viz.parseYear(viz.startYear) && viz.parseDate(viz.data[i].dateDecision) <= viz.parseYear(viz.endYear)) {
-                if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
-                    activeAreas.push(Number(viz.data[i].issueArea));
+        if (viz.endYear != viz.startYear) {
+            for (var i = 0; i < viz.data.length; i++) {
+                if (viz.parseDate(viz.data[i].dateDecision) >= viz.parseYear(viz.startYear) && viz.parseDate(viz.data[i].dateDecision) <= viz.parseYear(viz.endYear)) {
+                    if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
+                        activeAreas.push(Number(viz.data[i].issueArea));
+                    }
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < viz.data.length; i++) {
+                if (viz.parseDate(viz.data[i].dateDecision).getFullYear().toString() == viz.parseYear(viz.startYear).getFullYear().toString()) {
+                    if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
+                        activeAreas.push(Number(viz.data[i].issueArea));
+                    }
                 }
             }
         }
 
-        for (var i = 0; i < viz.activeAreas.length; i++) {
-
-        }
-
-        for (var i = 0; i < viz.issueAreaActivity.length; i++) {
-            if (!activeAreas.includes(Number(viz.issueAreaActivity[i]))) {
-                document.getElementById("issue_area_" + viz.issueAreaActivity[i].toString()).classList.add("inactive");
+        for (var key in viz.issueAreaActivity) {
+            if (!activeAreas.includes(Number(key))) {
+                viz.issueAreaActivity[key] = false;
+                document.getElementById("issue_area_" + key).classList.add("inactive");
+            }
+            else {
+                viz.issueAreaActivity[key] = true;
+                document.getElementById("issue_area_" + key).classList.remove("inactive");
             }
         }
     }
@@ -326,6 +337,6 @@ class Filters {
         var date = viz.xTicks.invert(xVal);
         var year = date.getFullYear();
 
-        return viz.xTicks(viz.parseYear(year));
+        return [year, viz.xTicks(viz.parseYear(year))];
     }
 }
