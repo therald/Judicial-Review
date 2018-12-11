@@ -316,17 +316,21 @@ class Filters {
         }
         else {
             for (var i = 0; i < viz.data.length; i++) {
-                console.log("Case year: " + viz.parseDate(viz.data[i].dateDecision).getFullYear().toString());
-                console.log("Start year: " + viz.parseYear(viz.startYear).getFullYear().toString());
-                console.log("thank you, next");
+                // console.log("Case year: " + viz.parseDate(viz.data[i].dateDecision).getFullYear().toString());
+                // console.log("Start year: " + viz.parseYear(viz.startYear).getFullYear().toString());
+                // console.log("thank you, next");
 
                 if (viz.parseDate(viz.data[i].dateDecision).getFullYear().toString() == viz.parseYear(viz.startYear).getFullYear().toString()) {
+                    console.log("years match"); // writes 72 times per update call
+
                     if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
                         activeAreas.push(Number(viz.data[i].issueArea));
                     }
                 }
             }
         }
+
+        console.log(activeAreas);
 
         for (var key in viz.issueAreaActivity) {
             if (!activeAreas.includes(Number(key))) {
