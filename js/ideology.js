@@ -1,14 +1,11 @@
 class Ideology {
-    constructor(div, data, constitutional, precedent) {
+    constructor(div, data) {
         var viz = this;
 
         // Variable to see if the vizualization is "active", whatever that means
         // in the context of the viz
         viz.active = false;
         viz.div = d3.select(div);
-
-        viz.constitutional = constitutional;
-        viz.precedent = precedent;
 
         // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
@@ -52,66 +49,66 @@ class Ideology {
 
         d3.csv("./data/ideology_data.csv", function (error, ideology_data) {
             viz.initializeScalesAndStack(viz, ideology_data);
-            viz.drawLegend(viz);
+            //viz.drawLegend(viz);
             viz.drawStreams(viz);
             viz.drawXAxis(viz);
             viz.initializeHoverLine(viz);
             viz.drawStreamLabels(viz, [50, viz.height/2]);
-            viz.addBrush(viz);
+            //viz.addBrush(viz);
         });
     }
 
-    drawLegend(viz) {
-        var div = d3.select("#ideology_legend_and_values");
+    // drawLegend(viz) {
+    //     var div = d3.select("#ideology_legend_and_values");
 
-        var width = div.node().getBoundingClientRect().width;
-        var height = div.node().getBoundingClientRect().height;
+    //     var width = div.node().getBoundingClientRect().width;
+    //     var height = div.node().getBoundingClientRect().height;
 
-        var legendSvg = div
-            .append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "0 0 " + width + " " + height)
-            .attr("preserveAspectRatio", "xMinYMin");
+    //     var legendSvg = div
+    //         .append("svg")
+    //         .attr("width", "100%")
+    //         .attr("height", "100%")
+    //         .attr("viewBox", "0 0 " + width + " " + height)
+    //         .attr("preserveAspectRatio", "xMinYMin");
 
-        var start = 0;
-        var conservativeGroup = legendSvg.append("g")
-            .attr("id", "legend_conservative");
-        conservativeGroup.append("rect")
-            .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_red" })
-        conservativeGroup.append("text")
-            .attr('class', "legend_label")
-            .attr('x', 35)
-            .attr('y', (height-5))
-            .style("text-anchor", "start")
-            .text("Conservative");
+    //     var start = 0;
+    //     var conservativeGroup = legendSvg.append("g")
+    //         .attr("id", "legend_conservative");
+    //     conservativeGroup.append("rect")
+    //         .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_red" })
+    //     conservativeGroup.append("text")
+    //         .attr('class', "legend_label")
+    //         .attr('x', 35)
+    //         .attr('y', (height-5))
+    //         .style("text-anchor", "start")
+    //         .text("Conservative");
 
-        start += (d3.select("#legend_conservative").node().getBBox().width + 75);
-        var unspecifiedGroup = legendSvg.append("g")
-            .attr("id", "legend_unspecified")
-            .attr("transform", "translate(" + start + " ,0)");
-        unspecifiedGroup.append("rect")
-            .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_purple" })
-        unspecifiedGroup.append("text")
-            .attr('class', "legend_label")
-            .attr('x', 35)
-            .attr('y', (height-5))
-            .style("text-anchor", "start")
-            .text("Unspecified");
+    //     start += (d3.select("#legend_conservative").node().getBBox().width + 75);
+    //     var unspecifiedGroup = legendSvg.append("g")
+    //         .attr("id", "legend_unspecified")
+    //         .attr("transform", "translate(" + start + " ,0)");
+    //     unspecifiedGroup.append("rect")
+    //         .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_purple" })
+    //     unspecifiedGroup.append("text")
+    //         .attr('class', "legend_label")
+    //         .attr('x', 35)
+    //         .attr('y', (height-5))
+    //         .style("text-anchor", "start")
+    //         .text("Unspecified");
 
-        start += (d3.select("#legend_unspecified").node().getBBox().width + 75);
-        var liberalGroup = legendSvg.append("g")
-            .attr("id", "legend_liberal")
-            .attr("transform", "translate(" + start + " ,0)");
-        liberalGroup.append("rect")
-            .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_blue" })
-        liberalGroup.append("text")
-            .attr('class', "legend_label")
-            .attr('x', 35)
-            .attr('y', (height-5))
-            .style("text-anchor", "start")
-            .text("Liberal");
-    }
+    //     start += (d3.select("#legend_unspecified").node().getBBox().width + 75);
+    //     var liberalGroup = legendSvg.append("g")
+    //         .attr("id", "legend_liberal")
+    //         .attr("transform", "translate(" + start + " ,0)");
+    //     liberalGroup.append("rect")
+    //         .attrs({ x: 10, y: 10, width: 20, height: 20, class: "fill_blue" })
+    //     liberalGroup.append("text")
+    //         .attr('class', "legend_label")
+    //         .attr('x', 35)
+    //         .attr('y', (height-5))
+    //         .style("text-anchor", "start")
+    //         .text("Liberal");
+    // }
 
     drawStreams(viz) {
         var area = d3.area()
@@ -132,48 +129,31 @@ class Ideology {
             });
     }
 
-    addBrush(viz) {
-        viz.svg.append("g")
-            .attrs({
-                id: "brush_area",
-                class: "brush"
-            })
-            .on("mouseover", function() {
-                document.getElementById("data_line").classList.add("visible");
-                document.getElementById("conservative_count").classList.add("visible");
-                document.getElementById("unspecified_count").classList.add("visible");
-                document.getElementById("liberal_count").classList.add("visible");
-                document.getElementById("year_hover").classList.add("visible");
-                viz.adjustHoverLinePositionAndCounts(viz, this);
-            })
-            .on("mousemove", function(d,i) {
-                viz.adjustHoverLinePositionAndCounts(viz, this);
-            })
-            .on("mouseout", function(d) {
-                document.getElementById("data_line").classList.remove("visible");
-                document.getElementById("conservative_count").classList.remove("visible");
-                document.getElementById("unspecified_count").classList.remove("visible");
-                document.getElementById("liberal_count").classList.remove("visible");
-                document.getElementById("year_hover").classList.remove("visible");
-            })
-            .call(
-                d3.brushX()
-                .extent([[50, 0], [viz.width - 50, viz.height - 60]])
-                .on("brush", function() {
-                    viz.adjustHoverLinePositionAndCounts(viz, this);
-                    viz.precedent.draw(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear());
-                    viz.constitutional.update(viz.xTicks.invert(d3.event.selection[0]).getFullYear(), viz.xTicks.invert(d3.event.selection[1]).getFullYear(), viz.precedent);
-                })
-                .on("end", function() {
-                    if (d3.event.selection == null) {
-                        var start = Number(viz.years[0]);
-                        var end = Number(viz.years[viz.years.length - 1]);
-                        viz.precedent.draw(viz.parseDate(start).getFullYear(), viz.parseDate(end).getFullYear());
-                        viz.constitutional.update(viz.parseDate(start).getFullYear(), viz.parseDate(end).getFullYear(), viz.precedent);
-                    }
-                })
-            );
-    }
+    // addBrush(viz) {
+    //     viz.svg.append("g")
+    //         .attrs({
+    //             id: "brush_area",
+    //             class: "brush"
+    //         })
+    //         .on("mouseover", function() {
+    //             document.getElementById("data_line").classList.add("visible");
+    //             document.getElementById("conservative_count").classList.add("visible");
+    //             document.getElementById("unspecified_count").classList.add("visible");
+    //             document.getElementById("liberal_count").classList.add("visible");
+    //             document.getElementById("year_hover").classList.add("visible");
+    //             viz.adjustHoverLinePositionAndCounts(viz, this);
+    //         })
+    //         .on("mousemove", function(d,i) {
+    //             viz.adjustHoverLinePositionAndCounts(viz, this);
+    //         })
+    //         .on("mouseout", function(d) {
+    //             document.getElementById("data_line").classList.remove("visible");
+    //             document.getElementById("conservative_count").classList.remove("visible");
+    //             document.getElementById("unspecified_count").classList.remove("visible");
+    //             document.getElementById("liberal_count").classList.remove("visible");
+    //             document.getElementById("year_hover").classList.remove("visible");
+    //         });
+    // }
 
     drawXAxis(viz) {
         var xAxis = d3.axisBottom(viz.xTicks).tickValues(viz.xTicks.ticks(viz.years.length/4).concat(viz.xTicks.domain()));
@@ -215,6 +195,8 @@ class Ideology {
     initializeHoverLine(viz) {
         var date = viz.xTicks.invert(50);
         var year = date.getFullYear().toString();
+
+        console.log("initializing hover line");
 
         var lineData = [
             { 'x': 50, 'y': -1000000},

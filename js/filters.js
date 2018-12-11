@@ -251,7 +251,9 @@ class Filters {
                 .attr("r", 40)
                 .attr("stroke", "none")
                 .attr("stroke-width", "0px")
-                .attr("fill", "#8BBBAE");
+                .attr("class", function(d) {
+                    return "fill_" + d.id;
+                });
 
             enterIssueAreas.append("text")
                 .attr("text-anchor", "middle")
@@ -264,6 +266,8 @@ class Filters {
                     }
                     return viz.issueHeight/2 - 4;
                 })
+                .attr("fill", "white")
+                .style("font-weight", "bold")
                 .text("")
                 .append("tspan")
                     .attrs({
@@ -316,12 +320,8 @@ class Filters {
         }
         else {
             for (var i = 0; i < viz.data.length; i++) {
-                // console.log("Case year: " + viz.parseDate(viz.data[i].dateDecision).getFullYear().toString());
-                // console.log("Start year: " + viz.parseYear(viz.startYear).getFullYear().toString());
-                // console.log("thank you, next");
-
                 if (viz.parseDate(viz.data[i].dateDecision).getFullYear().toString() == viz.parseYear(viz.startYear).getFullYear().toString()) {
-                    console.log("years match"); // writes 72 times per update call
+                    console.log("years match");
 
                     if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
                         activeAreas.push(Number(viz.data[i].issueArea));
@@ -329,8 +329,6 @@ class Filters {
                 }
             }
         }
-
-        console.log(activeAreas);
 
         for (var key in viz.issueAreaActivity) {
             if (!activeAreas.includes(Number(key))) {
