@@ -556,7 +556,10 @@ class Ideology {
     }
 
     update(startYear, endYear, selectedIssueAreas) {
-        
+        console.log("updating!");
+        console.log(startYear);
+        console.log(endYear);
+        console.log(selectedIssueAreas);
     }
 
     computeXSnapping(viz, xVal) {

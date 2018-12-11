@@ -240,6 +240,7 @@ class Filters {
                             this.classList.add("unselected");
                             viz.issueAreaSelection[d.id] = false;
                         }
+                        viz.updateVisualizations(viz);
                     });
 
             enterIssueAreas.append("circle")
@@ -339,6 +340,22 @@ class Filters {
                 document.getElementById("issue_area_" + key).classList.remove("inactive");
             }
         }
+
+        viz.updateVisualizations(viz);
+    }
+
+    updateVisualizations(viz) {
+        // consolidate selected and active issue areas
+        var issueAreas = [];
+
+        for (var i in viz.issueAreaActivity) {
+            if (viz.issueAreaActivity[i] && viz.issueAreaSelection[i]) {
+                issueAreas.push(i);
+            }
+        }
+
+        viz.ideology.update(viz.startYear, viz.endYear, issueAreas);
+        // update the rest here
     }
 
     computeXSnapping(viz, xVal) {
