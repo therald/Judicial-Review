@@ -108,7 +108,7 @@ class Filters {
                     var mousePos = d3.mouse(this);
                     var mouseX = viz.xTicks.invert(viz.startYear);
                     if (mousePos != null) {
-                        if (mousePos[0] >=75 && mousePos[0] <= viz.timeWidth - 75) {
+                        if (mousePos[0] >=75 && mousePos[0] <= viz.timeWidth - 65) {
                             viz.updateStartHandle(viz, mousePos[0]);
                         }
                     }
@@ -221,6 +221,9 @@ class Filters {
             var ias = viz.issueAreaGroup.selectAll("g")
                 .data(issueAreas);
 
+            var alphabeticalIssueAreaNames = issueAreas.map(d => d.IssueAreaName).sort();
+            console.log(alphabeticalIssueAreaNames);
+
             var enterIssueAreas = ias
                 .enter()
                 .append("g")
@@ -242,7 +245,7 @@ class Filters {
 
             enterIssueAreas.append("circle")
                 .attr('cx', function(d,i) {
-                    return viz.issueAreaScale(Number(d.id));
+                    return viz.issueAreaScale(alphabeticalIssueAreaNames.indexOf(d.IssueAreaName) + 1);
                 })
                 .attr('cy', viz.issueHeight/2)
                 .attr("r", 40)
@@ -253,7 +256,7 @@ class Filters {
             enterIssueAreas.append("text")
                 .attr("text-anchor", "middle")
                 .attr("x", function(d,i) {
-                    return viz.issueAreaScale(Number(d.id));
+                    return viz.issueAreaScale(alphabeticalIssueAreaNames.indexOf(d.IssueAreaName) + 1);
                 })
                 .attr("y", function(d) {
                     if (d.IssueAreaName.split(" ").length == 1) {
@@ -281,7 +284,7 @@ class Filters {
                             return "block";
                         },
                         x: function(d) {
-                            return viz.issueAreaScale(Number(d.id));
+                            return viz.issueAreaScale(alphabeticalIssueAreaNames.indexOf(d.IssueAreaName) + 1);
                         },
                         y: function(d) {
                             return viz.issueHeight/2 + 12;
@@ -313,6 +316,10 @@ class Filters {
         }
         else {
             for (var i = 0; i < viz.data.length; i++) {
+                console.log("Case year: " + viz.parseDate(viz.data[i].dateDecision).getFullYear().toString());
+                console.log("Start year: " + viz.parseYear(viz.startYear).getFullYear().toString());
+                console.log("thank you, next");
+
                 if (viz.parseDate(viz.data[i].dateDecision).getFullYear().toString() == viz.parseYear(viz.startYear).getFullYear().toString()) {
                     if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
                         activeAreas.push(Number(viz.data[i].issueArea));
