@@ -15,7 +15,7 @@ function begin() {
 		d3.csv("./data/case_data.csv", function (error, cases) {
 			var precedent = new Precedent("#precedent_vis", cases);
 			var constitutional = new Constitutional("#constitutional", cases);
-			var ideology = new Ideology("#ideology_vis", cases);
+			var ideology = new Ideology("#ideology_vis", "#justices_vis", cases);
 			var filters = new Filters("#time_filter", "#issue_area_filter", cases, ideology, constitutional, precedent);
 		});
 

@@ -279,9 +279,9 @@ body {
                         opacity: 1.0 !important;
                     }
 
-                    #data_line {
+                    #stream_line {
                         stroke: black;
-                        stroke-width: 5;
+                        stroke-width: 3;
                         opacity: 0;
                     }
 
@@ -297,6 +297,16 @@ body {
                     display: flex;
                     flex-direction: column;
                     height: 48.5%;
+
+                    .visible {
+                        opacity: 1.0 !important;
+                    }
+
+                    #line_line {
+                        stroke: black;
+                        stroke-width: 3;
+                        opacity: 0;
+                    }
                 }
 
             }

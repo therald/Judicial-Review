@@ -222,7 +222,6 @@ class Filters {
                 .data(issueAreas);
 
             var alphabeticalIssueAreaNames = issueAreas.map(d => d.IssueAreaName).sort();
-            console.log(alphabeticalIssueAreaNames);
 
             var enterIssueAreas = ias
                 .enter()
