@@ -113,6 +113,9 @@ class Filters {
                         }
                     }
                 })
+                .on("end", function() {
+                    viz.updateVisualizations(viz);
+                })
             );
         
         viz.startHandle.append("path")
@@ -168,6 +171,9 @@ class Filters {
                             viz.updateEndHandle(viz, viz.timeWidth - 75);
                         }
                     }
+                })
+                .on("end", function() {
+                    viz.updateVisualizations(viz);
                 })
             );
         
@@ -240,6 +246,7 @@ class Filters {
                             this.classList.add("unselected");
                             viz.issueAreaSelection[d.id] = false;
                         }
+
                         viz.updateVisualizations(viz);
                     });
 
@@ -340,8 +347,6 @@ class Filters {
                 document.getElementById("issue_area_" + key).classList.remove("inactive");
             }
         }
-
-        viz.updateVisualizations(viz);
     }
 
     updateVisualizations(viz) {
