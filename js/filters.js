@@ -114,7 +114,7 @@ class Filters {
                     }
                 })
                 .on("end", function() {
-                    viz.updateVisualizations(viz);
+                    //viz.updateVisualizations(viz);
                 })
             );
         
@@ -173,7 +173,7 @@ class Filters {
                     }
                 })
                 .on("end", function() {
-                    viz.updateVisualizations(viz);
+                    //viz.updateVisualizations(viz);
                 })
             );
         
@@ -347,6 +347,8 @@ class Filters {
                 document.getElementById("issue_area_" + key).classList.remove("inactive");
             }
         }
+
+        viz.updateVisualizations(viz);
     }
 
     updateVisualizations(viz) {

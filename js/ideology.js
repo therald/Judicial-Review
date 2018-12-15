@@ -83,9 +83,9 @@ class Ideology {
             //viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
 
             // Line Graph
-            viz.filterScoresForYearRange(viz, scores); // sets viz.mq_scores
+            viz.mq_scores = scores;
             viz.initializeMQScalesAndAxis(viz);
-            viz.plotLines(viz);
+            viz.plotLines(viz, viz.years);
 
             // Both
             viz.initializeHoverLines(viz);
@@ -292,6 +292,7 @@ class Ideology {
             .attr('d', lineLine);
 
         viz.streamSvg.append("rect")
+            .attr("id", "stream_rect")
             .attr("x", 11)
             .attr("y", 0)
             .attr("width", (viz.ideology_width - 16))
@@ -321,6 +322,7 @@ class Ideology {
             });
 
         viz.lineSvg.append("rect")
+            .attr("id", "line_rect")
             .attr("x", 41)
             .attr("y", 0)
             .attr("width", (viz.justices_width - 48))
@@ -579,14 +581,6 @@ class Ideology {
         //     .text(year);
     }
 
-    filterScoresForYearRange(viz, scores) {
-        for (var i = 0; i < scores.length; i++) {
-            if (Number(scores[i].term) >= Number(viz.years[0])) {
-                viz.mq_scores.push(scores[i]);
-            }
-        }
-    }
-
     initializeMQScalesAndAxis(viz) {
         viz.LineXScale.domain(d3.extent(viz.years, function(d) { return d; }))
             .range([40, viz.ideology_width-10]);
@@ -634,8 +628,11 @@ class Ideology {
             .text("Martin-Quinn Scores");
     }
 
-    plotLines(viz) {
-        viz.splitOutJusticeData(viz);
+    plotLines(viz, years) {
+        viz.splitOutJusticeData(viz, years);
+
+        var justiceLines = viz.lineSvg.append("g")
+            .attr("id", "justice_lines");
 
         for (var justice in viz.splitJusticeData) {
             var justiceData = viz.splitJusticeData[justice];
@@ -644,7 +641,7 @@ class Ideology {
                  .x(function(d) { return viz.LineXScale(Number(d.term)); })
                  .y(function(d) { return viz.LineYScale(Number(d.mqScore)); });
 
-            var newGroup = viz.lineSvg.append("g")
+            var newGroup = justiceLines.append("g")
                 .attr("id", "justice_" + justice);
 
             newGroup.append("path")
@@ -655,13 +652,21 @@ class Ideology {
         }
     }
 
-    splitOutJusticeData(viz) {
+    splitOutJusticeData(viz, years) {
+        viz.splitJusticeData = {};
+
         for (var obj in viz.mq_scores) {
-            if (viz.mq_scores[obj].justiceName in viz.splitJusticeData) {
-                viz.splitJusticeData[viz.mq_scores[obj].justiceName].push(viz.mq_scores[obj]);
+            if (obj == "columns") {
+                continue;
             }
-            else {
-                viz.splitJusticeData[viz.mq_scores[obj].justiceName] = [viz.mq_scores[obj]];
+
+            if (years.includes(viz.mq_scores[obj].term)) {
+                if (viz.mq_scores[obj].justiceName in viz.splitJusticeData) {
+                    viz.splitJusticeData[viz.mq_scores[obj].justiceName].push(viz.mq_scores[obj]);
+                }
+                else {
+                    viz.splitJusticeData[viz.mq_scores[obj].justiceName] = [viz.mq_scores[obj]];
+                }
             }
         }
     }
@@ -682,21 +687,10 @@ class Ideology {
         viz.updateStreams(viz);
         viz.updateXAxis(viz, processedYears);
 
-        // EVERYTHING BELOW MUST GO!!
+        viz.updateMQScalesAndAxis(viz, processedYears);
+        viz.updatePlottedLines(viz, processedYears);
 
-        // // Stream Graph
-        // viz.initializeScalesAndStack(viz, processedIdeologyData, true);
-        // viz.drawStreams(viz);
-        // viz.drawXAxis(viz);
-        // //viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
-
-        // // Line Graph
-        // viz.filterScoresForYearRange(viz, processedScoresData);
-        // viz.initializeMQScalesAndAxis(viz);
-        // viz.plotLines(viz);
-
-        // // Both
-        // viz.initializeHoverLines(viz);
+        viz.resetHoverLines(viz);
     }
 
     processYears(viz, start, end) {
@@ -751,31 +745,31 @@ class Ideology {
 
         var index = 0;
 
-        var toUpdate = viz.streamGroup.selectAll("path")
-            .data(viz.series);
+        // var toUpdate = viz.streamGroup.selectAll("path")
+        //     .data(viz.series);
 
-        toUpdate.exit().remove();
-        toUpdate.enter().append("path")
-            .attr("d", area)
-            .attr("class", function() {
-                var classList = "ideology_path ";
-                classList += viz.fillColorClasses[index++];
-                return classList;
-            });
-
-        // viz.streamGroup.remove();
-        // var streamPaths = viz.streamSvg.append("g")
-        //     .attr("id", "stream_paths");
-
-        // streamPaths.selectAll("path")
-        //     .data(viz.series)
-        //     .enter().append("path")
+        // toUpdate.exit().remove();
+        // toUpdate.enter().append("path")
         //     .attr("d", area)
         //     .attr("class", function() {
         //         var classList = "ideology_path ";
-        //         classList += viz.fillColorClasses[index++]
+        //         classList += viz.fillColorClasses[index++];
         //         return classList;
         //     });
+
+        viz.streamGroup.remove();
+        viz.streamGroup = viz.streamSvg.append("g")
+            .attr("id", "stream_paths");
+
+        viz.streamGroup.selectAll("path")
+            .data(viz.series)
+            .enter().append("path")
+            .attr("d", area)
+            .attr("class", function() {
+                var classList = "ideology_path ";
+                classList += viz.fillColorClasses[index++]
+                return classList;
+            });
     }
 
     updateXAxis(viz, years) {
@@ -796,6 +790,54 @@ class Ideology {
                 }
                 return 'none';
             });
+    }
+
+    updateMQScalesAndAxis(viz, years) {
+        viz.LineXScale.domain(d3.extent(years, function(d) { return d; }))
+            .range([40, viz.ideology_width-10]);
+
+        viz.LineXTicks.domain(d3.extent(years, function(d) { return viz.parseYear(d); }))
+            .range([40, viz.ideology_width-10]);
+
+        var xAxis = d3.axisBottom(viz.LineXTicks).tickValues(viz.LineXTicks.ticks(years.length/2));
+        d3.select("#line_x_axis")
+            .call(xAxis)
+            .selectAll("text")  
+            .style("text-anchor", "end")
+            .style("font-size", "0.75rem")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)")
+            .attr("display", function(d,i) {
+                if (i%2 == 0) {
+                    return 'block';
+                }
+                return 'none';
+            });
+
+        viz.LineYScale.domain([-8.0, 8.0])
+            .range([(viz.justices_height - 40), 10]);
+
+        var yAxis = d3.axisLeft(viz.LineYScale);
+        d3.select("#line_y_axis")
+            .call(yAxis)
+            .selectAll("text")  
+            .style("text-anchor", "end")
+            .style("font-size", "0.75rem");
+    }
+
+    updatePlottedLines(viz, years) {
+        d3.select("#justice_lines").remove();
+        viz.plotLines(viz, years);
+    }
+
+    resetHoverLines(viz) {
+        d3.select("#stream_line").remove();
+        d3.select("#line_line").remove();
+        d3.select("#stream_rect").remove();
+        d3.select("#line_rect").remove();
+
+        viz.initializeHoverLines(viz);
     }
 
     computeXSnapping(viz, xVal) {
