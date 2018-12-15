@@ -64,6 +64,10 @@ class Ideology {
         viz.splitJusticeData = {};
 
         viz.selectedIssueAreas = [];
+        viz.startYear;
+        viz.endYear;
+
+        viz.streamGroup;
         viz.draw();
     }
 
@@ -73,10 +77,10 @@ class Ideology {
         d3.csv("./data/martin_quinn_scores.csv", function (error, scores) {
             // Stream Graph
             viz.initializeIdeologyData(viz);
-            viz.initializeScalesAndStack(viz); // set viz.years
+            viz.initializeScalesAndStack(viz, viz.ideologyData, viz.years); // set viz.years
             viz.drawStreams(viz);
-            viz.drawXAxis(viz);
-            viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
+            viz.drawXAxis(viz, viz.years);
+            //viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
 
             // Line Graph
             viz.filterScoresForYearRange(viz, scores); // sets viz.mq_scores
@@ -148,20 +152,25 @@ class Ideology {
             .curve(d3.curveBasis);
 
         var index = 0;
-        viz.streamSvg.selectAll("path")
+
+        viz.streamGroup = viz.streamSvg.append("g")
+            .attr("id", "stream_paths");
+
+        viz.streamGroup.selectAll("path")
             .data(viz.series)
             .enter().append("path")
             .attr("d", area)
             .attr("class", function() {
                 var classList = "ideology_path ";
-                classList += viz.fillColorClasses[index++]
+                classList += viz.fillColorClasses[index++];
                 return classList;
             });
     }
 
-    drawXAxis(viz) {
-        var xAxis = d3.axisBottom(viz.xTicks).tickValues(viz.xTicks.ticks(viz.years.length/2));
+    drawXAxis(viz, years) {
+        var xAxis = d3.axisBottom(viz.xTicks).tickValues(viz.xTicks.ticks(years.length/2));
         viz.streamSvg.append("g")
+            .attr("id", "stream_axis")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + (viz.ideology_height - 40) + ")")
             .call(xAxis)
@@ -179,14 +188,14 @@ class Ideology {
             });
     }
 
-    initializeScalesAndStack(viz) {
-        viz.xScale.domain(d3.extent(viz.years, function(d) { return d; }))
+    initializeScalesAndStack(viz, ideologyData, years) {
+        viz.xScale.domain(d3.extent(years, function(d) { return d; }))
             .range([10, viz.ideology_width-10]);
 
-        viz.xTicks.domain(d3.extent(viz.years, function(d) { return viz.parseYear(d); }))
+        viz.xTicks.domain(d3.extent(years, function(d) { return viz.parseYear(d); }))
             .range([10, viz.ideology_width-10]);
 
-        var dataForStack = viz.processIdeologyDataForStack(viz);
+        var dataForStack = viz.processIdeologyDataForStack(viz, ideologyData);
         viz.series = viz.stack(dataForStack);
 
         var mins = viz.series[0].map(d => d[0]);
@@ -197,17 +206,17 @@ class Ideology {
             .range([viz.ideology_height - 40, 0]);
     }
 
-    processIdeologyDataForStack(viz) {
+    processIdeologyDataForStack(viz, ideologyData) {
         var formattedData = [];
 
-        for (var year in viz.ideologyData) {
+        for (var year in ideologyData) {
             var conservativeCount = 0;
             var liberalCount = 0;
             var unspecifiedCount = 0;
 
-            for (var issueArea in viz.ideologyData[year].Issue_Areas) {
+            for (var issueArea in ideologyData[year].Issue_Areas) {
                 if (issueArea in viz.selectedIssueAreas) {
-                    var counts = viz.ideologyData[year].Issue_Areas[issueArea];
+                    var counts = ideologyData[year].Issue_Areas[issueArea];
                     for (var count in counts) {
                         switch (count) {
                             case "3":
@@ -341,7 +350,7 @@ class Ideology {
             });
     }
 
-    adjustStreamHoverLine(viz, mouseEvent, isFirst) { // TODO: This breaks when hovering on line vis (year difference is skewed)
+    adjustStreamHoverLine(viz, mouseEvent, isFirst) {
         var docStreamLine = d3.select("#stream_line");
 
         viz.mousePosX = d3.mouse(mouseEvent)[0];
@@ -404,7 +413,7 @@ class Ideology {
 
         var date = viz.xTicks.invert(viz.mousePosX);
         var year = date.getFullYear().toString();
-        var initialYear = viz.series[0][0].data.Year
+        var initialYear = viz.series[0][0].data.Year;
         var yearDifference = year - initialYear;
         if (yearDifference < 0) {
             yearDifference = 0;
@@ -587,6 +596,7 @@ class Ideology {
 
         var xAxis = d3.axisBottom(viz.LineXTicks).tickValues(viz.LineXTicks.ticks(viz.years.length/2));
         viz.lineSvg.append("g")
+            .attr("id", "line_x_axis")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + (viz.ideology_height - 40) + ")")
             .call(xAxis)
@@ -608,6 +618,7 @@ class Ideology {
 
         var yAxis = d3.axisLeft(viz.LineYScale);
         viz.lineSvg.append("g")
+            .attr("id", "line_y_axis")
             .attr("class", "axis axis--y")
             .attr("transform", "translate(40,0)")
             .call(yAxis)
@@ -615,7 +626,9 @@ class Ideology {
             .style("text-anchor", "end")
             .style("font-size", "0.75rem");
 
-        viz.lineSvg.append("text")
+        viz.lineSvg.append("g")
+            .attr("id", "line_y_axis_label")
+            .append("text")
             .attr("transform", "translate(12" + " ," + ((viz.justices_height - 40)/2) + ") rotate(-90)")
             .style("text-anchor", "middle")
             .text("Martin-Quinn Scores");
@@ -655,119 +668,62 @@ class Ideology {
 
     update(startYear, endYear, selectedIssueAreas) {
         var viz = this;
-
-        viz.ideology_div.selectAll("svg").remove();
-        viz.justices_div.selectAll("svg").remove();
-
-        viz.streamSvg = viz.ideology_div.append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "0 0 " + viz.totalStreamWidth + " " + viz.totalStreamHeight)
-            .attr("preserveAspectRatio", "xMinYMin");
-
-        viz.lineSvg = viz.justices_div.append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "0 0 " + viz.totalLineWidth + " " + viz.totalLineHeight)
-            .attr("preserveAspectRatio", "xMinYMin");
+        // console.log(viz.caseData);
+        // console.log(viz.ideologyData);
+        // console.log(viz.mq_scores);
 
         // Preprocess Data
+        var processedYears = viz.processYears(viz, startYear, endYear);
         var processedIdeologyData = viz.processIdeologyData(viz, viz.ideologyData, startYear, endYear, selectedIssueAreas);
-        var processedCaseData;
-        [processedCaseData, processedIdeologyData] = viz.processCaseData(viz, viz.data, startYear, endYear, selectedIssueAreas, processedIdeologyData);
         var processedScoresData = viz.processScoresData(viz, viz.mq_scores, startYear, endYear, selectedIssueAreas);
 
-        console.log("data processed");
+        // start data, exit, enter sequence for updating groups
+        viz.initializeScalesAndStack(viz, processedIdeologyData, processedYears);
+        viz.updateStreams(viz);
+        viz.updateXAxis(viz, processedYears);
 
-        // Stream Graph
-        viz.initializeScalesAndStack(viz, processedIdeologyData, true);
-        viz.drawStreams(viz);
-        viz.drawXAxis(viz);
-        viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
+        // EVERYTHING BELOW MUST GO!!
 
-        // Line Graph
-        viz.filterScoresForYearRange(viz, processedScoresData);
-        viz.initializeMQScalesAndAxis(viz);
-        viz.plotLines(viz);
+        // // Stream Graph
+        // viz.initializeScalesAndStack(viz, processedIdeologyData, true);
+        // viz.drawStreams(viz);
+        // viz.drawXAxis(viz);
+        // //viz.drawStreamLabels(viz, [10, viz.ideology_height/2]);
 
-        // Both
-        viz.initializeHoverLines(viz);
+        // // Line Graph
+        // viz.filterScoresForYearRange(viz, processedScoresData);
+        // viz.initializeMQScalesAndAxis(viz);
+        // viz.plotLines(viz);
+
+        // // Both
+        // viz.initializeHoverLines(viz);
     }
 
-    processCaseData(viz, data, start, end, areas, ideologyData) { // TODO: reset values for issue areas
+    processYears(viz, start, end) {
         var processedData = [];
-        var idData = ideologyData;
-        var newIdDate = [];
 
-        var year;
-        viz.k += 1;
-        console.log(data.length);
-        for (var i = 0; i < data.length; i++) {
-            year = Number(viz.parseDate(data[i].dateDecision).getFullYear().toString());
-            if (Number(start) <= year && year <= Number(end)) {
-                if (Number(data[i].issueArea) == 0) {
-                    processedData.push(data[i]);
-                }
-                else {
-                    for (var j = 0; j < areas.length; j++) {
-                        if (Number(data[i].issueArea) == Number(areas[j])) {
-                            processedData.push(data[i]);
-                            break;
-                        }
-                    }
-
-                    var ideology = Number(data[i].decisionDirection);
-                    for (var j = 0; j < idData.length; j++) {
-                        if (Number(idData[j].Year) == year) {
-                            switch(ideology) {
-                                case 3:
-                                    idData[j] = {
-                                        Year: year,
-                                        Conservative: idData[j].Conservative.toString(),
-                                        Liberal: idData[j].Liberal.toString(),
-                                        Unspecified: (Number(idData[j].Unspecified) - 1).toString()
-                                    }
-                                    break;
-                                case 2:
-                                    idData[j] = {
-                                        Year: year,
-                                        Conservative: idData[j].Conservative.toString(),
-                                        Liberal: (Number(idData[j].Liberal) - 1).toString(),
-                                        Unspecified: idData[j].Unspecified.toString()
-                                    } 
-                                    break;
-                                case 1:
-                                    idData[j] = {
-                                        Year: year,
-                                        Conservative: (Number(idData[j].Conservative) - 1).toString(),
-                                        Liberal: idData[j].Liberal.toString(),
-                                        Unspecified: idData[j].Unspecified.toString()
-                                    } 
-                                    break;
-                                default:
-                                    // do nothing
-                                    console.log(data[i]);
-                                    console.log(i);
-                                    console.log(j);
-                                    console.log(ideology);
-                                    console.log(data[i].caseId);
-                                    break;
-                            }
-                        }
-                    }
-                }
+        for (var i = 0; i < viz.years.length; i++) {
+            if (start <= Number(viz.years[i]) && viz.years[i] <= Number(end)) {
+                processedData.push(viz.years[i]);
             }
         }
 
-        return [processedData, idData];
+        return processedData;
     }
 
     processIdeologyData(viz, data, start, end, areas) {
-        var processedData = [];
+        var processedData = {};
 
-        for (var i = 0; i < data.length; i++) {
-            if (Number(start) <= Number(data[i].Year) && Number(data[i].Year) <= Number(end)) {
-                processedData.push(data[i]);
+        for (var i in data) {
+            if (Number(start) <= Number(i) && Number(i) <= Number(end)) {
+                var processObj = {};
+                for (var area in data[i].Issue_Areas) {
+                    if (areas.includes(area)) {
+                        processObj[area] = data[i].Issue_Areas[area];
+                    }
+                }
+                processedData[i] = {};
+                processedData[i]["Issue_Areas"] = processObj;
             }
         }
 
@@ -784,6 +740,62 @@ class Ideology {
         }
 
         return processedData;
+    }
+
+    updateStreams(viz) {
+        var area = d3.area()
+            .x(function(d) { return viz.xScale(Number(d.data.Year)); })
+            .y0(function(d) { return viz.yScale(d[0]); })
+            .y1(function(d) { return viz.yScale(d[1]); })
+            .curve(d3.curveBasis);
+
+        var index = 0;
+
+        var toUpdate = viz.streamGroup.selectAll("path")
+            .data(viz.series);
+
+        toUpdate.exit().remove();
+        toUpdate.enter().append("path")
+            .attr("d", area)
+            .attr("class", function() {
+                var classList = "ideology_path ";
+                classList += viz.fillColorClasses[index++];
+                return classList;
+            });
+
+        // viz.streamGroup.remove();
+        // var streamPaths = viz.streamSvg.append("g")
+        //     .attr("id", "stream_paths");
+
+        // streamPaths.selectAll("path")
+        //     .data(viz.series)
+        //     .enter().append("path")
+        //     .attr("d", area)
+        //     .attr("class", function() {
+        //         var classList = "ideology_path ";
+        //         classList += viz.fillColorClasses[index++]
+        //         return classList;
+        //     });
+    }
+
+    updateXAxis(viz, years) {
+        var xAxis = d3.axisBottom(viz.xTicks).tickValues(viz.xTicks.ticks(years.length/2));
+
+        var drawnAxis = d3.select("#stream_axis");
+
+        drawnAxis.call(xAxis)
+            .selectAll("text")  
+            .style("text-anchor", "end")
+            .style("font-size", "0.75rem")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)")
+            .attr("display", function(d,i) {
+                if (i%2 == 0) {
+                    return 'block';
+                }
+                return 'none';
+            });
     }
 
     computeXSnapping(viz, xVal) {
