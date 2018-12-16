@@ -13,44 +13,124 @@
 <body>
 	<div class="container">
 		<div id="header">
-			<h1>Judicial Review</h1>
-			<h3>An Overview of the Supreme Court from 1946 - 2018</h3>
+			<h1>Judicial Review: An Analysis of the United States Supreme Court from 1946 to 2018</h1>
+
+			<div id="rundown">
+				<p>
+					Lorem ipsum dolor sit amet, ius nihil latine eu, lucilius patrioque qui in, in habeo adversarium quo. Lorem
+					eruditi cu sed, iisque laoreet alienum ut
+					sea, feugiat fabulas contentiones ne per. No sed choro nonumes pericula, no legimus expetendis has. Detracto
+					adipisci sed ex, in probo constituto
+					quaerendum mea, cu cum dicunt timeam blandit. Vix at habeo exerci deterruisset, eos ex velit facilisis, ei mea
+					dolor audire reprimique. Vel eu
+					veritus habemus indoctum. Modus nonumes cum ut.
+
+					Eam ex scaevola recteque evertitur, congue recusabo dissentiunt mei te. Vis et euripidis adipiscing mediocritatem,
+					per alia mutat erroribus ne. In
+					elit legimus mel, ea mel cibo nulla tation, antiopam facilisis mel an. Ea vix quis aliquam, mel id soleat
+					invidunt, ius ad munere senserit. Malorum
+					perpetua ei qui, te fugit diceret volutpat eam.
+
+					Sed modus option posidonium ne, mel lorem perpetua euripidis ex. Te vix eros reque democritum. Ut quem probo
+					facilis eos, mei at solum
+					atomorum. Mei dico argumentum accommodare in. No eam porro neglegentur. Eum partem definitiones definitionem eu,
+					meis saepe pericula
+					vim an.
+
+					Tota indoctum scriptorem te quo. Vel torquatos adipiscing in, eam ex dicat dicta ponderum. Mel diam meliore
+					voluptatibus eu. Atomorum
+					ullamcorper et sed, vel te vocibus maiorum tincidunt. Omnes delicata vix id. Exerci accusam elaboraret id cum.
+				</p>
+			</div>
 		</div>
 
-		<div id="left">
-			<div id="ideology">
-				<div class="vis_title">Number of Cases by Ideology</div>
-				<div id="ideology_legend_and_values"></div>
-				<div id="ideology_vis" class="vis"></div>
-				<div class="bottom_padding"></div>
-			</div>
-
-			<div id="constitutional">
-				<div class="vis_title">Rulings by Issue Area & Unconstitutionality</div>
-				<div id="radar">Cases per Issue Area</div><div id="bar"><div id="legend"></div></div>
-			</div>
+		<div id="filters">
+			<!-- <div id="filter_header">Filters</div> -->
+			<div id="time_filter"></div>
+			<div id="issue_area_filter"></div>
+		</div>
+		<div id="hidden-filters">
+			<div class="filter_header">Filters</div>
+			<div class="time_filter"></div>
+			<div class="issue_area_filter"></div>
 		</div>
 
-		<div id="right">
-			<div id="precedent">
-				<div class="vis_title">Precedent-Altering Cases</div>
-				<div id="precedent_options" class="buttonrow">
-					<select id='precedent_sortby' name="Sort By">
-						<option value="enddate">End Date</option>
-						<option value="startdate">Start Date</option>
-						<option value="length">Length</option>
-					</select>
-					<button id='precedent_reversesort' type='button'>Reverse Sort</button>
+		<div id="ideology_section" class="section">
+			<div class="left">
+				<div id="ideology">
+					<div class="vis_title">Case Ruling Distribution by Ideology</div>
+					<div id="ideology_vis" class="vis"></div>
+					<div class="bottom_padding"></div>
 				</div>
-				<div id="precedent_vis" class="vis"></div>
-				<div class="bottom_padding"></div>
+				<div id="justice_scores">
+					<div class="vis_title">Martin-Quinn Scores for Justices</div>
+					<div id="justices_vis" class="vis"></div>
+					<div class="bottom_padding"></div>
+				</div>
 			</div>
+			<div class="right" id="ideology_right">
+				<h1 id="year_on_hover">1946</h1>
+				<div id="ideology_counts">
+					<div class="count_div">
+						<div class="count_label">Conservative:</div>
+						<div id="conservative_count" class="count">10</div>
+					</div>
+					<div class="count_div">
+						<div class="count_label">Unspecified:</div>
+						<div id="unspecified_count" class="count">6</div>
+					</div>
+					<div class="count_div">
+						<div class="count_label">Liberal:</div>
+						<div id="liberal_count" class="count">15</div>
+					</div>
+					<div class="count_div">
+						<div class="count_label">Total:</div>
+						<div id="total_count" class="count">31</div>
+					</div>
+				</div>
+				<div id="justices_and_scores">
+					<h2>Serving Justices</h2>
+
+					<div class="justice_div">
+						<div class="justice_name">Black</div>
+						<div id="justice_score" class="score">2.7</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="constitutional">
+			<div class="vis_title">Rulings by Issue Area & Unconstitutionality</div>
+			<div id="radar">Cases per Issue Area</div>
+			<div id="bar">
+				<div id="legend"></div>
+			</div>
+		</div>
+
+		<div id="precedent_section" , class="section">
+			<div class="left">
+				<div id="precedent">
+					<div class="vis_title">Precedent-Altering Cases</div>
+					<div id="precedent_options" class="buttonrow">
+						<select id='precedent_sortby' name="Sort By">
+							<option value="enddate">End Date</option>
+							<option value="startdate">Start Date</option>
+							<option value="length">Length</option>
+						</select>
+						<button id='precedent_reversesort' type='button'>Reverse Sort</button>
+					</div>
+					<div id="precedent_vis" class="vis"></div>
+					<div class="bottom_padding"></div>
+				</div>
+			</div>
+			<div class="right", id="precedent_right"></div>
 		</div>
 	</div>
 
 	<script type="text/javascript" src="js/precedent.js"></script>
 	<script type="text/javascript" src="js/ideology.js"></script>
 	<script type="text/javascript" src="js/constitutional.js"></script>
+	<script type="text/javascript" src="js/filters.js"></script>
 	<script type="text/javascript" src="js/radarChart.js"></script>
 	<script type="text/javascript" src="js/bar.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>

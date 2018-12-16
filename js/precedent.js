@@ -28,6 +28,7 @@ class Precedent {
 
         viz.createColorScale();
         viz.createXAxis();
+        viz.createGridLines();
 
         viz.createTooltip();
 
@@ -46,6 +47,13 @@ class Precedent {
             var dates = viz.data.map(d => new Date(d.dateDecision));
             dates.sort((a, b) => a.getFullYear() - b.getFullYear());
             viz.draw(dates[0].getFullYear(), dates[dates.length - 1].getFullYear());
+
+            viz.sortSelect.addEventListener("change", function() {
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
+            });
+            viz.sortReverseButton.addEventListener("click", function() {
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
+            });
         });
     }
 
@@ -86,6 +94,18 @@ class Precedent {
             .attr("x-axis label");
     }
 
+    createGridLines() {
+        var viz = this;
+        viz.gridlinegroup = viz.svg.append("g")
+            .attr("class", "gridline")
+            .attr("transform", "translate(0," + (viz.yScale.range()[0] + 10) + ")");
+        var dateRange = viz.getDateRange();
+        viz.gridlines = d3.axisBottom(viz.xScale).ticks(viz.getNumTicks(dateRange))
+            .tickSize(-viz.height*19/20, 0)
+            .tickFormat("");
+        viz.gridlinegroup.call(viz.xAxis);
+    }
+
     getDateRange() {
         var viz = this;
         var dates = viz.data.map(d => new Date(d.dateDecision));
@@ -118,16 +138,20 @@ class Precedent {
      * Take in two parameters of start and end date
      * Only include intervals that have at least one endpoint in the start-end date range
      */
-    draw(startYear, endYear) {
+    draw(startYear, endYear, issueAreas) {
         var viz = this;
         if (startYear == null || endYear == null) {
             startYear = viz.range[0];
             endYear = viz.range[1];
         }
         viz.range = [startYear, endYear];
+        if (issueAreas == null) {
+            issueAreas = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+        viz.issueAreas = issueAreas;
 
         var rows = viz.generateRows(startYear, endYear);
-        viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice();
+        viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice(d3.timeYear);
         viz.yScale.domain([0, rows.length]);
 
         if (rows.length == 0) {
@@ -156,6 +180,8 @@ class Precedent {
                 viz.drawEndpoints(group, g.length);
             });
         
+        // viz.svg.selectAll(".gridline").data(viz.yScale.ticks(15))
+        
         viz.svg.selectAll('.interline')
             .on('mouseover', function(d, i, g) {
                 viz.showTooltip(d, g[i]);
@@ -163,36 +189,7 @@ class Precedent {
             .on('mouseout', viz.tip.hide)
 
         viz.xaxisgroup.call(viz.xAxis);
-        var tickxvalues = d3.selectAll('.tick').nodes().map(this.stupidMapper);
-        console.log(tickxvalues);
-        var gridlines = viz.xaxisgroup.selectAll('.gridline').data(tickxvalues);
-        d3.selectAll('.gridline').remove();
-        gridlines.exit().remove();
-        enter = gridlines.enter()
-            .append('line')
-            .classed('gridline', true);
-        gridlines.merge(enter)
-            .attr('x1', d => d)
-            .attr('x2', d => d)
-            .attr('y1', 0)
-            .attr('y2', -viz.height + viz.height/20);
-        viz.sortSelect.addEventListener("change", function() {
-            viz.draw(viz.range[0], viz.range[1]);
-        }, {once: true});
-        viz.sortReverseButton.addEventListener("click", function() {
-            viz.draw(viz.range[0], viz.range[1]);
-        }, {once: true});
-    }
-
-    stupidMapper(d) {
-        var regex = new RegExp(/translate\(([\d\.]+),\d*\)/);
-        var result = regex.exec(d.attributes.transform.value);
-        if (result == null) {
-            return NaN;
-        } else {
-            return Number(result[1]);
-        }
-        // return Number(d.attributes.transform.value.substring("translate(".length, d.attributes.transform.value.length - 3));
+        viz.gridlinegroup.call(viz.gridlines);
     }
 
     getSortingAlgo(a, b) {
@@ -218,6 +215,7 @@ class Precedent {
                         <b>${overruled.caseName} (${overruled.dateDecision})</b>
                     </p>`;
         viz.tip.html(html);
+        var xOffset = 0;
         viz.tip.offset([-5, 0]);
         // viz.tip.style("min-width", viz.width).style("max-width", viz.width);
         viz.tip.direction('n').show(intervalData, group);
@@ -240,6 +238,7 @@ class Precedent {
         // }
         var rows = viz.intervals
             .filter(d => viz.filterByStartAndEndYear(d, startYear, endYear))
+            .filter(d => viz.issueAreas.includes(viz.data[d.overruled].issueArea))
             .sort(function(a, b) {
                 return viz.getSortingAlgo(a, b);
             })
@@ -287,7 +286,8 @@ class Precedent {
             .attr('cx', d => viz.xScale(d.enddate))
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
-            .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"));
+            .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"))
+            .attr('opacity', d => viz.xScale.domain()[1] < d.enddate ? 0 : 1);
     }
 
     drawStartpoints(group, numLines) {
@@ -296,30 +296,45 @@ class Precedent {
             .attr('cx', d => viz.xScale(d.startdate))
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
-            .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"));
+            .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"))
+            .attr('opacity', d => viz.xScale.domain()[0] > d.startdate ? 0 : 1);
     }
 
     drawInterlines(group, numLines) {
         var viz = this;
-        group.selectAll('line.interline')
-            .attr('x1', d => viz.xScale(d.startdate))
-            .attr('x2', d => viz.xScale(d.enddate))
-            .attr('y1', '0')
-            .attr('y2', '0')
-            .attr('stroke-width', viz.getIntervalHeight(numLines) - 1)
-            .attr('stroke', d => viz.cScale(viz.data[d.overruled].issueArea));
+        var offLeft = false;
+        var offRight = false;
+        group.selectAll('rect.interline')
+            .attr('x', function(d) {
+                offLeft = viz.xScale.domain()[0] > d.startdate;
+                return Math.max(viz.xScale(viz.xScale.domain()[0]), viz.xScale(d.startdate));
+            })
+            .attr('y', viz.getIntervalHeight(numLines) - 2*viz.getIntervalHeight(numLines))
+            .attr('width', function(d) {
+                offRight = viz.xScale.domain()[1] < d.enddate;
+                if (offLeft) {
+                    return viz.xScale(d.enddate) - viz.xScale(viz.xScale.domain()[0]);
+                }
+                else if (offRight) {
+                    return viz.xScale(viz.xScale.domain()[1]) - viz.xScale(d.startdate);
+                } else {
+                    return viz.xScale(d.enddate) - viz.xScale(d.startdate);
+                }
+            })
+            .attr('height', 2*viz.getIntervalHeight(numLines))
+            .attr('class', d => 'interline fill_' + viz.data[d.overruled].issueArea, true);
     }
 
     getIntervalHeight(numLines) {
         var viz = this;
-        return Math.min(viz.yScale.range()[0] / numLines / 2 - 1, 6);
+        return Math.min(viz.yScale.range()[0] / numLines / 2 - 1.3, 6);
     }
 
     appendIntervalComponents(d, i, g) {
         var group = d3.select(g[i]);
         group.selectAll('line').data(d)
             .enter()
-            .append('line')
+            .append('rect')
             .classed('interline', true);
         group.selectAll('circle.startpoint').data(d)
             .enter()
