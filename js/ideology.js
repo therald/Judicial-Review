@@ -471,15 +471,18 @@ class Ideology {
                 document.getElementById("total_count").innerHTML = total;
             } 
         }
-        
-        var justiceDisplay = document.getElementsByClassName("justice_div");
 
-        if (justiceDisplay != null) {
-            for (var i = 0; i < justiceDisplay.length; i++) {
-                justiceDisplay[i].parentNode.removeChild(justiceDisplay[i]);
-            }
+        var justiceDetailDiv = document.getElementById("justices_and_scores");
+        justiceDetailDiv.innerHTML = "";
+
+        if (viz.hoverYear <= 2011) {
+            var headerTag = document.createElement("h2");
+            var headerTagText = document.createTextNode("Serving Justices");
+            headerTag.appendChild(headerTagText);
+            justiceDetailDiv.appendChild(headerTag);
         }
 
+        var justiceDivs = [];
         for (var justiceName in viz.splitJusticeData) {
             for (var termData in viz.splitJusticeData[justiceName]) {
                 if (Number(viz.splitJusticeData[justiceName][termData].term) == viz.hoverYear) {
@@ -489,7 +492,7 @@ class Ideology {
                     var justiceLabelText = document.createTextNode(justiceName);
                     justiceLabel.classList.add("justice_name");
                     var justiceScore = document.createElement("div");
-                    var justiceScoreText = document.createTextNode(viz.splitJusticeData[justiceName][termData].mqScore);
+                    var justiceScoreText = document.createTextNode(Number(viz.splitJusticeData[justiceName][termData].mqScore).toFixed(2).toString());
                     justiceScore.classList.add("score");
                     justiceScore.setAttribute("id", "justice_score_" + justiceName);
 
@@ -499,9 +502,26 @@ class Ideology {
                     justiceDiv.appendChild(justiceLabel);
                     justiceDiv.appendChild(justiceScore);
 
-                    document.getElementById("justices_and_scores").appendChild(justiceDiv);
+                    var justiceObj = {
+                        Year: viz.hoverYear,
+                        Name: justiceName,
+                        Score: viz.splitJusticeData[justiceName][termData].mqScore,
+                        Obj: justiceDiv
+                    };
+
+                    if (!justiceDivs.map(o => o.Name).includes(justiceName)) {
+                        justiceDivs.push(justiceObj);
+                    }
                 }
             }
+        }
+
+        justiceDivs = justiceDivs.sort(function(a,b) {
+            return Number(b.Score) - Number(a.Score);
+        });
+
+        for (var i = 0; i < justiceDivs.length; i++) {
+            justiceDetailDiv.appendChild(justiceDivs[i].Obj);
         }
     }
 
