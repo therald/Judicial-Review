@@ -164,7 +164,6 @@ class Precedent {
 
         viz.xaxisgroup.call(viz.xAxis);
         var tickxvalues = d3.selectAll('.tick').nodes().map(this.stupidMapper);
-        console.log(tickxvalues);
         var gridlines = viz.xaxisgroup.selectAll('.gridline').data(tickxvalues);
         d3.selectAll('.gridline').remove();
         gridlines.exit().remove();
