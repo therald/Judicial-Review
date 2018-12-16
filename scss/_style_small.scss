@@ -53,30 +53,11 @@ body {
         box-shadow: 0px 3px 9px rgba(0, 0, 0, .15);
         color: #5B6770;
         line-height: 1;
+        max-width: 30em;
         padding: 12px;
         pointer-events: none;
         text-align: center;
     }
-    
-    /* Creates a small triangle extender for the tooltip */
-    // .d3-tip:after {
-    //     box-sizing: border-box;
-    //     display: inline;
-    //     font-size: 10px;
-    //     width: 100%;
-    //     line-height: 1;
-    //     color: rgba(0, 0, 0, 0.8);
-    //     content: "\25BC";
-    //     position: absolute;
-    //     text-align: center;
-    // }
-    
-    // /* Style northward tooltips differently */
-    // .d3-tip.n:after {
-    //     margin: -1px 0 0 0;
-    //     top: 100%;
-    //     left: 0;
-    // }
 
     .btn {
         border: 1;
@@ -245,7 +226,7 @@ body {
             min-height: calc(100vh - 15.5rem);
 
             .left {
-                width: 70%;
+                width: 60%;
 
                 #ideology {
                     background: $lightGray;
@@ -274,6 +255,10 @@ body {
 
                     .fill_red {
                         fill: $lightRed;
+                    }
+
+                    .visible {
+                        opacity: 1.0 !important;
                     }
 
                     #stream_line {
@@ -389,6 +374,7 @@ body {
 
             .visible {
                 opacity: 1.0 !important;
+                width: 40%;
             }
         }
 
@@ -400,34 +386,52 @@ body {
             height: 50%;
         }
 
-        #right {
-            float: right;
-            height: 86.5%;
-            margin-top: 1%;
-            width: 49.5%;
+        #precedent_section {
+            display: flex;
+            height: 76vh;
 
-            #precedent {
-                background: $lightGray;
-                border-radius: 15px;
-                display: flex;
-                flex-direction: column;
-                height: 101%;
+            .left {
+                width: 70%;
 
-                #precedent_vis {
+                #precedent {
+                    background: $lightGray;
+                    border-radius: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    margin-top: 1%;
+                    margin-bottom: 1%;
+
                     .errMessage {
                         text-anchor: middle;
                         font-weight: bold;
                         color: rgb(85, 80, 80);
                     }
-
+    
                     .gridline {
                         stroke: lightgrey;
-                        stroke-opacity: 0.7;
+                        stroke-opacity: 0.2;
                         shape-rendering: crispEdges;
+                        z-index: -100;
+                        
+                        .domain {
+                            stroke-opacity: 0;
+                        }
                     }
                 }
             }
+
+            .right {
+                width: 30%;
+                padding: 1%;
+                opacity: 0;
+            }
+
+            .visible {
+                opacity: 1.0 !important;
+            }
         }
+        
     }
 
     .fill_1 {
