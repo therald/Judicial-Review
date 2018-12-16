@@ -49,10 +49,10 @@ class Precedent {
             viz.draw(dates[0].getFullYear(), dates[dates.length - 1].getFullYear());
 
             viz.sortSelect.addEventListener("change", function() {
-                viz.draw(viz.range[0], viz.range[1]);
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
             });
             viz.sortReverseButton.addEventListener("click", function() {
-                viz.draw(viz.range[0], viz.range[1]);
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
             });
         });
     }
