@@ -723,7 +723,6 @@ class Ideology {
                 return 'none';
             });
 
-        console.log(viz.splitJusticeData);
         viz.LineYScale.domain([-8.0, 8.0])
             .range([(viz.justices_height - 40), 10]);
 
