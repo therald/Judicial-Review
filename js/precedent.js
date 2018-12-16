@@ -138,13 +138,17 @@ class Precedent {
      * Take in two parameters of start and end date
      * Only include intervals that have at least one endpoint in the start-end date range
      */
-    draw(startYear, endYear) {
+    draw(startYear, endYear, issueAreas) {
         var viz = this;
         if (startYear == null || endYear == null) {
             startYear = viz.range[0];
             endYear = viz.range[1];
         }
         viz.range = [startYear, endYear];
+        if (issueAreas == null) {
+            issueAreas = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+        viz.issueAreas = issueAreas;
 
         var rows = viz.generateRows(startYear, endYear);
         viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice(d3.timeYear);
@@ -209,6 +213,7 @@ class Precedent {
                         <b>${overruled.caseName} (${overruled.dateDecision})</b>
                     </p>`;
         viz.tip.html(html);
+        var xOffset = 0;
         viz.tip.offset([-5, 0]);
         // viz.tip.style("min-width", viz.width).style("max-width", viz.width);
         viz.tip.direction('n').show(intervalData, group);
@@ -231,6 +236,7 @@ class Precedent {
         // }
         var rows = viz.intervals
             .filter(d => viz.filterByStartAndEndYear(d, startYear, endYear))
+            .filter(d => viz.issueAreas.includes(viz.data[d.overruled].issueArea))
             .sort(function(a, b) {
                 return viz.getSortingAlgo(a, b);
             })
@@ -313,8 +319,8 @@ class Precedent {
                     return viz.xScale(d.enddate) - viz.xScale(d.startdate);
                 }
             })
-            .attr('height', d => 2*viz.getIntervalHeight(numLines))
-            .attr('fill', d => viz.cScale(viz.data[d.overruled].issueArea));
+            .attr('height', 2*viz.getIntervalHeight(numLines))
+            .attr('class', d => 'interline fill_' + viz.data[d.overruled].issueArea, true);
     }
 
     getIntervalHeight(numLines) {

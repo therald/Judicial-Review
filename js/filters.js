@@ -360,9 +360,9 @@ class Filters {
                 issueAreas.push(i);
             }
         }
-        
+
         viz.ideology.update(viz.startYear, viz.endYear, issueAreas);
-        viz.precedent.draw(viz.startYear, viz.endYear);
+        viz.precedent.draw(viz.startYear, viz.endYear, issueAreas);
     }
 
     computeXSnapping(viz, xVal) {
