@@ -180,6 +180,8 @@ class Precedent {
                 viz.drawEndpoints(group, g.length);
             });
         
+        // viz.svg.selectAll(".gridline").data(viz.yScale.ticks(15))
+        
         viz.svg.selectAll('.interline')
             .on('mouseover', function(d, i, g) {
                 viz.showTooltip(d, g[i]);
