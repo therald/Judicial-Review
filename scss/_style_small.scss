@@ -226,7 +226,7 @@ body {
             min-height: calc(100vh - 15.5rem);
 
             .left {
-                width: 70%;
+                width: 60%;
 
                 #ideology {
                     background: $lightGray;
@@ -255,6 +255,10 @@ body {
 
                     .fill_red {
                         fill: $lightRed;
+                    }
+
+                    .visible {
+                        opacity: 1.0 !important;
                     }
 
                     #stream_line {
@@ -286,7 +290,6 @@ body {
                         opacity: 0;
                     }
                 }
-
             }
 
             .right {
@@ -350,6 +353,7 @@ body {
                     .justice_div {
                         display: flex;
                         padding-left: 2rem;
+                        padding-bottom: 0.5rem;
 
                         .score {
                             font-weight: bold;
@@ -369,6 +373,7 @@ body {
 
             .visible {
                 opacity: 1.0 !important;
+                width: 40%;
             }
         }
 
