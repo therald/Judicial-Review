@@ -52,6 +52,10 @@ class Filters {
         viz.startHandle;
         viz.endHandle;
 
+        viz.handlesAreMerged = false;
+        viz.mergedYear;
+        viz.mergedHandle;
+
         viz.data = data;
         viz.issueAreaData;
         viz.draw();
@@ -114,7 +118,10 @@ class Filters {
                     }
                 })
                 .on("end", function() {
-                    //viz.updateVisualizations(viz);
+                    // Handle merging
+                    if (viz.startYear == viz.endYear) {
+                        viz.drawMergedHandles(viz);
+                    }
                 })
             );
         
@@ -174,7 +181,10 @@ class Filters {
                     }
                 })
                 .on("end", function() {
-                    //viz.updateVisualizations(viz);
+                    // Handle merging
+                    if (viz.startYear == viz.endYear) {
+                        viz.drawMergedHandles(viz);
+                    }
                 })
             );
         
@@ -209,6 +219,53 @@ class Filters {
             .text(viz.endYear.toString());
 
         viz.updateAvailableIssueAreas(viz);
+    }
+
+    drawMergedHandles(viz) {
+        viz.handlesAreMerged = true;
+
+        d3.select("#end-handle").remove();
+        d3.select("#start-handle").remove();
+
+        viz.mergedYear = viz.startYear;
+
+        viz.mergedHandle = viz.time_svg.append("g")
+            .attr("id", "merged-handle")
+            .attr("cursor", "pointer")
+            .call(d3.drag()
+                .on("drag", function() { //TODO: this won't take into account what part of handle is selected on drag
+                    var mousePos = d3.mouse(this);
+                    var mouseX = viz.xTicks.invert(viz.mergedYear);
+                    if (mousePos != null) {
+                        if (mousePos[0] >=75 && mousePos[0] <= viz.timeWidth - 65) {
+                            viz.updateMergedHandle(viz, mousePos[0]);
+                        }
+                    }
+                })
+            );
+
+        // Alter path and text position below; add text-anchor middle for text
+        
+        viz.mergedHandle.append("path")
+            .attr("id", "start_line")
+            .attr("class", "fill_dark_gray")
+            .attr("stroke-width", "2px")
+            .attr("stroke", "white")
+            .attr('d', "M" + snappedXPos + ",64 L" + snappedXPos + ",4 C" + (snappedXPos + 60) + ",4 " + (snappedXPos + 60) + ",4 " + (snappedXPos + 60) + ",24 C" + (snappedXPos + 60) + ",34 " + (snappedXPos + 60) + ",34 " + snappedXPos + ",34");
+
+        viz.mergedHandle.append("text")
+            .attr("x", 30)
+            .attr("y", 24)
+            .attr("fill", "white")
+            .text(viz.mergedYear.toString());
+    }
+
+    unmergeHandles(viz) {
+
+    }
+
+    updateMergedHandle(viz) {
+
     }
 
     drawIssueAreaFilter(viz) {
