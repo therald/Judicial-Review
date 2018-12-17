@@ -330,8 +330,6 @@ class Filters {
         else {
             for (var i = 0; i < viz.data.length; i++) {
                 if (viz.parseDate(viz.data[i].dateDecision).getFullYear().toString() == viz.parseYear(viz.startYear).getFullYear().toString()) {
-                    console.log("years match");
-
                     if (!activeAreas.includes(Number(viz.data[i].issueArea)) && Number(viz.data[i].issueArea) != 0) {
                         activeAreas.push(Number(viz.data[i].issueArea));
                     }
