@@ -396,6 +396,11 @@ body {
                     margin-top: 1%;
                     margin-bottom: 1%;
 
+                    .buttonrow {
+                        display: inline-block;
+                        float: right;
+                    }
+
                     .errMessage {
                         text-anchor: middle;
                         font-weight: bold;
@@ -411,6 +416,11 @@ body {
                         .domain {
                             stroke-opacity: 0;
                         }
+                    }
+
+                    .vis_title {
+                        display: inline-block;
+                        text-align: center;
                     }
                 }
             }

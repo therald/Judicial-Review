@@ -1,11 +1,14 @@
 class Precedent {
+
     /*
-     * TODO
-     *  Fix margins when zoomed in
-     *  Finish tooltip (look at Christabel's styling)
-     *  Add a legend
-     *  Add vertical gridlines
-     *  Add filters for starting, ending, and issue area
+     * Change color of endpoints to match Taylor's colors
+     * Magnify last one by default
+     * Sort by end, start, length
+     * Group by issue area (by default)
+     * Group/filter by start/end ideology
+     * Summary writings
+     * Get rid of the word year
+     * Move text to the right instead of tooltip
      */
 
     constructor(div, data) {
