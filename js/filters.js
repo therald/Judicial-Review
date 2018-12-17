@@ -120,14 +120,15 @@ class Filters {
         
         viz.startHandle.append("path")
             .attr("id", "start_line")
+            .attr("class", "fill_dark_gray")
             .attr("stroke-width", "2px")
-            .attr("stroke", "black")
-            .attr("fill", "white")
+            .attr("stroke", "white")
             .attr('d', "M75,64 L75,4 C15,4 15,4 15,24 C15,34 15,34 75,34");
 
         viz.startHandle.append("text")
             .attr("x", 30)
             .attr("y", 24)
+            .attr("fill", "white")
             .text("1946");
     }
 
@@ -179,14 +180,15 @@ class Filters {
         
         viz.endHandle.append("path")
             .attr("id", "end_line")
+            .attr("class", "fill_dark_gray")
             .attr("stroke-width", "2px")
-            .attr("stroke", "black")
-            .attr("fill", "white")
+            .attr("stroke", "white")
             .attr('d', "M" + (viz.timeWidth - 75) + ",64 L" + (viz.timeWidth - 75) + ",4 C" + (viz.timeWidth - 15) + ",4 " + (viz.timeWidth - 15) + ",4 " + (viz.timeWidth - 15) + ",24 C" + (viz.timeWidth - 15) + ",34 " + (viz.timeWidth - 15) + ",34 " + (viz.timeWidth - 75) + ",34");
 
         viz.endHandle.append("text")
             .attr("x", (viz.timeWidth - 65))
             .attr("y", 24)
+            .attr("fill", "white")
             .text("2018");
     }
 

@@ -188,6 +188,9 @@ class Ideology {
     }
 
     initializeScalesAndStack(viz, ideologyData, years) {
+        if (years.length == 1) {
+            years.push((Number(years[0]) + 1).toString());
+        }
         viz.xScale.domain(d3.extent(years, function(d) { return d; }))
             .range([10, viz.ideology_width-10]);
 
@@ -195,6 +198,14 @@ class Ideology {
             .range([10, viz.ideology_width-10]);
 
         var dataForStack = viz.processIdeologyDataForStack(viz, ideologyData);
+        if (dataForStack.length == 1) {
+            dataForStack.push({
+                Conservative: dataForStack[0].Conservative,
+                Liberal: dataForStack[0].Liberal,
+                Unspecified: dataForStack[0].Unspecified,
+                Year: (Number(years[0]) + 1).toString()
+            });
+        }
         viz.series = viz.stack(dataForStack);
 
         var mins = viz.series[0].map(d => d[0]);
@@ -256,7 +267,7 @@ class Ideology {
 
         var streamLineData = [
             { 'x': 10, 'y': -1000000},
-            { 'x': 10, 'y': (viz.series[2][year - viz.series[0][0].data.Year])["1"]}
+            { 'x': 10, 'y': 0}
         ];
 
         var streamLine = d3.line()
@@ -265,7 +276,7 @@ class Ideology {
                 if (d['y'] == -1000000) {
                     return viz.ideology_height - 40;
                 }
-                return viz.yScale(d['y']);
+                return d['y'];
             });
         
         viz.streamSvg.append("path")
@@ -275,7 +286,7 @@ class Ideology {
 
         var lineLineData = [
             { 'x': 40, 'y': -1000000},
-            { 'x': 40, 'y': 10}
+            { 'x': 40, 'y': 0}
         ];
 
         var lineLine = d3.line()
@@ -284,7 +295,7 @@ class Ideology {
                 if (d['y'] == -1000000) {
                     return viz.ideology_height - 40;
                 }
-                return viz.yScale(d['y']);
+                return d['y'];
             });
 
         viz.lineSvg.append("path")
@@ -367,7 +378,7 @@ class Ideology {
 
         var streamLineData = [
             { 'x': mousePos[0], 'y': -1000000},
-            { 'x': mousePos[0], 'y': (viz.series[2][yearDifference])["1"]}
+            { 'x': mousePos[0], 'y': 0}
         ];
 
         var streamLine;
@@ -382,7 +393,7 @@ class Ideology {
                     if (d['y'] == -1000000) {
                         return viz.ideology_height - 40;
                     }
-                    return viz.yScale(d['y']);
+                    return d['y'];
                 });
         }
         else {
@@ -392,7 +403,7 @@ class Ideology {
                     if (d['y'] == -1000000) {
                         return viz.ideology_height - 40;
                     }
-                    return viz.yScale(d['y']);
+                    return d['y'];
                 });
         }
 
@@ -475,7 +486,7 @@ class Ideology {
         var justiceDetailDiv = document.getElementById("justices_and_scores");
         justiceDetailDiv.innerHTML = "";
 
-        if (viz.hoverYear <= 2011) {
+        if (viz.hoverYear <= 2017) {
             var headerTag = document.createElement("h2");
             var headerTagText = document.createTextNode("Serving Justices");
             headerTag.appendChild(headerTagText);
@@ -551,7 +562,7 @@ class Ideology {
                 return 'none';
             });
 
-        viz.LineYScale.domain([-8.0, 8.0])
+        viz.LineYScale.domain(viz.getScoreDomainForYearRange(viz, viz.years))
             .range([(viz.justices_height - 40), 10]);
 
         var yAxis = d3.axisLeft(viz.LineYScale);
@@ -566,6 +577,7 @@ class Ideology {
 
         viz.lineSvg.append("g")
             .attr("id", "line_y_axis_label")
+            .attr("class", "axis_label")
             .append("text")
             .attr("transform", "translate(12" + " ," + ((viz.justices_height - 40)/2) + ") rotate(-90)")
             .style("text-anchor", "middle")
@@ -590,7 +602,7 @@ class Ideology {
 
             newGroup.append("path")
                 .attr("fill", "none")
-                .attr("stroke", "#999")
+                .attr("stroke", "#DDD")
                 .attr("stroke-width", "2px")
                 .attr('d', line(justiceData));
         }
@@ -630,7 +642,14 @@ class Ideology {
         viz.updateMQScalesAndAxis(viz, processedYears);
         viz.updatePlottedLines(viz, processedYears);
 
-        viz.resetHoverLines(viz);
+        viz.resetHoverLines(viz, startYear, endYear);
+
+        if (startYear == endYear) {
+            document.getElementById("ideology_right").classList.add("visible");
+        }
+        else {
+            document.getElementById("ideology_right").classList.remove("visible");
+        }
     }
 
     processYears(viz, start, end) {
@@ -721,6 +740,7 @@ class Ideology {
     }
 
     updateMQScalesAndAxis(viz, years) {
+        console.log(years);
         viz.LineXScale.domain(d3.extent(years, function(d) { return d; }))
             .range([40, viz.justices_width-10]);
 
@@ -743,8 +763,7 @@ class Ideology {
                 return 'none';
             });
 
-        console.log(viz.splitJusticeData);
-        viz.LineYScale.domain([-8.0, 8.0])
+        viz.LineYScale.domain(viz.getScoreDomainForYearRange(viz, years))
             .range([(viz.justices_height - 40), 10]);
 
         var yAxis = d3.axisLeft(viz.LineYScale);
@@ -760,13 +779,37 @@ class Ideology {
         viz.plotLines(viz, years);
     }
 
-    resetHoverLines(viz) {
+    resetHoverLines(viz, start, end) {
         d3.select("#stream_line").remove();
         d3.select("#line_line").remove();
         d3.select("#stream_rect").remove();
         d3.select("#line_rect").remove();
 
-        viz.initializeHoverLines(viz);
+        if (start != end) {
+            viz.initializeHoverLines(viz);
+        }
+    }
+
+    getScoreDomainForYearRange(viz, years) {
+        var start = years[0];
+        var end = years[years.length - 1];
+
+        var max = -100;
+        var min = 100;
+        for (var i = 0; i < viz.mq_scores.length; i++) {
+            var dataPoint = viz.mq_scores[i];
+            if (Number(start) <= Number(dataPoint.term) && Number(dataPoint.term) <= Number(end)) {
+                var score = Number(dataPoint.mqScore);
+                if (score > max) {
+                    max = score;
+                }
+                if (score < min) {
+                    min = score;
+                }
+            }
+        }
+
+        return [min - 0.5, max + 0.5]
     }
 
     computeXSnapping(viz, xVal) {
