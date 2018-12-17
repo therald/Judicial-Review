@@ -256,7 +256,7 @@ class Ideology {
 
         var streamLineData = [
             { 'x': 10, 'y': -1000000},
-            { 'x': 10, 'y': (viz.series[2][year - viz.series[0][0].data.Year])["1"]}
+            { 'x': 10, 'y': 0}
         ];
 
         var streamLine = d3.line()
@@ -265,7 +265,7 @@ class Ideology {
                 if (d['y'] == -1000000) {
                     return viz.ideology_height - 40;
                 }
-                return viz.yScale(d['y']);
+                return d['y'];
             });
         
         viz.streamSvg.append("path")
@@ -275,7 +275,7 @@ class Ideology {
 
         var lineLineData = [
             { 'x': 40, 'y': -1000000},
-            { 'x': 40, 'y': 10}
+            { 'x': 40, 'y': 0}
         ];
 
         var lineLine = d3.line()
@@ -284,7 +284,7 @@ class Ideology {
                 if (d['y'] == -1000000) {
                     return viz.ideology_height - 40;
                 }
-                return viz.yScale(d['y']);
+                return d['y'];
             });
 
         viz.lineSvg.append("path")
@@ -367,7 +367,7 @@ class Ideology {
 
         var streamLineData = [
             { 'x': mousePos[0], 'y': -1000000},
-            { 'x': mousePos[0], 'y': (viz.series[2][yearDifference])["1"]}
+            { 'x': mousePos[0], 'y': 0}
         ];
 
         var streamLine;
@@ -382,7 +382,7 @@ class Ideology {
                     if (d['y'] == -1000000) {
                         return viz.ideology_height - 40;
                     }
-                    return viz.yScale(d['y']);
+                    return d['y'];
                 });
         }
         else {
@@ -392,7 +392,7 @@ class Ideology {
                     if (d['y'] == -1000000) {
                         return viz.ideology_height - 40;
                     }
-                    return viz.yScale(d['y']);
+                    return d['y'];
                 });
         }
 
@@ -475,7 +475,7 @@ class Ideology {
         var justiceDetailDiv = document.getElementById("justices_and_scores");
         justiceDetailDiv.innerHTML = "";
 
-        if (viz.hoverYear <= 2011) {
+        if (viz.hoverYear <= 2017) {
             var headerTag = document.createElement("h2");
             var headerTagText = document.createTextNode("Serving Justices");
             headerTag.appendChild(headerTagText);
@@ -566,6 +566,7 @@ class Ideology {
 
         viz.lineSvg.append("g")
             .attr("id", "line_y_axis_label")
+            .attr("class", "axis_label")
             .append("text")
             .attr("transform", "translate(12" + " ," + ((viz.justices_height - 40)/2) + ") rotate(-90)")
             .style("text-anchor", "middle")
