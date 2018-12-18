@@ -123,11 +123,31 @@
 			</div>
 		</div>
 
-		<div id="constitutional">
-			<div class="vis_title">Rulings by Issue Area & Unconstitutionality</div>
-			<div id="radar">Cases per Issue Area</div>
-			<div id="bar">
-				<div id="legend"></div>
+		<div id="unconstitutional_section" class="section">
+			<h1> Unconstitutional or Not?</h1>
+			<div id="unconstitutiona_desc">
+				<p class="block_quote">
+					<span class ="caseItalic">&quot;Third-grader Linda Brown was denied admission to the white school a few blocks from her home and was forced to attend the blacks-only school a mile away.&quot;</span>
+		
+				The Court decided in favor of Brown unanimously.<br>
+				<span class="block_quote_citation">-CNN: Top US Supreme Court Decisions Fast Facts</span>
+				</p>
+				<p>
+					This visualization shows the number of cases addressed by the Supreme Court per issue area with an emphasis on cases that were ruled unconstitutional. Each area is color-coded and the total radii is proportional to the number of cases. In each area, the difference of radii is proportional to the ratio of total number of cases v. unconstitutional rulings.<br>
+					The curves to the right represent all cases ruled unconstitutional, according to the filter setting selected (time period and issue areas). Cases are sorted according to the decision date, older cases are shown at the top. Landmark cases are shown in a different color and the summary of each landmark case is displayed on hovering a curve.<br>
+					Explore by clicking around and have fun discovering interesting unconstitutional cases!
+				</p>
+			<br>
+			</div>
+			<div id = "unconstitutionalCases" class = "right">Unconstitutional Cases</br><span class="block_quote">&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class="block_quote_citation">-From Cambridge English Corpus</span></span></div>
+			<div id="constitutional" >
+				
+				<div id="constitutional_left" class="left">
+					<div class="vis_title">Rulings by Issue Area & Unconstitutionality</div>
+					<div id="pack"><div id = "innerCircle" class = "innerCircle"></div></div><div id="landmark"></div>
+				</div>
+				
+			</div>
 			</div>
 		</div>
 
@@ -155,8 +175,8 @@
 	<script type="text/javascript" src="js/ideology.js"></script>
 	<script type="text/javascript" src="js/constitutional.js"></script>
 	<script type="text/javascript" src="js/filters.js"></script>
-	<script type="text/javascript" src="js/radarChart.js"></script>
-	<script type="text/javascript" src="js/bar.js"></script>
+	<script type="text/javascript" src="js/pack.js"></script>
+	<script type="text/javascript" src="js/landmark.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>
 
 	<!-- Load JS libraries -->
