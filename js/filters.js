@@ -55,6 +55,8 @@ class Filters {
         viz.handlesAreMerged = false;
         viz.mergedYear;
         viz.mergedHandle;
+        viz.leftHandle;
+        viz.rightHandle;
 
         viz.data = data;
         viz.issueAreaData;
@@ -70,8 +72,8 @@ class Filters {
         viz.startYear = viz.years[0];
         viz.endYear = viz.years[viz.years.length - 1];
         viz.drawTimeFilter(viz);
-        viz.drawStartHandle(viz);
-        viz.drawEndHandle(viz);
+        viz.drawStartHandle(viz, 75);
+        viz.drawEndHandle(viz, viz.timeWidth - 75);
     }
 
     drawTimeFilter(viz) {
@@ -98,8 +100,8 @@ class Filters {
             });
     }
 
-    drawStartHandle(viz) {
-        var date = viz.xTicks.invert(75);
+    drawStartHandle(viz, xPos) {
+        var date = viz.xTicks.invert(xPos);
         var year = date.getFullYear().toString();
 
         viz.startYear = Number(year);
@@ -130,13 +132,13 @@ class Filters {
             .attr("class", "fill_dark_gray")
             .attr("stroke-width", "2px")
             .attr("stroke", "white")
-            .attr('d', "M75,64 L75,4 C15,4 15,4 15,24 C15,34 15,34 75,34");
+            .attr('d', "M" + xPos + ",64 L" + xPos + ",4 C" + (xPos - 60) + ",4 " + (xPos - 60) + ",4 " + (xPos - 60) + ",24 C" + (xPos - 60) + ",34 " + (xPos - 60) + ",34 " + xPos + ",34");
 
         viz.startHandle.append("text")
-            .attr("x", 30)
+            .attr("x", xPos - 45)
             .attr("y", 24)
             .attr("fill", "white")
-            .text("1946");
+            .text(viz.startYear.toString());
     }
 
     updateStartHandle(viz, xPos) {
@@ -158,8 +160,8 @@ class Filters {
         viz.updateAvailableIssueAreas(viz);
     }
 
-    drawEndHandle(viz) {
-        var date = viz.xTicks.invert(viz.timeWidth - 75);
+    drawEndHandle(viz, xPos) {
+        var date = viz.xTicks.invert(xPos); //replace with xPos
         var year = date.getFullYear().toString();
 
         viz.endYear = Number(year);
@@ -193,13 +195,13 @@ class Filters {
             .attr("class", "fill_dark_gray")
             .attr("stroke-width", "2px")
             .attr("stroke", "white")
-            .attr('d', "M" + (viz.timeWidth - 75) + ",64 L" + (viz.timeWidth - 75) + ",4 C" + (viz.timeWidth - 15) + ",4 " + (viz.timeWidth - 15) + ",4 " + (viz.timeWidth - 15) + ",24 C" + (viz.timeWidth - 15) + ",34 " + (viz.timeWidth - 15) + ",34 " + (viz.timeWidth - 75) + ",34");
+            .attr('d', "M" + xPos + ",64 L" + xPos + ",4 C" + (xPos + 60) + ",4 " + (xPos + 60) + ",4 " + (xPos + 60) + ",24 C" + (xPos + 60) + ",34 " + (xPos + 60) + ",34 " + xPos + ",34");
 
         viz.endHandle.append("text")
-            .attr("x", (viz.timeWidth - 65))
+            .attr("x", xPos + 10)
             .attr("y", 24)
             .attr("fill", "white")
-            .text("2018");
+            .text(viz.endYear.toString());
     }
 
     updateEndHandle(viz, xPos) {
@@ -245,27 +247,181 @@ class Filters {
             );
 
         // Alter path and text position below; add text-anchor middle for text
+        var snappedXPos = viz.xTicks(viz.parseYear(viz.mergedYear));
         
         viz.mergedHandle.append("path")
-            .attr("id", "start_line")
+            .attr("id", "merge_line")
             .attr("class", "fill_dark_gray")
             .attr("stroke-width", "2px")
             .attr("stroke", "white")
-            .attr('d', "M" + snappedXPos + ",64 L" + snappedXPos + ",4 C" + (snappedXPos + 60) + ",4 " + (snappedXPos + 60) + ",4 " + (snappedXPos + 60) + ",24 C" + (snappedXPos + 60) + ",34 " + (snappedXPos + 60) + ",34 " + snappedXPos + ",34");
+            .attr('d', "M" + snappedXPos + ",64 L" + snappedXPos + ",44 C" + (snappedXPos + 30) + ",44 " + (snappedXPos + 30) + ",44 " + (snappedXPos + 30) + ",24 C" + (snappedXPos + 30) + ",4 " + (snappedXPos + 30) + ",4 " + snappedXPos + ",4 C" + (snappedXPos - 30) + ",4 " + (snappedXPos - 30) + ",4 " + (snappedXPos - 30) + ",24 C" + (snappedXPos - 30) + ",44 " + (snappedXPos - 30) + ",44 " + snappedXPos + ",44 Z");
+
+        viz.leftHandle = viz.mergedHandle.append("g")
+            .attr("id", "left_handle")
+            .call(d3.drag()
+                .on("drag", function() { //TODO: this won't take into account what part of handle is selected on drag
+                    var mousePos = d3.mouse(this);
+                    var mouseX = viz.xTicks.invert(viz.mergedYear);
+                    if (mousePos != null) {
+                        if (mousePos[0] >=75 && mousePos[0] <= viz.timeWidth - 65) {
+                            viz.unmergeHandles(viz, mousePos[0], true);
+                            viz.updateStartHandle(viz, mousePos[0]);
+                        }
+                    }
+                })
+                .on("end", function() {
+                    // Handle merging
+                    if (viz.startYear == viz.endYear) {
+                        viz.drawMergedHandles(viz);
+                    }
+                })
+            );
+
+        viz.leftHandle.append("path")
+            .attr("id", "left_handle_line")
+            .attr("fill", "none")
+            .attr("stroke-width", "2px")
+            .attr("stroke", "white")
+            .attr("d", "M" + snappedXPos + ",54 L" + (snappedXPos - 45) + ",54 L" + (snappedXPos - 45) + ",24");
+
+        viz.leftHandle.append("circle")
+            .attr("id", "left_handle_circle")
+            .attr("fill", "white")
+            .attr("cx", (snappedXPos - 45))
+            .attr("cy", 24)
+            .attr("r", 8);
+
+        viz.leftHandle.append("path")
+            .attr("id", "left_handle_arrow")
+            .attr("fill", "none")
+            .attr("class", "stroke_dark_gray")
+            .attr("d", "M" + (snappedXPos - 42) + ",18 L" + (snappedXPos - 50) + ",24 L" + (snappedXPos - 42) + ",30");
+
+        if (viz.mergedYear == viz.years[0]) {
+            viz.leftHandle.attr("class", "hidden_handle");
+        }
+
+        viz.rightHandle = viz.mergedHandle.append("g")
+            .attr("id", "right_handle")
+            .call(d3.drag()
+                .on("drag", function() { //TODO: this won't take into account what part of handle is selected on drag
+                    var mousePos = d3.mouse(this);
+                    var mouseX = viz.xTicks.invert(viz.mergedYear);
+                    if (mousePos != null) {
+                        if (mousePos[0] >=75 && mousePos[0] <= viz.timeWidth - 65) {
+                            viz.unmergeHandles(viz, mousePos[0], false);
+                            viz.updateEndHandle(viz, mousePos[0]);
+                        }
+                        else if (mousePos > viz.timeWidth - 75) {
+                            viz.unmergeHandles(viz, mousePos[0], false);
+                            viz.updateEndHandle(viz, viz.timeWidth - 75);
+                        }
+                    }
+                })
+                .on("end", function() {
+                    // Handle merging
+                    if (viz.startYear == viz.endYear) {
+                        viz.drawMergedHandles(viz);
+                    }
+                })
+            );
+
+        viz.rightHandle.append("path")
+            .attr("id", "right_handle_line")
+            .attr("fill", "none")
+            .attr("stroke-width", "2px")
+            .attr("stroke", "white")
+            .attr("d", "M" + snappedXPos + ",54 L" + (snappedXPos + 45) + ",54 L" + (snappedXPos + 45) + ",24");
+
+        viz.rightHandle.append("circle")
+            .attr("id", "right_handle_circle")
+            .attr("fill", "white")
+            .attr("cx", (snappedXPos + 45))
+            .attr("cy", 24)
+            .attr("r", 8);
+
+        viz.rightHandle.append("path")
+            .attr("id", "right_handle_arrow")
+            .attr("fill", "none")
+            .attr("class", "stroke_dark_gray")
+            .attr("d", "M" + (snappedXPos + 42) + ",18 L" + (snappedXPos + 50) + ",24 L" + (snappedXPos + 42) + ",30");
+
+        if (viz.mergedYear == viz.years[viz.years.length - 1]) {
+            viz.rightHandle.attr("class", "hidden_handle");
+        }
 
         viz.mergedHandle.append("text")
-            .attr("x", 30)
-            .attr("y", 24)
+            .attr("x", snappedXPos)
+            .attr("y", 29)
             .attr("fill", "white")
+            .attr("text-anchor", "middle")
             .text(viz.mergedYear.toString());
     }
 
-    unmergeHandles(viz) {
+    unmergeHandles(viz, xPos, isStart) {
+        var newXPos = viz.xTicks(viz.parseYear(viz.mergedYear));
 
+        console.log(viz.handlesAreMerged);
+        if (viz.handlesAreMerged) {
+            viz.handlesAreMerged = false;
+            d3.select("#merged-handle").remove();
+            viz.drawStartHandle(viz, newXPos);
+            viz.drawEndHandle(viz, newXPos);
+        }
+        else if (isStart) {
+            viz.updateStartHandle(viz, xPos);
+        }
+        else {
+            viz.updateEndHandle(viz, xPos);
+        }
     }
 
-    updateMergedHandle(viz) {
+    updateMergedHandle(viz, xPos) {
+        var snappedXPos;
+        [viz.mergedYear, snappedXPos] = viz.computeXSnapping(viz, xPos);
+        viz.startYear = viz.mergedYear;
+        viz.endYear = viz.mergedYear;
 
+        if (viz.mergedYear == viz.years[viz.years.length - 1]) {
+            viz.rightHandle.attr("class", "hidden_handle");
+        }
+        else {
+            viz.rightHandle.attr("class", "");
+        }
+
+        if (viz.mergedYear == viz.years[0]) {
+            viz.leftHandle.attr("class", "hidden_handle");
+        }
+        else {
+            viz.leftHandle.attr("class", "");
+        }
+
+        viz.mergedHandle.select("#merge_line")
+            .attr('d', "M" + snappedXPos + ",64 L" + snappedXPos + ",44 C" + (snappedXPos + 30) + ",44 " + (snappedXPos + 30) + ",44 " + (snappedXPos + 30) + ",24 C" + (snappedXPos + 30) + ",4 " + (snappedXPos + 30) + ",4 " + snappedXPos + ",4 C" + (snappedXPos - 30) + ",4 " + (snappedXPos - 30) + ",4 " + (snappedXPos - 30) + ",24 C" + (snappedXPos - 30) + ",44 " + (snappedXPos - 30) + ",44 " + snappedXPos + ",44 Z");
+
+        viz.mergedHandle.select("text")
+            .attr("x", snappedXPos)
+            .text(viz.mergedYear.toString());
+
+        viz.leftHandle.select("#left_handle_line")
+            .attr("d", "M" + snappedXPos + ",54 L" + (snappedXPos - 45) + ",54 L" + (snappedXPos - 45) + ",24");
+
+        viz.leftHandle.select("#left_handle_circle")
+            .attr("cx", (snappedXPos - 45));
+
+        viz.leftHandle.select("#left_handle_arrow")
+            .attr("d", "M" + (snappedXPos - 42) + ",18 L" + (snappedXPos - 50) + ",24 L" + (snappedXPos - 42) + ",30");
+
+        viz.rightHandle.select("#right_handle_line")
+            .attr("d", "M" + snappedXPos + ",54 L" + (snappedXPos + 45) + ",54 L" + (snappedXPos + 45) + ",24");
+
+        viz.rightHandle.select("#right_handle_circle")
+            .attr("cx", (snappedXPos + 45));
+
+        viz.rightHandle.select("#right_handle_arrow")
+            .attr("d", "M" + (snappedXPos + 42) + ",18 L" + (snappedXPos + 50) + ",24 L" + (snappedXPos + 42) + ",30");
+
+        viz.updateAvailableIssueAreas(viz);
     }
 
     drawIssueAreaFilter(viz) {

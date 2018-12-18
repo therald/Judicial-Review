@@ -221,6 +221,10 @@ body {
 
             #time_filter {
                 height: 6.5rem;
+
+                .hidden_handle {
+                    display: none;
+                }
             }
 
             #issue_area_filter {
@@ -490,6 +494,11 @@ body {
 
     .fill_dark_gray {
         fill: $darkGray;
+    }
+
+    .stroke_dark_gray {
+        stroke: $darkGray;
+        stroke-width: 2px;
     }
 
     .fill_1 {
