@@ -471,7 +471,16 @@ body {
             .right {
                 width: 30%;
                 padding: 1%;
-                opacity: 0;
+                opacity: 1;
+
+                #precedent_header {
+                    font-size: 1.5rem;
+                    text-align: center;
+
+                    #overruling_text {
+                        font-size: 1rem;
+                    }
+                }
             }
 
             .visible {

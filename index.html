@@ -7,7 +7,6 @@
 	<link rel="stylesheet" href="css/styles.css">
 	<script type="text/javascript" src="js/d3.v4.min.js"></script>
 	<script type="text/javascript" src="js/d3-selection-multi.v1.min.js"></script>
-	<script type="text/javascript" src="js/d3-tip/index.js"></script>
 </head>
 
 <body>
@@ -120,6 +119,7 @@
 								<option value="issuearea">Issue Area</option>
 								<option value="startideo">Starting Ideology</option>
 								<option value="endideo">Ending Ideology</option>
+								<option value="none">None</option>
 							</select>
 							<button id='precedent_reversesort' type='button'>Reverse Sort</button>
 						</span>
@@ -128,7 +128,14 @@
 					<div class="bottom_padding"></div>
 				</div>
 			</div>
-			<div class="right", id="precedent_right"></div>
+			<div class="right", id="precedent_right">
+				<div id="precedent_header">
+						<div id="overruling_title", class="precedent_title"></div>
+						<p id="overruling_text"></p>
+						<div id="overruled_title", class="precedent_title"></div>
+				</div>
+				<div id="precedent_body"></div>
+			</div>
 		</div>
 	</div>
 

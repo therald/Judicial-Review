@@ -3,7 +3,6 @@ class Precedent {
     /*
      * Magnify last one by default
      * Summary writings
-     * Move text to the right instead of tooltip
      */
 
     constructor(div, data) {
@@ -30,8 +29,6 @@ class Precedent {
         viz.createColorScale();
         viz.createXAxis();
         viz.createGridLines();
-
-        viz.createTooltip();
 
         d3.csv('./data/issue_area.csv', function(d) {
             return {
@@ -71,12 +68,6 @@ class Precedent {
                 viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
             });
         });
-    }
-
-    createTooltip() {
-        var viz = this;
-        viz.tip = d3.tip().attr("class", "d3-tip");
-        viz.svg.call(viz.tip);
     }
 
     createYScale(bottomMargin) {
@@ -201,7 +192,7 @@ class Precedent {
             .on('mouseover', function(d, i, g) {
                 viz.showTooltip(d, g[i]);
             })
-            .on('mouseout', viz.tip.hide)
+            .on('mouseout', viz.hideTooltip)
 
         viz.xaxisgroup.call(viz.xAxis);
         viz.gridlinegroup.call(viz.gridlines);
@@ -222,18 +213,16 @@ class Precedent {
         var overruled = viz.data[Number(intervalData.overruled)];
         var overruling = viz.data[Number(intervalData.overruling)];
 
-        var html = `<p>
-                        <b>${overruling.caseName} (${overruling.dateDecision})</b>
-                    </p>
-                    <p>overruling</p>
-                    <p>
-                        <b>${overruled.caseName} (${overruled.dateDecision})</b>
-                    </p>`;
-        viz.tip.html(html);
-        var xOffset = 0;
-        viz.tip.offset([-5, 0]);
-        // viz.tip.style("min-width", viz.width).style("max-width", viz.width);
-        viz.tip.direction('n').show(intervalData, group);
+        d3.select("#overruling_title").text(overruling.caseName);
+        d3.select("#overruling_text").text("overruling");
+        d3.select("#overruled_title").text(overruled.caseName);
+    }
+
+    hideTooltip() {
+        var viz = this;
+        d3.select("#overruling_title").text(null);
+        d3.select("#overruling_text").text(null);
+        d3.select("#overruled_title").text(null);
     }
 
     createRowKey(row, index) {
@@ -269,7 +258,8 @@ class Precedent {
         switch (viz.groupSelect.options[viz.groupSelect.selectedIndex].value) {
             case "startideo": return viz.groupByStartIdeo(a, b);
             case "endideo": return viz.groupByEndIdeo(a, b);
-            default: return viz.groupByIssueArea(a, b);
+            case "issuearea": return viz.groupByIssueArea(a, b);
+            default: return 0;
         }
     }
 
