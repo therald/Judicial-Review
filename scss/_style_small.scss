@@ -15,6 +15,7 @@ body {
     background-color: $darkerGray;
     color: white;
     font-size: 16px;
+    font-family: Helvetica, sans-serif;
     height: 100vh;
 
     p {
@@ -113,6 +114,20 @@ body {
             z-index: 2;
         }
 
+        .block_quote {
+            display: grid;
+            width: 80%;
+            margin: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+
+            .block_quote_citation {
+                font-style: italic;
+                margin-top: 0.5rem;
+                text-align: right;
+            }
+        }
+
         .vis {
             flex: 1;
             margin: 0px 10px 0px 10px;
@@ -130,6 +145,20 @@ body {
             position: fixed;
             top: 0;
             width: 100%;
+        }
+
+        .section {
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+                margin-top: 1rem;
+            }
+        }
+
+        .title {
+            display: inherit;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;  
         }
 
         .axis {
@@ -192,6 +221,10 @@ body {
 
             #time_filter {
                 height: 6.5rem;
+
+                .hidden_handle {
+                    display: none;
+                }
             }
 
             #issue_area_filter {
@@ -501,6 +534,11 @@ body {
 
     .fill_dark_gray {
         fill: $darkGray;
+    }
+
+    .stroke_dark_gray {
+        stroke: $darkGray;
+        stroke-width: 2px;
     }
 
     .fill_1 {

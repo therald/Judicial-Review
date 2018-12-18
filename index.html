@@ -12,7 +12,10 @@
 <body>
 	<div class="container">
 		<div id="header">
-			<h1>Judicial Review: An Analysis of the United States Supreme Court from 1946 to 2018</h1>
+			<h1>
+				<span class="title">Judicial Review:</span>
+				<span class="subtitle">An Analysis of the United States Supreme Court from 1946 to 2018</span>
+			</h1>
 
 			<div id="rundown">
 				<p>
@@ -51,6 +54,29 @@
 		<div id="hidden-filters">
 			<div class="time_filter"></div>
 			<div class="issue_area_filter"></div>
+		</div>
+
+		<div id="ideology_rundown_section" class="section">
+			<h1>Ideology of the United States Supreme Court and its Justices</h1>
+
+			<div id="ideology_rundown">
+				<p>
+					One of the more basic components necessary to understanding the United States Supreme Court is to understand the notion of ideology. The two representative ideologies in our dataset are Conservative and Liberal (Unspecified means that it is unclear as to whether a particular case ruling was made in favor of either of the two ideologies). The two can be defined as follows:
+
+					<span class="block_quote">
+						"Liberals believe in government action to achieve equal opportunity and equality for all. It is the duty of the government to alleviate social ills and to protect civil liberties and individual and human rights. Believe the role of the government should be to guarantee that no one is in need. Liberal policies generally emphasize the need for the government to solve problems.
+						<br>
+						<br>
+						Conservatives believe in personal responsibility, limited government, free markets, individual liberty, traditional American values and a strong national defense. Believe the role of government should be to provide people the freedom necessary to pursue their own goals. Conservative policies generally emphasize empowerment of the individual to solve problems."
+
+						<span class="block_quote_citation">- Student News Daily</span>
+					</span>
+
+					The two visualizations in this section attempt to show two things: 1) how the ideology of all case rulings changes over time and 2) how the ideologies (measured by Martin-Quinn scores) of the serving justices changed over time; more positive scores mean that a justice is more conservative, while more negative values mean that a justice is more liberal. When looking at the data, we can begin to make assumptions such as Justice Douglas having a major Liberal sway to the case rulings when he served through the 50's, 60's, and into the early 70's.
+					<br>
+					Specific values can be discovered by mousing over either visualization to see data for a particular year, and the filters can allow you to look for trends during a particular year range as well as for particular issue areas (for example, which issue area seemed to cause the largest blip in Liberal rulings around 1963-1964?)
+				</p>
+			</div>
 		</div>
 
 		<div id="ideology_section" class="section">
@@ -103,6 +129,22 @@
 				<div id="legend"></div>
 			</div>
 		</div>
+
+		<div id="precedent_rundown_section" class="section">
+				<h1>The Precedents of the United States Supreme Court</h1>
+	
+				<div id="precedent_rundown">
+					<p>
+							Unlike the majority of legal systems in the world, the United states uses a system called Common Law (in contrast to Civil Law), defined as "A system of law inherited from England based on legal precedents or tradition instead of statutory law or systematic legal codes" by Carp, Stidham, and Manning in <i>The Federal Courts</i>.  This conception of law allows the power of the courts to extend beyond adjudication and into the realm of policy-making.
+							<br>
+							<br>
+							As a result, the every court in the US can set precedent: a decision which should be followed by all lower courts in the same jurisdiction as the court that sets the precedent.  Since the Supreme Court is the highest court in the land, and has jurisdiction over all legal issues in the United States, precedents set by the Supreme Court bind the American legal system, setting policy that can only be overturned by the Supreme Court itself.
+							<br>
+							<br>
+							Below is a visualization of these precedents, which aims to explore how American society's viewpoints on different issues has changed over time through the lens of the Supreme Court.  Each line showing a Supreme Court case that set a precedent linked to the later case that overturned that precedent.  The visualization can be explored by mousing over it, by sorting and grouping the data, or by interacting with the timeline and filters above.
+					</p>
+				</div>
+			</div>
 
 		<div id="precedent_section", class="section">
 			<div class="left">
