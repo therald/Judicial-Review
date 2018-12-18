@@ -1,15 +1,15 @@
-id,IssueAreaName
-1,Criminal Procedure
-2,Civil Rights
-3,First Amendment
-4,Due Process
-5,Privacy
-6,Attorneys
-7,Unions
-8,Economic Activity
-9,Judicial Power
-10,Federalism
-11,Interstate Relations
-12,Federal Taxation
-13,Miscellaneous
-14,Private Action
+id,IssueAreaName,description
+1,Criminal Procedure,"Encompasses the rights of persons accused of crime, except for the due process rights of prisoners."
+2,Civil Rights,"Includes non-First Amendment freedom cases which pertain to classifications based on race (including American Indians), age, indigency, voting, residency, military or handicapped status, gender, and alienage."
+3,First Amendment,"The First Amendment guarantees freedoms concerning religion, expression, assembly, and the right to petition."
+4,Due Process,"Limited to non-criminal guarantees. The promise of legality and fair procedure: before depriving a citizen of life, liberty or property, government must follow fair procedures."
+5,Privacy,"Includes privacy, abortion: including contraceptives, right to die, and Freedom of Information Act and related federal or state statutes or regulations."
+6,Attorneys,"Attorneys' and governmental employees' or officials' fees or compensation or licenses, commercial speech, admission to a state or federal bar, disbarment, and attorney discipline, admission to, or disbarment from, Bar of the U.S. Supreme Court."
+7,Unions,encompass those issues involving labor union activity.
+8,Economic Activity,Commercial and business related; it includes tort actions and employee actions vis-a-vis employers.
+9,Judicial Power,Concerns the exercise of the judiciary's own power.
+10,Federalism,"Pertains to conflicts and other relationships between the federal government and the states, except for those between the federal and state courts."
+11,Interstate Relations,Contain three types of disputes which occur between or among states.
+12,Federal Taxation,Concerns the Internal Revenue Code and related statutes.
+13,Miscellaneous,Contains three groups of cases that do not fit into any other category.
+14,Private Action,"Relates to disputes between private persons involving real and personal property, contracts, evidence, civil procedure, torts, wills and trusts, and commercial transactions."

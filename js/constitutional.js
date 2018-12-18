@@ -32,17 +32,19 @@ class Constitutional {
         viz.data = data;
         viz.filteredData = data;
         viz.update();
-        
     }
 
-    update(rangeStart, rangeEnd, precedent){
+    update(rangeStart, rangeEnd, issueAreas){
         var viz = this;
-        viz.precedent = precedent;
+        viz.issueAreas;
+        viz.rangeStart;
+        viz.rangeEnd;
         //viz.data.filter(function(d){ console.log(d.dateDecision)})
         if(rangeStart != undefined) {
             viz.rangeStart = rangeStart;
             viz.rangeEnd = rangeEnd;
-            viz.filterData(rangeStart, rangeEnd);
+            viz.issueAreas = issueAreas;
+            viz.filterData(); console.log(viz.filteredData)
             viz.preprocessData(1);
         }
         
@@ -50,48 +52,37 @@ class Constitutional {
         viz.preprocessData(0);
     }
 
-    filterData(rangeStart, rangeEnd){
+    filterData(){ 
         var viz = this;
-
+        console.log(viz.issueAreas)
     // Filter data depending on selected time period (brush)
-        var year = d3.timeParse("%m/%d/%Y");
+        var year = d3.timeParse("%m/%d/%Y"); 
         viz.filteredData = viz.data.filter(function(d){ 
-        return (year(d.dateDecision).getFullYear() >= rangeStart && year(d.dateDecision).getFullYear() <= rangeEnd);
-    })
+        return (viz.issueAreas.includes(d.issueArea) && year(d.dateDecision).getFullYear() >= viz.rangeStart && year(d.dateDecision).getFullYear() <= viz.rangeEnd);
+    }) 
     }
 
-    draw(data, update, precedent){
+    draw(data, update, dataL){ 
         var viz = this;
-        var max = d3.max(data.map(function(d){return d.value.countCases; }))/viz.totalCases*100;
-        // console.log(Math.min(Math.ceil(max/10)*10+10,100))    
-       // var side = Math.min(viz.width-viz.margin.left-viz.margin.right, viz.height-viz.margin.top-viz.margin.bottom)
-        var side = Math.min(viz.width*.6-viz.margin.left, viz.height-viz.margin.top*4)
-        // console.log(side)
-        var config = {
-            w: side*.9,
-            h: side*.9,
-            maxValue: Math.min(Math.ceil(max)+1,100),
-            levels: 5,
-            TranslateX: viz.width/4,//viz.margin.left*8,//viz.width*.2,
-            TranslateY: viz.margin.top*4,//viz.height/7,
-           ExtraWidthX: viz.width*.5,
-           ExtraWidthY: 1*viz.height,//viz.height,
-
-        }
         
         if (update == 0){
-            viz.bar = new Bar(viz.name, "#bar");
-            viz.bar.update(0);
-            viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
-            viz.radar.update(data); 
-            // viz.value = viz.radar.getArea();
-            
-            // viz.bar.update(viz.value);
+            // viz.bar = new Bar(viz.name, "#bar");
+            // viz.bar.update(0);
+            // viz.radar = new RadarChart(viz.name, "#radar",  config, viz.totalCases, viz.bar);
+            // viz.radar.update(data); 
+
+             
+            viz.landmark = new Landmark(viz.name, "#landmark", dataL);
+            viz.pack = new Pack(viz.name, "#pack", viz.landmark); 
+            viz.pack.update(data); 
+            // viz.landmark.update(dataL);
+ 
         }else{ 
-            viz.radar.update(data, config, viz.totalCases, viz.precedent);
-            // viz.value = viz.radar.getArea(); 
-            // console.log(viz.value)
-            viz.bar.update(0);
+            // viz.radar.update(data, config, viz.totalCases, viz.precedent);
+
+            // viz.bar.update(0);
+            viz.pack.update(data, viz.rangeStart,viz.rangeEnd,viz.issueAreas);
+            viz.landmark.update(viz.rangeStart,viz.rangeEnd, viz.issueAreas);
         }
         
        
@@ -111,12 +102,17 @@ class Constitutional {
                     issueArea: (iss !== undefined) ? iss.IssueAreaName : null,
                     issueAreaID:(m != undefined) ? m.issueArea : null,
                     declarationUncon: m.declarationUncon,
-                    dateDecision: m.dateDecision
+                    dateDecision: m.dateDecision,
+                    caseName: m.caseName,
+                    descritionArea: (iss != undefined) ? iss.description : null,
+                    parent: "0"
                 }
             });//join
 
             //filter join to remove missing issueArea
             join = join.filter(function(d) { return d.issueArea !== null; });
+            join[join.length]= {issueAreaID:"0"};
+
 
             //group by issueArea
             var dataByIssueArea = d3.nest()
@@ -124,15 +120,21 @@ class Constitutional {
                 .rollup(function(v){  return{ 
                     countCases: v.length,
                     issueAreaID: v[0].issueAreaID,
+                    parent: "root",
                     unconstCases: d3.sum(v, function(d){
                         if( parseInt(d.declarationUncon) !== 1) return 1//parseInt(d.declarationUncon)
                             else return 0})
 
+                    
+
                 };
 
                 })
-                .entries(join);
-            viz.draw(dataByIssueArea, update);
+                .entries(join); 
+           viz.draw(dataByIssueArea, update, join);
+            
+
+            //join 
         }); //d3.csv
         
 
