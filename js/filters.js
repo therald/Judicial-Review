@@ -361,7 +361,6 @@ class Filters {
     unmergeHandles(viz, xPos, isStart) {
         var newXPos = viz.xTicks(viz.parseYear(viz.mergedYear));
 
-        console.log(viz.handlesAreMerged);
         if (viz.handlesAreMerged) {
             viz.handlesAreMerged = false;
             d3.select("#merged-handle").remove();
