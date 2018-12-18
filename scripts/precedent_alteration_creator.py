@@ -37,4 +37,4 @@ print(len(intervals))
 #                         intervals.append({'overruled': j, 'overruling': i, 'startdate': startdate, 'enddate': overruling['dateDecision'], 'importance': overruled['indeg']})
 #                 else:
 #                     intervals.append({'overruled': j, 'overruling': i, 'startdate': 'NaN', 'enddate': overruling['dateDecision'], 'importance': overruled['indeg']})
-df.from_dict(intervals).to_csv('../data/precedent_pairs_alt.csv', index=False)
+df.from_dict(intervals).to_csv('../data/precedent_pairs.csv', index=False)

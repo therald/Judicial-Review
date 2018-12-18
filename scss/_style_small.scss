@@ -449,6 +449,18 @@ body {
                         }
                     }
 
+                    .liberal {
+                        fill: $lightBlue;
+                    }
+
+                    .conservative {
+                        fill: $lightRed;
+                    }
+
+                    .undecided {
+                        fill: $lightPurple;
+                    }
+
                     .vis_title {
                         display: inline-block;
                         text-align: center;

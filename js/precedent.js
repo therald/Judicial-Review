@@ -1,13 +1,8 @@
 class Precedent {
 
     /*
-     * Change color of endpoints to match Taylor's colors
      * Magnify last one by default
-     * Sort by end, start, length
-     * Group by issue area (by default)
-     * Group/filter by start/end ideology
      * Summary writings
-     * Get rid of the word year
      * Move text to the right instead of tooltip
      */
 
@@ -16,7 +11,10 @@ class Precedent {
         viz.active = false;
         viz.div = d3.select(div);
         viz.data = data;
+
         viz.sortSelect = document.getElementById('precedent_sortby');
+        viz.groupSelect = document.getElementById('precedent_groupby');
+
         viz.sortReverse = false;
         viz.sortReverseButton = document.getElementById('precedent_reversesort');
         viz.sortReverseButton.addEventListener("click", function() {
@@ -27,13 +25,25 @@ class Precedent {
 
         viz.createSVG();
         viz.creatXScale(20);
-        viz.createYScale(50);
+        viz.createYScale(25);
 
         viz.createColorScale();
         viz.createXAxis();
         viz.createGridLines();
 
         viz.createTooltip();
+
+        d3.csv('./data/issue_area.csv', function(d) {
+            return {
+                id: +d.id,
+                name: d.IssueAreaName
+            }
+        }, function(datum) {
+            viz.issueAreaMapping = {}
+            datum.forEach(function(d) {
+                viz.issueAreaMapping[d.id] = d.name;
+            });
+        });
 
         d3.csv('./data/precedent_pairs.csv', function(d) {
             return {
@@ -52,6 +62,9 @@ class Precedent {
             viz.draw(dates[0].getFullYear(), dates[dates.length - 1].getFullYear());
 
             viz.sortSelect.addEventListener("change", function() {
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
+            });
+            viz.groupSelect.addEventListener("change", function() {
                 viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
             });
             viz.sortReverseButton.addEventListener("click", function() {
@@ -93,7 +106,6 @@ class Precedent {
 
         viz.xaxislabel = viz.svg.append("text")
             .attr("transform", "translate(" + (viz.width/2) + "," + (viz.height) + ")")
-            .text("Year")
             .attr("x-axis label");
     }
 
@@ -245,8 +257,46 @@ class Precedent {
             .sort(function(a, b) {
                 return viz.getSortingAlgo(a, b);
             })
+            .sort(function(a, b) {
+                return viz.groupBy(a, b);
+            })
             .map(d => [d]);
         return rows;
+    }
+
+    groupBy(a, b) {
+        var viz = this;
+        switch (viz.groupSelect.options[viz.groupSelect.selectedIndex].value) {
+            case "startideo": return viz.groupByStartIdeo(a, b);
+            case "endideo": return viz.groupByEndIdeo(a, b);
+            default: return viz.groupByIssueArea(a, b);
+        }
+    }
+
+    groupByIssueArea(a, b) {
+        var viz = this;
+        var aName = viz.issueAreaMapping[viz.data[a.overruled].issueArea];
+        var bName = viz.issueAreaMapping[viz.data[b.overruled].issueArea];
+        if (aName < bName) {
+            return -1;
+        } else if (aName > bName) {
+            return 1;
+        }
+        return 0;
+    }
+
+    groupByStartIdeo(a, b) {
+        var viz = this;
+        var aIdeo = viz.data[a.overruled].decisionDirection;
+        var bIdeo = viz.data[b.overruled].decisionDirection;
+        return aIdeo - bIdeo;
+    }
+
+    groupByEndIdeo(a, b) {
+        var viz = this;
+        var aIdeo = viz.data[a.overruling].decisionDirection;
+        var bIdeo = viz.data[b.overruling].decisionDirection;
+        return aIdeo - bIdeo;
     }
 
     sortByEnddate(a, b) {
@@ -289,7 +339,7 @@ class Precedent {
             .attr('cx', d => viz.xScale(d.enddate))
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
-            .attr('fill', d => viz.data[d.overruling].decisionDirection == 3 ? "black" : (viz.data[d.overruling].decisionDirection == 1 ? "red" : "blue"))
+            .attr('class', d => 'endpoint ' + (viz.data[d.overruling].decisionDirection == 3 ? "undecided" : (viz.data[d.overruling].decisionDirection == 1 ? "conservative" : "liberal")))
             .attr('opacity', d => viz.xScale.domain()[1] < d.enddate ? 0 : 1);
     }
 
@@ -299,7 +349,7 @@ class Precedent {
             .attr('cx', d => viz.xScale(d.startdate))
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
-            .attr('fill', d => viz.data[d.overruled].decisionDirection == 3 ? "black" : (viz.data[d.overruled].decisionDirection == 1 ? "red" : "blue"))
+            .attr('class', d => 'startpoint ' + (viz.data[d.overruled].decisionDirection == 3 ? "undecided" : (viz.data[d.overruled].decisionDirection == 1 ? "conservative" : "liberal")))
             .attr('opacity', d => viz.xScale.domain()[0] > d.startdate ? 0 : 1);
     }
 
