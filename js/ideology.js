@@ -740,7 +740,6 @@ class Ideology {
     }
 
     updateMQScalesAndAxis(viz, years) {
-        console.log(years);
         viz.LineXScale.domain(d3.extent(years, function(d) { return d; }))
             .range([40, viz.justices_width-10]);
 

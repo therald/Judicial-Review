@@ -1,8 +1,8 @@
 class Precedent {
 
     /*
-     * Magnify last one by default
      * Summary writings
+     * Also write a visualization summary
      */
 
     constructor(div, data) {
@@ -43,13 +43,26 @@ class Precedent {
         });
 
         d3.csv('./data/precedent_pairs.csv', function(d) {
+            var sdate = d.startdate;
+            if (Number(sdate.slice(-2)) < 40) {
+                sdate = sdate.slice(0, -2) + '20' + sdate.slice(-2);
+            } else {
+                sdate = sdate.slice(0, -2) + '19' + sdate.slice(-2);
+            }
+            var edate = d.enddate;
+            if (Number(sdate.slice(-2)) < 40) {
+                edate = edate.slice(0, -2) + '20' + edate.slice(-2);
+            } else {
+                edate = edate.slice(0, -2) + '19' + edate.slice(-2);
+            }
             return {
-                overruled: +d.overruled,
-                overruling: +d.overruling,
-                importance: +d.importance,
-                startdate: new Date(d.startdate),
-                enddate: new Date(d.enddate),
-                duration: new Date(d.enddate).getFullYear() - new Date(d.startdate).getFullYear()
+                overruled: +d.overruled_index,
+                overruling: +d.overruling_index,
+                startdate: new Date(sdate),
+                enddate: new Date(edate),
+                duration: new Date(edate).getFullYear() - new Date(sdate).getFullYear(),
+                primary_holding: d.primary_holding,
+                case_commentary: d.case_commentary
             }
         }, function(datum) {
             viz.intervals = datum;
@@ -222,7 +235,16 @@ class Precedent {
         var [plaintiff, vs, defendant] = viz.parseTitle(overruled.caseName);
         var overruled_html = "<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
         d3.select("#overruled_title").html(overruled_html);
-        d3.select("#date_range").text(overruled.dateDecision + " - " + overruling.dateDecision);
+
+        d3.select("#date_range").html("<p>" + overruled.dateDecision + " - " + overruling.dateDecision + "</p>");
+        console.log(intervalData);
+        if (intervalData.primary_holding != "None") {
+            console.log("There is a primary holding");
+            d3.select("#primary_holding").html("<p>" + intervalData.primary_holding + "</p>");
+        }
+        if (intervalData.case_commentary != "None") {
+            d3.select("#case_commentary").html("<p>" + intervalData.case_commentary + "</p>");
+        }
     }
 
     parseTitle(title) {
@@ -236,10 +258,12 @@ class Precedent {
 
     hideTooltip() {
         var viz = this;
-        d3.select("#overruling_title").text(null);
-        d3.select("#overruling_text").text(null);
-        d3.select("#overruled_title").text(null);
-        d3.select("#date_range").text(null);
+        d3.select("#overruling_title").html(null);
+        d3.select("#overruling_text").html(null);
+        d3.select("#overruled_title").html(null);
+        d3.select("#date_range").html(null);
+        d3.select("#primary_holding").html(null);
+        d3.select("#case_commentary").html(null);
     }
 
     createRowKey(row, index) {
