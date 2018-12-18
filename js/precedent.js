@@ -213,9 +213,25 @@ class Precedent {
         var overruled = viz.data[Number(intervalData.overruled)];
         var overruling = viz.data[Number(intervalData.overruling)];
 
-        d3.select("#overruling_title").text(overruling.caseName);
+        var [plaintiff, vs, defendant] = viz.parseTitle(overruling.caseName);
+        var overruling_html = "<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
+        d3.select("#overruling_title").html(overruling_html);
+
         d3.select("#overruling_text").text("overruling");
-        d3.select("#overruled_title").text(overruled.caseName);
+
+        var [plaintiff, vs, defendant] = viz.parseTitle(overruled.caseName);
+        var overruled_html = "<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
+        d3.select("#overruled_title").html(overruled_html);
+        d3.select("#date_range").text(overruled.dateDecision + " - " + overruling.dateDecision);
+    }
+
+    parseTitle(title) {
+        var words = title.split(' ');
+        words = words.map(d => d == d.toUpperCase() ? d.charAt(0) + d.toLowerCase().slice(1) : d);
+        var vsIndex = words.findIndex(d => d == 'v.');
+        var plaintiff = words.slice(0, vsIndex).join(" ");
+        var defendant = words.slice(vsIndex + 1).join(" ");
+        return [plaintiff, 'v.', defendant];
     }
 
     hideTooltip() {
@@ -223,6 +239,7 @@ class Precedent {
         d3.select("#overruling_title").text(null);
         d3.select("#overruling_text").text(null);
         d3.select("#overruled_title").text(null);
+        d3.select("#date_range").text(null);
     }
 
     createRowKey(row, index) {
