@@ -297,6 +297,11 @@ body {
                 font-size: 2rem;
                 margin-bottom: 0.5rem;
             }
+
+            .keyword {
+                color: rgb(43, 175, 180);
+                font-weight: bold;
+            }
         }
 
         #ideology_rundown_section {
@@ -476,6 +481,7 @@ body {
             #constitutional {
                 background: $darkGray;
                 border-radius: 15px;
+                position: relative;
                 width: 70%;
 
                 .vis_title {
@@ -491,6 +497,7 @@ body {
                         display: flex;
                         height: 100%;
                         margin-left: 1rem;
+                        position: relative;
                         
                         float: left;
                         width:45%;
@@ -518,6 +525,7 @@ body {
                     #landmark{
                         float: right;
                         width:55%;
+                        position: relative;
 
                         .disable{
                             stroke: #8A8A8A;
