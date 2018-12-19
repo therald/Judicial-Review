@@ -281,7 +281,11 @@ class Precedent {
         viz.issueAreas = issueAreas;
 
         var rows = viz.generateRows(startYear, endYear);
-        viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice(d3.timeYear);
+        if (startYear == endYear) {
+            viz.xScale.domain([new Date(String(startYear + 1)), new Date(String(endYear + 1))]).nice(d3.timeYear);
+        } else {
+            viz.xScale.domain([new Date(String(startYear)), new Date(String(endYear))]).nice(d3.timeYear);
+        }
         viz.yScale.domain([0, rows.length]);
 
         if (rows.length == 0) {
@@ -464,6 +468,11 @@ class Precedent {
     }
 
     filterByStartAndEndYear(interval, startYear, endYear) {
+        if (startYear == endYear) {
+            if (interval.startdate.getFullYear() == startYear || interval.enddate.getFullYear() == startYear) {
+                return true;
+            }
+        }
         if (interval.startdate.getFullYear() >= startYear && interval.startdate.getFullYear() < endYear) {
             return true;
         }
@@ -480,7 +489,7 @@ class Precedent {
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
             .attr('class', d => 'endpoint ' + (viz.data[d.overruling].decisionDirection == 3 ? "undecided" : (viz.data[d.overruling].decisionDirection == 1 ? "conservative" : "liberal")))
-            .attr('opacity', d => viz.xScale.domain()[1] < d.enddate ? 0 : 1);
+            .attr('opacity', d => viz.xScale.domain()[1] <= d.enddate ? 0 : 1);
     }
 
     drawStartpoints(group, numLines) {
@@ -490,7 +499,7 @@ class Precedent {
             .attr('cy', '0')
             .attr('r', viz.getIntervalHeight(numLines))
             .attr('class', d => 'startpoint ' + (viz.data[d.overruled].decisionDirection == 3 ? "undecided" : (viz.data[d.overruled].decisionDirection == 1 ? "conservative" : "liberal")))
-            .attr('opacity', d => viz.xScale.domain()[0] > d.startdate ? 0 : 1);
+            .attr('opacity', d => viz.xScale.domain()[0] >= d.startdate ? 0 : 1);
     }
 
     drawInterlines(group, numLines) {
@@ -499,12 +508,12 @@ class Precedent {
         var offRight = false;
         group.selectAll('rect.interline')
             .attr('x', function(d) {
-                offLeft = viz.xScale.domain()[0] > d.startdate;
+                offLeft = viz.xScale.domain()[0] >= d.startdate;
                 return Math.max(viz.xScale(viz.xScale.domain()[0]), viz.xScale(d.startdate));
             })
             .attr('y', viz.getIntervalHeight(numLines) - 2*viz.getIntervalHeight(numLines))
             .attr('width', function(d) {
-                offRight = viz.xScale.domain()[1] < d.enddate;
+                offRight = viz.xScale.domain()[1] <= d.enddate;
                 if (offLeft) {
                     return viz.xScale(d.enddate) - viz.xScale(viz.xScale.domain()[0]);
                 }
