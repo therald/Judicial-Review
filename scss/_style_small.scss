@@ -502,24 +502,33 @@ body {
             }
 
             .right {
-                width: 30%;
-                padding: 1%;
                 opacity: 1;
+                overflow-y: scroll;
+                padding: 1%;
+                width: 30%;
 
                 .precedent_description {
                     margin: 1rem;
+
+                    a {
+                        color: $lightGray;
+                    }
                 }
 
                 #precedent_header {
                     text-align: center;
 
                     .precedent_title {
-                        font-size: 1.5rem;
+                        font-size: 1.2rem;
                         margin: .5rem;
+                        
+                        .citation {
+                            font-size: 1.5rem;
+                        }
                     }
 
                     .vs {
-                        font-size: 1.3rem;
+                        font-size: 1.2rem;
                         opacity: 0.6;
                     }
                 }
