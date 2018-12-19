@@ -324,7 +324,6 @@ class Precedent {
 
     getSortingAlgo(a, b) {
         var viz = this;
-        console.log(viz.sortSelect.options, viz.sortSelect.selectedIndex);
         switch (viz.sortSelect.options[viz.sortSelect.selectedIndex].value) {
             case 'startdate': return viz.sortByStartdate(a, b);
             case 'length': return viz.sortByLength(a, b);

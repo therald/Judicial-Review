@@ -104,7 +104,6 @@ body {
         margin-right: 1%;
         width: 98%;
 
-
         .vis_title {
             font-size: 1.5rem;
             margin: auto;
@@ -310,9 +309,10 @@ body {
 
         #ideology_section {
             display: flex;
-            min-height: calc(100vh - 13rem);
+            min-height: calc(100vh - 14rem);
 
             .left {
+                height: calc(100vh - 14rem);
                 width: 70%;
 
                 #ideology {
@@ -380,9 +380,9 @@ body {
             }
 
             .right {
+                display: none;
                 width: 30%;
                 padding: 1%;
-                opacity: 0;
 
                 h1 {
                     font-size: 2rem;
@@ -464,7 +464,7 @@ body {
             }
 
             .visible {
-                opacity: 1.0 !important;
+                display: block !important;
             }
         }
 
@@ -476,11 +476,12 @@ body {
             display: flex;
             height: 98%;
             padding-top: 1%;
-            min-height: calc(100vh - 13rem);
+            min-height: calc(100vh - 14rem);
 
             #constitutional {
                 background: $darkGray;
                 border-radius: 15px;
+                position: relative;
                 width: 70%;
 
                 .vis_title {
@@ -496,6 +497,7 @@ body {
                         display: flex;
                         height: 100%;
                         margin-left: 1rem;
+                        position: relative;
                         
                         float: left;
                         width:45%;
@@ -523,6 +525,7 @@ body {
                     #landmark{
                         float: right;
                         width:55%;
+                        position: relative;
 
                         .disable{
                             stroke: #8A8A8A;
@@ -543,7 +546,8 @@ body {
                 float:right;
                 position: relative;
                 top: 50%;
-                height:100%;
+                height: calc(100vh - 14rem);
+                overflow-y: overlay;
                 width:29%;
                 padding: 30px;
 
@@ -582,7 +586,7 @@ body {
                     display: flex;
                     flex-direction: column;
                     height: 100%;
-                    margin-top: 1%;
+                    margin-top: 2%;
                     margin-bottom: 1%;
 
                     .errMessage {
