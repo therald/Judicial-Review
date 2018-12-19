@@ -227,19 +227,18 @@ class Precedent {
         var overruling = viz.data[Number(intervalData.overruling)];
 
         var [plaintiff, vs, defendant] = viz.parseTitle(overruling.caseName);
-        var overruling_html = "<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
+        var overruling_html = "<p class='citation'>" + overruling.usCite + "</p>\n<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
         d3.select("#overruling_title").html(overruling_html);
 
         d3.select("#overruling_text").text("overruling");
 
         var [plaintiff, vs, defendant] = viz.parseTitle(overruled.caseName);
-        var overruled_html = "<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
+        var overruled_html = "<p class='citation'>" + overruled.usCite + "</p>\n<p>" + plaintiff + "</p>\n<p class='vs'>v.</p>\n<p>" + defendant + "</p>";
         d3.select("#overruled_title").html(overruled_html);
 
         d3.select("#date_range").html("<p>" + overruled.dateDecision + " - " + overruling.dateDecision + "</p>");
-        console.log(intervalData);
+        
         if (intervalData.primary_holding != "None") {
-            console.log("There is a primary holding");
             d3.select("#primary_holding").html("<p>" + intervalData.primary_holding + "</p>");
         }
         if (intervalData.case_commentary != "None") {
