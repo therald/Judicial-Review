@@ -460,32 +460,37 @@ body {
                     width: 100%;
                 }
 
-                #pack {
-                    display: flex;
+                #whole_vis {
                     align-items: center;
-                    height: 100%;
-                    
-                    float: left;
-                    width:45%;
+                    display: flex;
 
-                    .innerCircle {
-                        font: 20px sans-serif;
-                        pointer-events:none;
+                    #pack {
+                        display: flex;
+                        height: 100%;
+                        margin-left: 1rem;
+                        
+                        float: left;
+                        width:45%;
 
-                        position: absolute;
-                        left: 40%; 
-                        top: 60%;
+                        .innerCircle {
+                            font: 20px sans-serif;
+                            pointer-events:none;
 
-                        background: none repeat scroll 0 0 ;
-                        /*margin: -10px;*/
-                        fill:white;
-                        text-anchor:middle;
+                            position: absolute;
+                            left: 40%; 
+                            top: 60%;
+
+                            background: none repeat scroll 0 0 ;
+                            /*margin: -10px;*/
+                            fill:white;
+                            text-anchor:middle;
+                        }
                     }
-                }
 
-                #landmark{
-                    float: right;
-                    width:55%;
+                    #landmark{
+                        float: right;
+                        width:55%;
+                    }
                 }
             }
 
