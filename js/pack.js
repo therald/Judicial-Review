@@ -29,6 +29,8 @@ class  Pack {
 		var viz = this;
 		viz.rangeStart = rangeStart;
 		viz.rangeEnd = rangeEnd;
+		// if(viz.landmark !== undefined) 
+		viz.landmark.resetIsClicked();
 		if(issueAreas != undefined) viz.issueAreas = issueAreas;
 		//add root
 		data[data.length]={key:"root",value:{countCases: 1, issueAreaID: "0", unconstCases: 0}}

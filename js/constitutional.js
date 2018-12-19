@@ -44,7 +44,7 @@ class Constitutional {
             viz.rangeStart = rangeStart;
             viz.rangeEnd = rangeEnd;
             viz.issueAreas = issueAreas;
-            viz.filterData(); console.log(viz.filteredData)
+            viz.filterData();
             viz.preprocessData(1);
         }
         
@@ -54,7 +54,7 @@ class Constitutional {
 
     filterData(){ 
         var viz = this;
-        console.log(viz.issueAreas)
+      
     // Filter data depending on selected time period (brush)
         var year = d3.timeParse("%m/%d/%Y"); 
         viz.filteredData = viz.data.filter(function(d){ 

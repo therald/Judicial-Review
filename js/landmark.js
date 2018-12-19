@@ -7,6 +7,7 @@ class Landmark{
         viz.div = d3.select(viz.parent);
 
         viz.curve = 0.8; //to draw curves
+        viz.isClicked = false;
 
         // Get the total width and height from the div
         viz.totalWidth = viz.div.node().getBoundingClientRect().width;
@@ -26,7 +27,8 @@ class Landmark{
 		var viz = this; 
         viz.rangeStart = rangeStart;
         viz.rangeEnd = rangeEnd;
-        viz.beforeZoom = beforeZoom;         
+        viz.beforeZoom = beforeZoom;   
+        viz.resetIsClicked();      
 		if(rangeStart == undefined) viz.rangeStart = 1946;
 		if(rangeEnd == undefined) viz.rangeEnd = 2018;
         if(issueAreas == undefined || (issueAreas[0] == 0 && beforeZoom == undefined)) viz.issueAreas = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14"];
@@ -82,14 +84,14 @@ class Landmark{
 		var timeFormat = d3.timeFormat("%B %d, %Y")
 		
             
-        var isClicked = false;
+        viz.isClicked = false;
  
-        viz.svg.on("click",function(){isClicked = !isClicked;  d3.selectAll("path").classed("disable",isClicked); return isClicked})
+        viz.svg.on("click",function(){viz.isClicked = !viz.isClicked;  d3.selectAll("path").classed("disable",viz.isClicked); return viz.isClicked})
             // .on("mouseleave",function(){
-            //     $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
-            //     isClicked = false;
-            //     d3.selectAll("path").classed("disable",isClicked);
-            //     return isClicked;})
+                // $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
+                // viz.isClicked = false;
+                // d3.selectAll("path").classed("disable",viz.isClicked);
+                // return viz.isClicked;})
 
         var cases = viz.svg.append("g")
             .attr("stroke-opacity", .5).selectAll(".links")
@@ -104,7 +106,7 @@ class Landmark{
         	.style("cursor", "pointer")
 
         	.on("mouseover", function(d,i){
-                if(!isClicked){
+                if(!viz.isClicked){
                     d3.select(this).attr("stroke-width",3)
                     if(d.landmark == 1){
                     // d3.select(this).classed("outlined", false)
@@ -121,7 +123,7 @@ class Landmark{
 	        })
 
         	.on("mouseout", function(d){ 
-                if(!isClicked)
+                if(!viz.isClicked)
                 $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
                 d3.select(this).classed("highlight", false)
                 d3.select(this).classed("highlightUncons", false)
@@ -203,4 +205,13 @@ class Landmark{
 
         return output;
     };
+
+    resetIsClicked(){ 
+        var viz = this;
+        if(viz.isClicked){
+            $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
+            viz.isClicked = false;
+            d3.selectAll("path").classed("disable",viz.isClicked);
+        }
+    }
 }
