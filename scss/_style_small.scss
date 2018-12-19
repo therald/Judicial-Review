@@ -275,6 +275,10 @@ body {
             }
         }
 
+        #ideology_rundown_section {
+            margin-bottom: 1rem;
+        }
+
         #ideology_section {
             display: flex;
             min-height: calc(100vh - 13rem);
@@ -436,8 +440,14 @@ body {
             }
         }
 
+        #unconstitutional_rundown_section {
+            margin-bottom: 1rem;
+        }
+
         #unconstitutional_section {
             display: flex;
+            height: 98%;
+            padding-top: 1%;
             min-height: calc(100vh - 13rem);
 
             #constitutional {
@@ -489,6 +499,10 @@ body {
             }
 
             
+        }
+
+        #precedent_rundown_section {
+            margin-bottom: 1rem;
         }
 
         #precedent_section {
