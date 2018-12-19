@@ -316,12 +316,12 @@ class Ideology {
                 document.getElementById("ideology_right").classList.add("visible");
                 viz.adjustStreamHoverLine(viz, this, true);
                 viz.adjustLineHoverLine(viz, this, false);
-                viz.updateDetailSection(viz);
+                viz.updateDetailSection(viz, viz.hoverYear);
             })
             .on("mousemove", function(d,i) {
                 viz.adjustStreamHoverLine(viz, this, true);
                 viz.adjustLineHoverLine(viz, this, false);
-                viz.updateDetailSection(viz);
+                viz.updateDetailSection(viz, viz.hoverYear);
             })
             .on("mouseout", function(d) {
                 document.getElementById("stream_line").classList.remove("visible");
@@ -342,12 +342,12 @@ class Ideology {
                 document.getElementById("ideology_right").classList.add("visible");
                 viz.adjustLineHoverLine(viz, this, true);
                 viz.adjustStreamHoverLine(viz, this, false);
-                viz.updateDetailSection(viz);
+                viz.updateDetailSection(viz, viz.hoverYear);
             })
             .on("mousemove", function(d,i) {
                 viz.adjustLineHoverLine(viz, this, true);
                 viz.adjustStreamHoverLine(viz, this, false);
-                viz.updateDetailSection(viz);
+                viz.updateDetailSection(viz, viz.hoverYear);
             })
             .on("mouseout", function(d) {
                 document.getElementById("stream_line").classList.remove("visible");
@@ -467,11 +467,11 @@ class Ideology {
             .attr('d', lineLine);
     }
 
-    updateDetailSection(viz) {
-        document.getElementById("year_on_hover").innerHTML = viz.hoverYear;
+    updateDetailSection(viz, year) {
+        document.getElementById("year_on_hover").innerHTML = year;
 
         for (var obj in viz.formattedIdeologyData) {
-            if (Number(viz.formattedIdeologyData[obj].Year) == viz.hoverYear) {
+            if (Number(viz.formattedIdeologyData[obj].Year) == year) {
                 var conservativeCount = Number(viz.formattedIdeologyData[obj].Conservative);
                 document.getElementById("conservative_count").innerHTML = conservativeCount;
                 var unspecifiedCount = Number(viz.formattedIdeologyData[obj].Unspecified);
@@ -486,7 +486,7 @@ class Ideology {
         var justiceDetailDiv = document.getElementById("justices_and_scores");
         justiceDetailDiv.innerHTML = "";
 
-        if (viz.hoverYear <= 2017) {
+        if (year <= 2017) {
             var headerTag = document.createElement("h2");
             var headerTagText = document.createTextNode("Serving Justices");
             headerTag.appendChild(headerTagText);
@@ -496,7 +496,7 @@ class Ideology {
         var justiceDivs = [];
         for (var justiceName in viz.splitJusticeData) {
             for (var termData in viz.splitJusticeData[justiceName]) {
-                if (Number(viz.splitJusticeData[justiceName][termData].term) == viz.hoverYear) {
+                if (Number(viz.splitJusticeData[justiceName][termData].term) == year) {
                     var justiceDiv = document.createElement("div");
                     justiceDiv.classList.add("justice_div");
                     var justiceLabel = document.createElement("div");
@@ -514,7 +514,7 @@ class Ideology {
                     justiceDiv.appendChild(justiceScore);
 
                     var justiceObj = {
-                        Year: viz.hoverYear,
+                        Year: year,
                         Name: justiceName,
                         Score: viz.splitJusticeData[justiceName][termData].mqScore,
                         Obj: justiceDiv
@@ -646,6 +646,7 @@ class Ideology {
 
         if (startYear == endYear) {
             document.getElementById("ideology_right").classList.add("visible");
+            viz.updateDetailSection(viz, startYear);
         }
         else {
             document.getElementById("ideology_right").classList.remove("visible");
