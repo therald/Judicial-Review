@@ -115,15 +115,15 @@ body {
         }
 
         .block_quote {
-            display: grid;
+            display: block;
             width: 80%;
             margin: auto;
             margin-top: 1rem;
             margin-bottom: 1rem;
 
             .block_quote_citation {
+                display: block;
                 font-style: italic;
-                margin-top: 0.5rem;
                 text-align: right;
             }
         }
@@ -272,6 +272,11 @@ body {
             h1 {
                 font-size: 2rem;
                 margin-bottom: 0.5rem;
+            }
+
+            .keyword {
+                color: rgb(43, 175, 180);
+                font-weight: bold;
             }
         }
 
