@@ -115,18 +115,42 @@ body {
         }
 
         .block_quote {
-            display: grid;
+            display: block;
             width: 80%;
             margin: auto;
             margin-top: 1rem;
             margin-bottom: 1rem;
 
             .block_quote_citation {
+                display: block;
                 font-style: italic;
-                margin-top: 0.5rem;
                 text-align: right;
             }
         }
+
+        // https://www.bestcssbuttongenerator.com/#/0
+        .myButton {
+            background-color:$lightGray;
+            -moz-border-radius:28px;
+            -webkit-border-radius:28px;
+            border-radius:28px;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:17px;
+            padding: 0.5rem 1rem;
+            text-decoration:none;
+            text-shadow:0px 1px 0px #bababa;
+        }
+        .myButton:hover {
+            background-color:#616161;
+        }
+        .myButton:active {
+            position:relative;
+            top:1px;
+        }
+        // end citation
 
         .vis {
             flex: 1;
@@ -209,7 +233,7 @@ body {
             display: block;
             margin-left: -1%;
             margin-right: -1%;
-            z-index: 100;
+            z-index: 50;
 
             #filter_header {
                 margin: auto;
@@ -284,7 +308,7 @@ body {
             min-height: calc(100vh - 13rem);
 
             .left {
-                width: 60%;
+                width: 70%;
 
                 #ideology {
                     background: $darkGray;
@@ -351,7 +375,7 @@ body {
             }
 
             .right {
-                width: 40%;
+                width: 30%;
                 padding: 1%;
                 opacity: 0;
 
@@ -436,7 +460,6 @@ body {
 
             .visible {
                 opacity: 1.0 !important;
-                width: 40%;
             }
         }
 
@@ -557,11 +580,6 @@ body {
                     margin-top: 1%;
                     margin-bottom: 1%;
 
-                    .buttonrow {
-                        display: inline-block;
-                        float: right;
-                    }
-
                     .errMessage {
                         text-anchor: middle;
                         font-weight: bold;
@@ -591,10 +609,177 @@ body {
                         fill: $lightPurple;
                     }
 
-                    .vis_title {
-                        display: inline-block;
-                        text-align: center;
+                    .title_div {
+                        height: 2.5rem;
+
+                        .vis_title {
+                            display: inline-block;
+                            position: absolute;
+                            text-align: center;
+                            width: 70%;
+                            z-index: 1;
+                        }
+
+                        .title_button {
+                            display: inline-block;
+                            position: absolute;
+                            width: 70%;
+                            text-align: right;
+                            padding-right: 2rem;
+                            padding-top: 0.5rem;
+                            z-index: 2;
+
+                            #sort_group_button {
+                                cursor: pointer;
+                            }
+                        }
                     }
+
+                    
+                }
+
+                // https://www.w3schools.com/howto/howto_css_modals.asp
+                #modal { // from w3 schools
+                    display: none; /* Hidden by default */
+                    position: fixed; /* Stay in place */
+                    z-index: 100; /* Sit on top */
+                    left: 0;
+                    top: 0;
+                    width: 100%; /* Full width */
+                    height: 100%; /* Full height */
+                    overflow: auto; /* Enable scroll if needed */
+                    background-color: rgb(0,0,0); /* Fallback color */
+                    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+
+                    #outer_cluster {
+                        margin-top: 13rem;
+                        min-height: calc(100vh - 13rem);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 70%;
+
+                        .cluster {
+
+                            /* The container must be positioned relative: */
+                            .custom-select {
+                                position: relative;
+                                font-family: Arial;
+                                width: 200px;
+                            }
+
+                            .custom-select select {
+                                display: none; /*hide original SELECT element: */
+                            }
+
+                            .select-selected {
+                                background-color: $lightGray;
+                            }
+
+                            .select-selected:hover {
+                                background-color:#616161;
+                            }
+
+                            /* Style the arrow inside the select element: */
+                            .select-selected:after {
+                                position: absolute;
+                                content: "";
+                                top: 14px;
+                                right: 10px;
+                                width: 0;
+                                height: 0;
+                                border: 6px solid transparent;
+                                border-color: #fff transparent transparent transparent;
+                            }
+
+                            /* Point the arrow upwards when the select box is open (active): */
+                            .select-selected.select-arrow-active:after {
+                                border-color: transparent transparent #fff transparent;
+                                top: 7px;
+                            }
+
+                            /* style the items (options), including the selected item: */
+                            .select-items div,.select-selected {
+                                color: #ffffff;
+                                padding: 8px 16px;
+                                border: 1px solid transparent;
+                                border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+                                cursor: pointer;
+                            }
+
+                            /* Style items (options): */
+                            .select-items {
+                                position: absolute;
+                                background-color: $lightGray;
+                                top: 100%;
+                                left: 0;
+                                right: 0;
+                                z-index: 99;
+                            }
+
+                            /* Hide the items when the select box is closed: */
+                            .select-hide {
+                                display: none;
+                            }
+
+                            .select-items div:hover, .same-as-selected {
+                                background-color: rgba(0, 0, 0, 0.1);
+                            }
+
+                            #sort_and_group_options_1 {
+                                margin-bottom: 1rem;
+
+                                select {
+                                    margin-bottom: 1rem;
+                                }
+
+                                .close {
+                                    color: #aaa;
+                                    float: right;
+                                    font-size: 28px;
+                                    font-weight: bold;
+                                }
+
+                                .close:hover,
+                                .close:focus {
+                                    color: black;
+                                    text-decoration: none;
+                                    cursor: pointer;
+                                }
+                            }
+
+                            #sort_and_group_options_2 {
+                                margin-bottom: 1rem;
+
+                                select {
+                                    margin-bottom: 1rem;
+                                }
+
+                                .close {
+                                    color: #aaa;
+                                    float: right;
+                                    font-size: 28px;
+                                    font-weight: bold;
+                                }
+
+                                .close:hover,
+                                .close:focus {
+                                    color: black;
+                                    text-decoration: none;
+                                    cursor: pointer;
+                                }
+                            }
+
+                            #sort_and_group_options_3 {
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
+                // end citation
+
+                .visible {
+                    display: block !important;
                 }
             }
 

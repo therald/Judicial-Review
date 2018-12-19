@@ -31,7 +31,7 @@ function begin() {
 	            document.getElementById("filters").classList.remove('fixed');
 	            document.getElementById("hidden-filters").classList.remove('displayed');
 	        }
-		})
+		});
 	}
 
 	/**

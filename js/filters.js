@@ -488,6 +488,7 @@ class Filters {
                     return viz.issueHeight/2 - 4;
                 })
                 .attr("fill", "white")
+                .style("font-size", "0.75rem")
                 .style("font-weight", "bold")
                 .text("")
                 .append("tspan")

@@ -30,6 +30,9 @@ class Precedent {
         viz.createXAxis();
         viz.createGridLines();
 
+        viz.modalIsShowing = false;
+        viz.scrollHeight;
+
         d3.csv('./data/issue_area.csv', function(d) {
             return {
                 id: +d.id,
@@ -81,6 +84,114 @@ class Precedent {
                 viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
             });
         });
+
+        document.getElementById("sort_group_button").addEventListener("click", function() {
+            if (!viz.modalIsShowing) {
+                document.getElementById("modal").classList.add("visible");
+                viz.scrollHeight = document.documentElement.scrollTop;
+                window.addEventListener('scroll', viz.noscroll);
+            }
+            else {
+                document.getElementById("modal").classList.remove("visible");
+                window.removeEventListener('scroll', viz.noscroll);
+            }
+            viz.modalIsShowing = !viz.modalIsShowing;
+
+            var section = document.getElementById("precedent_section");
+            section.scrollIntoView();   
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("modal") || event.target == document.getElementById("outer_cluster")) {
+                document.getElementById("modal").classList.remove("visible");
+                window.removeEventListener('scroll', viz.noscroll);
+                viz.modalIsShowing = false;
+            }
+        }
+
+        // https://www.w3schools.com/howto/howto_custom_select.asp
+        viz.initializeDropdownMenus(viz);
+        document.addEventListener("click", viz.closeAllSelect);
+        // end citation
+    }
+
+    initializeDropdownMenus(viz) {
+        var x, i, j, selElmnt, a, b, c;
+        /* Look for any elements with the class "custom-select": */
+        x = document.getElementsByClassName("custom-select");
+        for (i = 0; i < x.length; i++) {
+            selElmnt = x[i].getElementsByTagName("select")[0];
+            /* For each element, create a new DIV that will act as the selected item: */
+            a = document.createElement("DIV");
+            a.setAttribute("class", "select-selected");
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            /* For each element, create a new DIV that will contain the option list: */
+            b = document.createElement("DIV");
+            b.setAttribute("class", "select-items select-hide");
+            for (j = 1; j < selElmnt.length; j++) {
+                /* For each option in the original select element,
+                create a new DIV that will act as an option item: */
+                c = document.createElement("DIV");
+                c.innerHTML = selElmnt.options[j].innerHTML;
+                c.addEventListener("click", function(e) {
+                    /* When an item is clicked, update the original select box,
+                    and the selected item: */
+                    var y, i, k, s, h;
+                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < s.length; i++) {
+                        if (s.options[i].innerHTML == this.innerHTML) {
+                        s.selectedIndex = i;
+                        h.innerHTML = this.innerHTML;
+                        y = this.parentNode.getElementsByClassName("same-as-selected");
+                        for (k = 0; k < y.length; k++) {
+                            y[k].removeAttribute("class");
+                            }
+                            this.setAttribute("class", "same-as-selected");
+                            break;
+                        }
+                    }
+                    h.click();
+                });
+                b.appendChild(c);
+            }
+            x[i].appendChild(b);
+            a.addEventListener("click", function(e) {
+                /* When the select box is clicked, close any other select boxes,
+                and open/close the current select box: */
+                viz.draw(viz.range[0], viz.range[1], viz.issueAreas);
+                e.stopPropagation();
+                viz.closeAllSelect(this);
+                this.nextSibling.classList.toggle("select-hide");
+                this.classList.toggle("select-arrow-active");
+            });
+        }
+    }
+
+    closeAllSelect(elmnt) {
+        /* A function that will close all select boxes in the document,
+        except the current select box: */
+        var x, y, i, arrNo = [];
+        x = document.getElementsByClassName("select-items");
+        y = document.getElementsByClassName("select-selected");
+        for (i = 0; i < y.length; i++) {
+            if (elmnt == y[i]) {
+                arrNo.push(i)
+            } else {
+                y[i].classList.remove("select-arrow-active");
+            }
+        }
+        for (i = 0; i < x.length; i++) {
+            if (arrNo.indexOf(i)) {
+                x[i].classList.add("select-hide");
+            }
+        }
+    }
+
+    noscroll() { // from https://davidwells.io/snippets/disable-scrolling-with-javascript/
+        var section = document.getElementById("precedent_section");
+        section.scrollIntoView();
     }
 
     createYScale(bottomMargin) {
@@ -213,7 +324,7 @@ class Precedent {
 
     getSortingAlgo(a, b) {
         var viz = this;
-
+        console.log(viz.sortSelect.options, viz.sortSelect.selectedIndex);
         switch (viz.sortSelect.options[viz.sortSelect.selectedIndex].value) {
             case 'startdate': return viz.sortByStartdate(a, b);
             case 'length': return viz.sortByLength(a, b);
