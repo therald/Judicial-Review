@@ -85,11 +85,11 @@ class Landmark{
         var isClicked = false;
  
         viz.svg.on("click",function(){isClicked = !isClicked;  d3.selectAll("path").classed("disable",isClicked); return isClicked})
-            .on("mouseleave",function(){
-                $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
-                isClicked = false;
-                d3.selectAll("path").classed("disable",isClicked);
-                return isClicked;})
+            // .on("mouseleave",function(){
+            //     $("#unconstitutionalCases").html("Unconstitutional Cases</br><span class='block_quote'>&quot;One function of legal rules is to create the legal positions that citizens hold and, perhaps, challenge as unconstitutional.&quot;<span class='block_quote_citation'>-From Cambridge English Corpus</span></span>");
+            //     isClicked = false;
+            //     d3.selectAll("path").classed("disable",isClicked);
+            //     return isClicked;})
 
         var cases = viz.svg.append("g")
             .attr("stroke-opacity", .5).selectAll(".links")
