@@ -167,28 +167,45 @@
 		<div id="precedent_section" class="section">
 			<div class="left">
 				<div id="precedent">
-					<div>
-						<span class="vis_title">Precedent-Altering Cases</span>
-						<span id="precedent_options" class="buttonrow">
-							<select id='precedent_sortby' name="Sort By">
-								<option value="enddate">End Date</option>
-								<option value="startdate">Start Date</option>
-								<option value="length">Length</option>
-							</select>
-							<select id='precedent_groupby' name="Group By">
-								<option value="issuearea">Issue Area</option>
-								<option value="startideo">Starting Ideology</option>
-								<option value="endideo">Ending Ideology</option>
-								<option value="none">None</option>
-							</select>
-							<button id='precedent_reversesort' type='button'>Reverse Sort</button>
-						</span>
+					<div class="title_div">
+						<div class="vis_title">Precedent-Altering Cases</div>
+						<div class="title_button">
+							<a id="sort_group_button" class="myButton">Sorting/Grouping Options</a>
+						</div>
 					</div>
 					<div id="precedent_vis" class="vis"></div>
 					<div class="bottom_padding"></div>
 				</div>
+				<div id="modal">
+					<div id="outer_cluster">
+						<div class="cluster">
+							<div id="sort_and_group_options_1" class="custom-select">
+								<select id='precedent_sortby' name="Sort By">
+									<option value="enddate">End Date</option>
+									<option value="enddate">End Date</option>
+									<option value="startdate">Start Date</option>
+									<option value="length">Length</option>
+								</select>
+							</div>
+							<div id="sort_and_group_options_2" class="custom-select">
+								<select id='precedent_groupby' name="Group By">
+									<option value="issuearea">Issue Area</option>
+									<option value="issuearea">Issue Area</option>
+									<option value="startideo">Starting Ideology</option>
+									<option value="endideo">Ending Ideology</option>
+									<option value="none">None</option>
+								</select>
+							</div>
+							<div id="sort_and_group_options_3">
+								<span id="precedent_options" class="buttonrow">
+									<a id="precedent_reversesort" class="myButton">Reverse Sort</a>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="right", id="precedent_right">
+			<div class="right" id="precedent_right">
 				<div id="precedent_header">
 					<div id="overruling_title" class="precedent_title"></div>
 					<div id="overruling_text"></div>
