@@ -135,7 +135,7 @@ class Landmark{
 		viz.cScale = d3.scaleSequential(d3.interpolateMagma)
     		.domain([-4, 4]);
     	viz.tScale = d3.scaleTime()
-    		.rangeRound([0,viz.height]);
+    		.rangeRound([0,viz.div.node().getBoundingClientRect().height]);
     	viz.y1Scale = d3.scaleLinear()
 		    .range([0,viz.height*.005]);
 		viz.y2Scale = d3.scaleLinear()
@@ -161,7 +161,7 @@ class Landmark{
         var x2 = xi(viz.curve);
         var x3 = xi(1 - viz.curve);					//to generate an s curve
         var y0 = viz.tScale(viz.time(d.dateDecision));	//initial y point
-        var y1 = viz.y1Scale(i)+viz.height*1/2;				//first y stop
+        var y1 = viz.div.node().getBoundingClientRect().height/2;				//first y stop
         var x4 = viz.width;
 
         return "M" + x0 + "," + y1
@@ -176,7 +176,7 @@ class Landmark{
 		    .append("svg")
 		    .attr("width", "100%")
 		    .attr("height", "100%")
-		    .attr("viewBox", "0 0 " +" " + viz.width + " " + 500) //change
+		    .attr("viewBox", "0 0 " +" " + viz.width + " " + viz.div.node().getBoundingClientRect().height) //change
             .attr("preserveAspectRatio", "xMinYMin")
             
 

@@ -64,7 +64,7 @@ class  Pack {
 		viz.svg = d3.select(viz.id)
 		    .append("svg")
 		    .attr("width", "100%")
-		    .attr("height", "100%")
+		    .attr("height", "50%")
 		    .attr("viewBox", -250+" "+(-250)+" " + viz.width + " " + 500) //change
             .attr("preserveAspectRatio", "xMinYMin")
             .style("display", "block")
